@@ -1,2 +1,2 @@
 # wexstream
-The platform is under heavy development. Not ready yet.
+The platform is under development. Not ready yet.
