@@ -1,2 +1,2 @@
 # wexstream
-Open Source High Definition Video Conferencing Platform
+The platform is under heavy development. Not ready yet.
