@@ -11,8 +11,6 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import conferenceRoutes from './routes/conferenceRoutes.js';
 import timelineRoutes from './routes/timelineRoutes.js';
-import reportedUserRoutes from './routes/reportedUserRoutes.js';
-import blockedUserRoutes from './routes/blockedUserRoutes.js';
 
 const DB_HOST = process.env.WS_DB_HOST;
 const DB_PORT = process.env.WS_DB_PORT;
@@ -73,8 +71,6 @@ app.use('/', notificationRoutes);
 app.use('/', messageRoutes);
 app.use('/', conferenceRoutes);
 app.use('/', timelineRoutes);
-app.use('/', reportedUserRoutes);
-app.use('/', blockedUserRoutes);
 
 strings.setLanguage(process.env.WS_DEFAULT_LANGUAGE);
 

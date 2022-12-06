@@ -22,14 +22,17 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import crypto from 'crypto';
 
+const DEFAULT_LANGUAGE = process.env.WS_DEFAULT_LANGUAGE;
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true';
 const JWT_SECRET = process.env.WS_JWT_SECRET;
 const JWT_EXPIRE_AT = parseInt(process.env.WS_JWT_EXPIRE_AT);
+const APP_HOST = process.env.WS_APP_HOST;
 const SMTP_HOST = process.env.WS_SMTP_HOST;
 const SMTP_PORT = process.env.WS_SMTP_PORT;
 const SMTP_USER = process.env.WS_SMTP_USER;
 const SMTP_PASS = process.env.WS_SMTP_PASS;
 const SMTP_FROM = process.env.WS_SMTP_FROM;
+const ADMIN_EMAIL = process.env.WS_ADMIN_EMAIL;
 const CDN = process.env.WS_CDN;
 
 const routes = express.Router();
@@ -822,6 +825,183 @@ routes.route(routeNames.deleteAvatar)
                     console.error('[user.updateAvatar] User not found:', req.params.userId);
                     res.sendStatus(204);
                 }
+            })
+            .catch(err => {
+                console.error(strings.DB_ERROR, err);
+                res.status(400).send(strings.DB_ERROR + err);
+            });
+    });
+
+    routes.route(routeNames.checkBlockedUser).get(authJwt.verifyToken, (req, res) => {
+        BlockedUser.findOne({ user: req.params.userId, blockedUser: req.params.blockedUserId })
+            .then(blockedUser => {
+                if (blockedUser) {
+                    res.sendStatus(200);
+                } else {
+                    console.error('[checkBlockedUser] User not found:', req.params);
+                    res.sendStatus(204);
+                }
+            })
+            .catch(err => {
+                console.error(strings.DB_ERROR, err);
+                res.status(400).send(strings.DB_ERROR + err);
+            });
+    });
+    
+    routes.route(routeNames.block).post(authJwt.verifyToken, (req, res) => {
+        BlockedUser.findOne({ user: req.params.userId, blockedUser: req.params.blockedUserId })
+            .then(bu => {
+                if (bu) {
+                    console.error('[block] ' + strings.ALREADY_BLOCKED, req.params);
+                    res.status(400).send(strings.ALREADY_BLOCKED);
+                } else {
+                    const blockedUser = new BlockedUser({
+                        user: req.params.userId,
+                        blockedUser: req.params.blockedUserId
+                    });
+                    blockedUser.save()
+                        .then(async () => {
+                            const notifications = await Notification.aggregate([
+                                { $match: { user: mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: mongoose.Types.ObjectId(req.params.userId), isRead: false } }
+                            ]);
+    
+                            if (notifications.length > 0) {
+                                const counter = await NotificationCounter.findOne({ user: req.params.blockedUserId });
+                                if (counter) {
+                                    counter.count -= notifications.length;
+                                    await counter.save();
+                                }
+                            }
+    
+                            res.sendStatus(200);
+                        })
+                        .catch(err => {
+                            console.error(strings.DB_ERROR, err);
+                            res.status(400).send(strings.DB_ERROR + err);
+                        });
+                }
+            })
+            .catch(err => {
+                console.error(strings.DB_ERROR, err);
+                res.status(400).send(strings.DB_ERROR + err);
+            });
+    });
+    
+    routes.route(routeNames.unblock).post(authJwt.verifyToken, (req, res) => {
+        BlockedUser.deleteOne({ user: req.params.userId, blockedUser: req.params.blockedUserId })
+            .then(async result => {
+                if (result.deletedCount === 1) {
+                    const notifications = await Notification.aggregate([
+                        { $match: { user: mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: mongoose.Types.ObjectId(req.params.userId), isRead: false } }
+                    ]);
+    
+                    if (notifications.length > 0) {
+                        const counter = await NotificationCounter.findOne({ user: req.params.blockedUserId });
+                        if (counter) {
+                            counter.count += notifications.length;
+                            await counter.save();
+                        }
+                    }
+                    res.sendStatus(200);
+                } else {
+                    console.error('[unblock] Error while unblocking user:', req.params);
+                    res.sendStatus(204);
+                }
+            })
+            .catch(err => {
+                console.error(strings.DB_ERROR, err);
+                res.status(400).send(strings.DB_ERROR + err);
+            });
+    });
+
+
+    routes.route(routeNames.report).post(authJwt.verifyToken, (req, res) => {
+        ReportedUser.findOne({ user: req.body.user, reportedUser: req.body.reportedUser })
+            .then(ru => {
+                if (ru) {
+                    const report = new Report({ message: req.body.message });
+                    report.save()
+                        .then(() => {
+                            ru.reports.push(report._id);
+                            ru.save()
+                                //.then(() => res.sendStatus(200))
+                                .catch(err => {
+                                    console.error(strings.DB_ERROR, err);
+                                    res.status(400).send(strings.DB_ERROR + err);
+                                });
+                        })
+                        .catch(err => {
+                            console.error(strings.DB_ERROR, err);
+                            res.status(400).send(strings.DB_ERROR + err);
+                        });
+                } else {
+                    const report = new Report({ message: req.body.message });
+                    report.save()
+                        .then(() => {
+                            const reportedUser = new ReportedUser({
+                                user: req.body.user,
+                                reportedUser: req.body.reportedUser,
+                                reports: [report._id]
+                            });
+                            reportedUser.save()
+                                //.then(() => res.sendStatus(200))
+                                .catch(err => {
+                                    console.error(strings.DB_ERROR, err);
+                                    res.status(400).send(strings.DB_ERROR + err);
+                                });
+                        })
+                        .catch(err => {
+                            console.error(strings.DB_ERROR, err);
+                            res.status(400).send(strings.DB_ERROR + err);
+                        });
+                }
+    
+                User.findById(req.body.user)
+                    .then(user => {
+                        User.findById(req.body.reportedUser)
+                            .then(async reportedUser => {
+                                strings.setLanguage(DEFAULT_LANGUAGE);
+    
+                                const transporter = nodemailer.createTransport({
+                                    host: SMTP_HOST,
+                                    port: SMTP_PORT,
+                                    auth: {
+                                        user: SMTP_USER,
+                                        pass: SMTP_PASS
+                                    }
+                                });
+                                console.log(ADMIN_EMAIL);
+                                const mailOptions = {
+                                    from: SMTP_FROM,
+                                    to: ADMIN_EMAIL,
+                                    subject: user.fullName + ' ' + strings.REPORTED + ' ' + reportedUser.fullName,
+                                    html: '<p>'
+                                        + strings.HELLO + ',<br><br>'
+                                        + strings.REPORTED_MESSAGE + req.body.message + '<br>'
+                                        + strings.REPORTED_BY + 'http' + (HTTPS ? 's' : '') + ':\/\/' + APP_HOST + '\/profile?u=' + user._id + '<br>'
+                                        + strings.REPORTED_USER + 'http' + (HTTPS ? 's' : '') + ':\/\/' + APP_HOST + '\/profile?u=' + reportedUser._id + '<br>'
+                                        + '<br>' + strings.REGARDS + '<br>'
+                                        + '</p>'
+                                };
+    
+                                await transporter.sendMail(mailOptions, (err, info) => {
+                                    if (err) {
+                                        console.error(strings.SMTP_ERROR, err);
+                                        res.status(400).send(strings.SMTP_ERROR + err);
+                                    } else {
+                                        res.sendStatus(200);
+                                    }
+                                });
+                            })
+                            .catch(err => {
+                                console.error(strings.DB_ERROR, err);
+                                res.status(400).send(strings.DB_ERROR + err);
+                            });
+                    })
+                    .catch(err => {
+                        console.error(strings.DB_ERROR, err);
+                        res.status(400).send(strings.DB_ERROR + err);
+                    });
             })
             .catch(err => {
                 console.error(strings.DB_ERROR, err);
