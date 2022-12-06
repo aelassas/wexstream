@@ -1,0 +1,18 @@
+[Unit]
+Description=Wexstream API
+Wants=mongod.service
+After=mongod.service
+
+[Service]
+ExecStart=/usr/bin/node -r dotenv/config app.js
+WorkingDirectory=/opt/wexstream/api
+Type=simple
+Restart=always
+StartLimitBurst=0
+StandardOutput=append:/var/log/wexstream-api.log
+StandardError=append:/var/log/wexstream-api.log
+User=wexstream
+Group=wexstream
+
+[Install]
+WantedBy=multi-user.target
