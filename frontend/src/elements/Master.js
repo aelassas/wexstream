@@ -19,11 +19,11 @@ const Master = (props) => {
     useInit(() => {
         const exit = () => {
             if (props.strict) {
-                UserService.signout(false, true);
+                UserService.signout(true);
             } else {
                 setLoading(false);
 
-                UserService.signout(false, false);
+                UserService.signout(false);
 
                 if (props.onLoad) {
                     props.onLoad();
