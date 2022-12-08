@@ -12,7 +12,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Button from '@material-ui/core/Button';
 import { toast } from 'react-toastify';
 import Backdrop from './SimpleBackdrop';
-import { renderReactDom } from '../common/helper';
+
 import { LANGUAGES } from '../config/env.config';
 
 class PasswordReset extends Component {

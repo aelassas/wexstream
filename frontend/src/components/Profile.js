@@ -53,8 +53,8 @@ import 'moment/locale/ar';
 import { MessageForm } from './MessageForm';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
 import { Members } from './Members';
-import * as Helper from '../common/helper';
-import { renderReactDom } from '../common/helper';
+import * as Helper from '../common/Helper';
+
 
 class Profile extends Component {
 

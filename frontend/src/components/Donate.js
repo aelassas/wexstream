@@ -8,7 +8,7 @@ import Patreon from '../assets/img/patreon.png';
 import BuyMeACoffee from '../assets/img/buymeacoffee.png';
 import Liberapay from '../assets/img/liberapay.svg';
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
-import { renderReactDom } from '../common/helper';
+
 
 class Donate extends Component {
 

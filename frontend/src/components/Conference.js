@@ -36,9 +36,9 @@ import {
 } from "react-share";
 import Backdrop from './SimpleBackdrop';
 import { getLanguage } from '../services/UserService';
-import * as Helper from '../common/helper';
+import * as Helper from '../common/Helper';
 import { isMobile } from '../config/env.config';
-import { renderReactDom } from '../common/helper';
+
 
 class Conf extends Component {
 

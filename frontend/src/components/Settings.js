@@ -26,7 +26,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { Avatar } from './Avatar';
 import validator from 'validator';
-import { renderReactDom } from '../common/helper';
+
 
 class Settings extends Component {
 

@@ -29,7 +29,7 @@ import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
 import { MESSAGES_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
-import { renderReactDom } from '../common/helper';
+
 
 class Messages extends Component {
 

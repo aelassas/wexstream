@@ -14,7 +14,7 @@ import Header from './Header';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Backdrop from './SimpleBackdrop';
-import { renderReactDom } from '../common/helper';
+
 
 export default class SignUp extends Component {
 

@@ -37,7 +37,7 @@ import {
 } from '@material-ui/icons';
 import LinkIcon from '@material-ui/icons/Link';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
-import { renderReactDom } from '../common/helper';
+
 
 class Connections extends Component {
 

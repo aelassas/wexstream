@@ -3,7 +3,7 @@ import Header from './Header';
 import { strings } from '../config/app.config';
 import { LANGUAGES } from '../config/env.config';
 import { getLanguage, getUser, validateAccessToken, getCurrentUser, getQueryLanguage } from '../services/UserService';
-import { renderReactDom } from '../common/helper';
+
 
 class ToS extends Component {
 

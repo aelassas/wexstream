@@ -37,7 +37,7 @@ import 'moment/locale/ar';
 import { Avatar } from './Avatar';
 import { LANGUAGES, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
 import { Members } from './Members';
-import { renderReactDom } from '../common/helper';
+
 
 class Home extends Component {
 

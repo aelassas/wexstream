@@ -39,7 +39,7 @@ import {
     ThumbDown,
 } from '@material-ui/icons';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
-import { renderReactDom } from '../common/helper';
+
 
 class Notifications extends Component {
 
