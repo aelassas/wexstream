@@ -1,5 +1,6 @@
 import express from 'express';
 import routeNames from '../config/connectionRoutes.config.js';
+import authJwt from '../middlewares/authJwt.js';
 import * as connectionController from '../controllers/connectionController.js';
 
 const routes = express.Router();
