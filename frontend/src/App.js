@@ -16,6 +16,7 @@ const Settings = lazy(() => import('./components/Settings'));
 const ResetPassword = lazy(() => import('./components/ResetPassword'));
 const Contact = lazy(() => import('./components/Contact'));
 const Donate = lazy(() => import('./components/Donate'));
+const NoMatch = lazy(() => import('./components/NoMatch'));
 
 const App = () => (
 	<Router>
