@@ -419,7 +419,7 @@ class Notifications extends Component {
                 const { isVerified, notifications, notificationsCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
                 const rtl = user.language === 'ar';
 
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} notificationsCount={notificationsCount} />
                         {isVerified ?
@@ -650,7 +650,7 @@ class Notifications extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

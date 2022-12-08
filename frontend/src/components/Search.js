@@ -614,7 +614,7 @@ class Search extends Component {
             if (isTokenValidated) {
                 const { isVerified, users, notificationsCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
                 const rtl = user.language === 'ar';
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} notificationsCount={notificationsCount} />
                         {isVerified ?
@@ -855,7 +855,7 @@ class Search extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

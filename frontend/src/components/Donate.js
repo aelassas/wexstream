@@ -53,7 +53,7 @@ class Donate extends Component {
 
     render() {
         const { language, user } = this.state;
-        return renderReactDom(
+        return (
             <div>
                 <Header user={user} />
                 <div className="content">

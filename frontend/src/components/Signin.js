@@ -36,7 +36,7 @@ import { loadGoogleSdk, googleLogin } from '../auth/google';
 import GooglePlay from '../assets/img/google-play.png';
 import { renderReactDom } from '../common/helper';
 
-class Signin extends Component {
+class SignIn extends Component {
 
   constructor(props) {
     super(props);
@@ -348,7 +348,7 @@ class Signin extends Component {
     const rtl = language === 'ar';
     const authBtnStyle = { width: language === 'fr' ? 240 : 190 };
 
-    return renderReactDom(
+    return (
       <div>
         <Header />
         <div className="signin-content" style={visible ? null : { display: 'none' }}>
@@ -506,4 +506,4 @@ class Signin extends Component {
   }
 }
 
-export default Signin;
+export default SignIn;

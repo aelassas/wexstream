@@ -286,7 +286,7 @@ export default class SignUp extends Component {
         const { error, passwordError, passwordsDontMatch, emailError, recaptchaError, language,
             showPassword, showConfirmPassword, visible, tosChecked, isLoading } = this.state;
 
-        return renderReactDom(
+        return (
             <div>
                 <Header />
                 <Paper className="signup-form signup-form-wrapper" elevation={10} style={visible ? null : { display: 'none' }}>

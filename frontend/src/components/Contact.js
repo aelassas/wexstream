@@ -47,7 +47,7 @@ class Contact extends Component {
 
     render() {
         const { user } = this.state;
-        return renderReactDom(
+        return (
             <div>
                 <Header user={user} />
                 <div className="content">

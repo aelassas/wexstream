@@ -527,7 +527,7 @@ class Connections extends Component {
             if (isTokenValidated) {
                 const { notificationsCount, isVerified, connections, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
                 const rtl = user.language === 'ar';
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} notificationsCount={notificationsCount} />
                         {isVerified ?
@@ -763,7 +763,7 @@ class Connections extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

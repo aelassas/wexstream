@@ -234,7 +234,7 @@ class Settings extends Component {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
                 const { isVerified, user, error, openDialog, websiteError, isLoading, isDeleting } = this.state;
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} />
                         {isVerified ? (
@@ -405,7 +405,7 @@ class Settings extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

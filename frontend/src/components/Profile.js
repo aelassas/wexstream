@@ -842,7 +842,7 @@ class Profile extends Component {
                     marginTop: -1,
                     color: '#595959'
                 };
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={loggedUser} notificationsCount={notificationsCount} />
                         {isVerified ?
@@ -1174,7 +1174,7 @@ class Profile extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

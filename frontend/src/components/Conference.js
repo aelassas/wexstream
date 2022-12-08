@@ -517,7 +517,7 @@ class Conf extends Component {
                 const separator = ': ';
                 const url = conferenceUrl;
                 const size = 42, round = true;
-                return renderReactDom(
+                return (
                     <div>
                         <Header hidden={fullscreen} user={user} hideLiveButton={!error && !notFound && !unAuthorized && !closed && !externalApiError} />
                         <div className={fullscreen ? "content-full-screen" : "content"} >
@@ -679,7 +679,7 @@ class Conf extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

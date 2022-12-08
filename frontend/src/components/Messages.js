@@ -325,7 +325,7 @@ class Messages extends Component {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
                 const { isVerified, messages, messagesCount, selectedMessage, openMessageBox, openDialog, user, isLoading, firstLoad } = this.state;
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} messagesCount={messagesCount} />
                         {isVerified ? (
@@ -434,7 +434,7 @@ class Messages extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

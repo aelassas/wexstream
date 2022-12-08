@@ -219,7 +219,7 @@ class PasswordReset extends Component {
                 const { isVerified, error, currentPassword, newPassword, confirmPassword,
                     currentPasswordError, passwordLengthError, newPasswordRequiredError,
                     confirmPasswordError, showCurrentPassword, showNewPassword, showConfirmPassword, user } = this.state;
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} />
                         {isVerified ? (
@@ -346,7 +346,7 @@ class PasswordReset extends Component {
                 return (<Navigate to={'/sign-in' + window.location.search} />);
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }

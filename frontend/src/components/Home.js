@@ -205,7 +205,7 @@ class Home extends Component {
                     color: '#595959'
                 };
 
-                return renderReactDom(
+                return (
                     <div>
                         <Header user={user} />
                         {isVerified ? (
@@ -345,7 +345,7 @@ class Home extends Component {
                 return null;
             }
         } else {
-            return renderReactDom(<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />);
         }
     }
 }
