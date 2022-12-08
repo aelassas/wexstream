@@ -5,9 +5,9 @@ import { toast } from 'react-toastify';
 import {
     getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getSearchKeyword, searchUsers,
     getQueryLanguage
-} from '../services/user-service';
-import { connect, getConnection, getConnectionIds, deleteConnection } from '../services/connection-service';
-import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/notification-service';
+} from '../services/UserService';
+import { connect, getConnection, getConnectionIds, deleteConnection } from '../services/ConnectionService';
+import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

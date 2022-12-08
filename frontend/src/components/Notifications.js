@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { strings } from '../config/app.config';
 import Header from './Header';
 import { toast } from 'react-toastify';
-import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage } from '../services/user-service';
+import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
 import {
     notify, getNotifications, getNotificationCounter, deleteNotification, approve, decline,
     markAsRead, markAsUnread, markAllAsRead, deleteNotifications
-} from '../services/notification-service';
-import { getConnectionById } from '../services/connection-service';
+} from '../services/NotificationService';
+import { getConnectionById } from '../services/ConnectionService';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';

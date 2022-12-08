@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import Header from './Header';
 import { strings } from '../config/app.config';
 import { JITSI_API, JITSI_HOST, LANGUAGES } from '../config/env.config';
-import { getUser, validateAccessToken, resendLink, getCurrentUser, signout, getUsername, getQueryLanguage } from '../services/user-service';
-import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/conference-service';
-import { getConnection } from '../services/connection-service';
-import { createTimelineEntries } from '../services/timeline-service';
+import { getUser, validateAccessToken, resendLink, getCurrentUser, signout, getUsername, getQueryLanguage } from '../services/UserService';
+import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService';
+import { getConnection } from '../services/ConnectionService';
+import { createTimelineEntries } from '../services/TimelineService';
 import { toast } from 'react-toastify';
 import {
     IconButton,
@@ -35,8 +35,8 @@ import {
     WhatsappIcon
 } from "react-share";
 import Backdrop from './SimpleBackdrop';
-import { getLanguage } from '../services/user-service';
-import { isObjectId } from '../services/common-service';
+import { getLanguage } from '../services/UserService';
+import * as Helper from '../common/helper';
 import { isMobile } from '../config/env.config';
 import { renderReactDom } from '../common/helper';
 
@@ -385,7 +385,7 @@ class Conf extends Component {
                         if (user.isVerified) {
                             const conferenceId = getConferenceId();
                             if (conferenceId !== '') {
-                                if (isObjectId(conferenceId)) {
+                                if (Helper.isObjectId(conferenceId)) {
                                     getConference(conferenceId)
                                         .then(conference => {
                                             let authorized;

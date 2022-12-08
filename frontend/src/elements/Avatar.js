@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { strings } from '../config/app.config';
-import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/user-service';
+import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService';
 import Button from '@material-ui/core/Button';
 import { toast } from 'react-toastify';
 import MaterialAvatar from '@material-ui/core/Avatar';

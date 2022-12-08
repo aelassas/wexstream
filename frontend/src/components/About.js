@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Header from './Header';
 import { strings } from '../config/app.config';
 import { LANGUAGES } from '../config/env.config';
-import { validateAccessToken, getCurrentUser, getUser, getLanguage, getQueryLanguage } from '../services/user-service';
+import { validateAccessToken, getCurrentUser, getUser, getLanguage, getQueryLanguage } from '../services/UserService';
 import { renderReactDom } from '../common/helper';
 
 class About extends Component {

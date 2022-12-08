@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { strings } from '../config/app.config';
-import { getLanguage, searchUsers, getUserById } from '../services/user-service';
+import { getLanguage, searchUsers, getUserById } from '../services/UserService';
 import { TextField, Button } from "@material-ui/core";
 import MultipleSelect from "./MultipleSelect";
 import { toast } from 'react-toastify';
-import { sendMessage } from '../services/message-service';
+import { sendMessage } from '../services/MessageService';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import CloseIcon from '@material-ui/icons/Close';

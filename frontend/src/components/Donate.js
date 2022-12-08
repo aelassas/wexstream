@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Header from './Header';
 import { strings } from '../config/app.config';
-import { validateAccessToken, getCurrentUser, getUser, getLanguage, getQueryLanguage } from '../services/user-service';
+import { validateAccessToken, getCurrentUser, getUser, getLanguage, getQueryLanguage } from '../services/UserService';
 import { Link } from '@material-ui/core';
 import PayPal from '../assets/img/paypal.png';
 import Patreon from '../assets/img/patreon.png';

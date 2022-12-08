@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import {
     getLanguage, getUser, updateEmailNotifications, updatePrivateMessages,
     validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage
-} from '../services/user-service';
+} from '../services/UserService';
 import { LANGUAGES } from '../config/env.config';
 import Button from '@material-ui/core/Button';
 import Backdrop from './SimpleBackdrop';
@@ -14,7 +14,7 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import FormLabel from '@material-ui/core/FormLabel';
-import { updateUser, deleteUser } from '../services/user-service';
+import { updateUser, deleteUser } from '../services/UserService';
 import Error from '../elements/Error';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';

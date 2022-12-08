@@ -16,7 +16,7 @@ import {
     ListItemText,
 } from '@material-ui/core';
 import { Avatar } from './Avatar';
-import { getMembers } from '../services/conference-service';
+import { getMembers } from '../services/ConferenceService';
 import { strings } from '../config/app.config';
 
 export const Members = (props) => {

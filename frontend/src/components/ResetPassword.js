@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 import { strings } from '../config/app.config';
-import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, compare, resetPassword, getQueryLanguage } from '../services/user-service';
+import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, compare, resetPassword, getQueryLanguage } from '../services/UserService';
 import Header from './Header';
 import Error from '../elements/Error';
 import Paper from '@material-ui/core/Paper';

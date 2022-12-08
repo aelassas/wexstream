@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'next/router';
 import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env.config';
 import { strings } from '../config/app.config';
-import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/user-service';
-import { getNotificationCounter } from '../services/notification-service';
-import { getMessageCounter } from '../services/message-service';
+import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
+import { getNotificationCounter } from '../services/NotificationService';
+import { getMessageCounter } from '../services/MessageService';
 import { alpha, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -36,7 +36,7 @@ import ConnectionsIcon from '@material-ui/icons/SettingsInputAntenna';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Avatar } from './Avatar';
-import { createConference } from '../services/conference-service';
+import { createConference } from '../services/ConferenceService';
 import Backdrop from './SimpleBackdrop';
 import {
     Dialog,

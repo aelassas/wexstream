@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
 import { strings } from '../config/app.config';
-import { signup, validateEmail, signin, getCurrentUser, validateAccessToken, signout, getUser, getLanguage, getQueryLanguage } from '../services/user-service';
+import { signup, validateEmail, signin, getCurrentUser, validateAccessToken, signout, getUser, getLanguage, getQueryLanguage } from '../services/UserService';
 import Error from '../elements/Error';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';

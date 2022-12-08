@@ -3,11 +3,11 @@ import { strings } from '../config/app.config';
 import {
     getLanguage, getUser, getUserId, getUserById, validateAccessToken, resendLink,
     getCurrentUser, signout, checkBlockedUser, reportUser, blockUser, unblockUser, getQueryLanguage
-} from '../services/user-service';
-import { getConnection, getConnectionIds, deleteConnection, connect } from '../services/connection-service';
-import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/notification-service';
-import { getConferences, deleteConference } from '../services/conference-service'
-import { deleteSpeakerEntries } from '../services/timeline-service'
+} from '../services/UserService';
+import { getConnection, getConnectionIds, deleteConnection, connect } from '../services/ConnectionService';
+import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
+import { getConferences, deleteConference } from '../services/ConferenceService'
+import { deleteSpeakerEntries } from '../services/TimelineService'
 import Header from './Header';
 import { toast } from 'react-toastify';
 import Backdrop from './SimpleBackdrop';
@@ -53,7 +53,7 @@ import 'moment/locale/ar';
 import { MessageForm } from './MessageForm';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
 import { Members } from './Members';
-import { isObjectId } from '../services/common-service';
+import * as Helper from '../common/helper';
 import { renderReactDom } from '../common/helper';
 
 class Profile extends Component {
@@ -734,7 +734,7 @@ class Profile extends Component {
                         if (userId === '') {
                             userId = user._id;
                         }
-                        if (isObjectId(userId)) {
+                        if (Helper.isObjectId(userId)) {
                             if (userId !== user._id) {
 
                                 checkBlockedUser(userId, user._id)

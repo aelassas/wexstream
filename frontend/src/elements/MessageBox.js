@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { strings } from '../config/app.config';
-import { getLanguage } from '../services/user-service';
+import { getLanguage } from '../services/UserService';
 import { TextField } from "@material-ui/core";
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Dialog from '@material-ui/core/Dialog';

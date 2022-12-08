@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { authHeader } from './user-service';
+import { authHeader } from './UserService';
 import { API_HOST, PAGE_SIZE } from '../config/env.config';
 
 export const connect = (data) => (

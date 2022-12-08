@@ -5,9 +5,9 @@ import {
   getLanguage, getUser, signin, googleAuth,
   facebookAuth, getCurrentUser, validateAccessToken,
   signout, getUserId, getQueryLanguage
-} from '../services/user-service';
-import { getMessageId } from '../services/message-service';
-import { getConferenceId } from '../services/conference-service';
+} from '../services/UserService';
+import { getMessageId } from '../services/MessageService';
+import { getConferenceId } from '../services/ConferenceService';
 import Error from '../elements/Error';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';

@@ -4,8 +4,8 @@ import Header from './Header';
 import {
     getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout,
     getQueryLanguage
-} from '../services/user-service';
-import { getEntries, deleteSubscriberEntry } from '../services/timeline-service';
+} from '../services/UserService';
+import { getEntries, deleteSubscriberEntry } from '../services/TimelineService';
 import Backdrop from './SimpleBackdrop';
 import { toast } from 'react-toastify';
 import {
