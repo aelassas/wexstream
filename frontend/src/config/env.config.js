@@ -1,4 +1,4 @@
-export const LANGUAGES = ['ar', 'fr', 'en'];
+export const LANGUAGES = ['en', 'fr'];
 export const DEFAULT_LANGUAGE = process.env.REACT_APP_WS_DEFAULT_LANGUAGE;
 export const DATE_FORMAT = process.env.REACT_APP_WS_DATE_FORMAT;
 export const JITSI_HOST = process.env.REACT_APP_WS_JITSI_HOST;

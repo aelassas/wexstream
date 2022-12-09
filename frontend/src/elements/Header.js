@@ -233,12 +233,10 @@ export default withRouter(function Header(props) {
                 return strings.LANGUAGE_EN;
             case 'fr':
                 return strings.LANGUAGE_FR;
-            case 'ar':
-                return strings.LANGUAGE_AR;
             default:
                 return strings.LANGUAGE_EN;
         }
-    }
+    };
 
     const handleMenuClose = () => {
         setAnchorEl(null);
@@ -415,13 +413,13 @@ export default withRouter(function Header(props) {
         >
             <MenuItem onClick={handleOnProfileClick}>
                 {
-                    <Avatar loggedUser={props.user} user={props.user} size="small" className={lang === 'ar' ? 'profile-action-rtl' : 'profile-action'} readonly />
+                    <Avatar loggedUser={props.user} user={props.user} size="small" className={'profile-action'} readonly />
                 }
                 {strings.PROFILE_HEADING}
             </MenuItem>
-            <MenuItem onClick={handleOnSettingsClick}>{<SettingsIcon className={lang === 'ar' ? 'profile-action-rtl' : 'profile-action'} />} {strings.SETTINGS}</MenuItem>
+            <MenuItem onClick={handleOnSettingsClick}>{<SettingsIcon className={'profile-action'} />} {strings.SETTINGS}</MenuItem>
             <MenuItem onClick={handleSignout}>{
-                <SignoutIcon className={lang === 'ar' ? 'profile-action-rtl' : 'profile-action'} />}
+                <SignoutIcon className={'profile-action'} />}
                 <Typography>{strings.SIGN_OUT}</Typography>
             </MenuItem>
         </Menu>
@@ -562,7 +560,7 @@ export default withRouter(function Header(props) {
                         variant="contained"
                         color="secondary"
                         startIcon={<Videocam />}
-                        className={lang === 'ar' ? 'live-btn-rtl' : 'live-btn'}
+                        className={'live-btn'}
                         onClick={handleClickLive}
                     >
                         {strings.LIVE_STREAM}
@@ -633,7 +631,7 @@ export default withRouter(function Header(props) {
                             <MoreIcon />
                         </IconButton>}
                         {(isSignedIn && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.isVerified && !isLoading) && <IconButton
-                            className={`live-btn-mobile${lang === 'ar' ? '-rtl' : ''}`}
+                            className={'live-btn-mobile'}
                             onClick={handleClickLive}
                         >
                             <Videocam style={{ fill: 'white' }} />

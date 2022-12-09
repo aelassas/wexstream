@@ -59,15 +59,6 @@ class Donate extends Component {
                 <div className="content">
                     <div className="donate">
                         <h1>{strings.DONATE_TITLE}</h1>
-                        {/* <p>
-                            <Link href={language === 'fr' ? "https://teradev.ma/" : "https://teradev.ma/en.html"} >{strings.TERADEV}</Link>{strings.DONATE_1}
-                        </p>
-                        <p>
-                            {strings.DONATE_2}
-                        </p>
-                        <p>
-                            {strings.DONATE_3}
-                        </p> */}
                         <p>
                             {strings.DONATE}
                         </p>
