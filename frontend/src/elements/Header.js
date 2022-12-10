@@ -531,10 +531,6 @@ export default withRouter(function Header(props) {
                                     <ListItemIcon>{<MailIcon />}</ListItemIcon>
                                     <ListItemText primary={strings.CONTACT} />
                                 </ListItemLink>
-                                <ListItemLink href="/donate">
-                                    <ListItemIcon>{<MonetizationOn />}</ListItemIcon>
-                                    <ListItemText primary={strings.DONATE_TITLE} />
-                                </ListItemLink>
                             </List>
                         </Drawer>
                     </React.Fragment>
