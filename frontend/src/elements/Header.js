@@ -34,7 +34,6 @@ import NetworkIcon from '@material-ui/icons/WifiTethering';
 import Videocam from '@material-ui/icons/Videocam';
 import ConnectionsIcon from '@material-ui/icons/SettingsInputAntenna';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
 import { Avatar } from './Avatar';
 import { createConference } from '../services/ConferenceService';
 import Backdrop from './SimpleBackdrop';
@@ -51,7 +50,6 @@ import {
     Switch,
     Typography
 } from '@material-ui/core';
-import { MonetizationOn } from '@material-ui/icons';
 
 const ListItemLink = (props) => (
     <ListItem button component="a" {...props} />
@@ -85,7 +83,6 @@ export default withRouter(function Header(props) {
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
     const isLangMenuOpen = Boolean(langAnchorEl);
     const isSideMenuOpen = Boolean(sideAnchorEl);
-
 
     const useStyles = makeStyles((theme) => ({
         list: {
