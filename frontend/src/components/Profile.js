@@ -32,7 +32,7 @@ import {
     FormControl,
     InputLabel,
     Input,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     LocationOnOutlined,
     LinkOutlined,
@@ -46,7 +46,7 @@ import {
     Lock,
     Public,
     People
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';

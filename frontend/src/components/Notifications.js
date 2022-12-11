@@ -8,23 +8,23 @@ import {
     markAsRead, markAsUnread, markAllAsRead, deleteNotifications
 } from '../services/NotificationService';
 import { getConnectionById } from '../services/ConnectionService';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Info from '@material-ui/icons/Info';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
+import Info from '@mui/icons-material/Info';
 import Backdrop from './SimpleBackdrop';
-import DeleteIcon from '@material-ui/icons/Delete';
-import ReadIcon from '@material-ui/icons/Drafts';
-import UnreadIcon from '@material-ui/icons/Email';
-import { IconButton } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Tooltip from '@material-ui/core/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ReadIcon from '@mui/icons-material/Drafts';
+import UnreadIcon from '@mui/icons-material/Email';
+import { IconButton } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
@@ -33,11 +33,11 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     ThumbUp,
     ThumbDown,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
 
 

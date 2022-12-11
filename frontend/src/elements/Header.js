@@ -5,34 +5,34 @@ import { strings } from '../config/app.config';
 import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
 import { getNotificationCounter } from '../services/NotificationService';
 import { getMessageCounter } from '../services/MessageService';
-import { alpha, makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import LanguageIcon from '@material-ui/icons/Language';
-import Button from '@material-ui/core/Button';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import HomeIcon from '@material-ui/icons/Home';
-import AboutIcon from '@material-ui/icons/InfoTwoTone';
-import TosIcon from '@material-ui/icons/DescriptionTwoTone';
-import SettingsIcon from '@material-ui/icons/Settings';
-import SignoutIcon from '@material-ui/icons/ExitToApp';
-import NetworkIcon from '@material-ui/icons/WifiTethering';
-import Videocam from '@material-ui/icons/Videocam';
-import ConnectionsIcon from '@material-ui/icons/SettingsInputAntenna';
+import { alpha, makeStyles } from '@mui/material/styles';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import InputBase from '@mui/material/InputBase';
+import Badge from '@mui/material/Badge';
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import LanguageIcon from '@mui/icons-material/Language';
+import Button from '@mui/material/Button';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import HomeIcon from '@mui/icons-material/Home';
+import AboutIcon from '@mui/icons-material/InfoTwoTone';
+import TosIcon from '@mui/icons-material/DescriptionTwoTone';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SignoutIcon from '@mui/icons-material/ExitToApp';
+import NetworkIcon from '@mui/icons-material/WifiTethering';
+import Videocam from '@mui/icons-material/Videocam';
+import ConnectionsIcon from '@mui/icons-material/SettingsInputAntenna';
 import { toast } from 'react-toastify';
 import { Avatar } from './Avatar';
 import { createConference } from '../services/ConferenceService';
@@ -49,7 +49,7 @@ import {
     FormControlLabel,
     Switch,
     Typography
-} from '@material-ui/core';
+} from '@mui/material';
 
 const ListItemLink = (props) => (
     <ListItem button component="a" {...props} />

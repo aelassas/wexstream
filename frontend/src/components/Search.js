@@ -8,16 +8,16 @@ import {
 } from '../services/UserService';
 import { connect, getConnection, getConnectionIds, deleteConnection } from '../services/ConnectionService';
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Button from '@mui/material/Button';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Backdrop from './SimpleBackdrop';
 import { MessageForm } from './MessageForm';
 import { Avatar } from './Avatar';
-import Link from '@material-ui/core/Link';
-import Typography from '@material-ui/core/Typography';
+import Link from '@mui/material/Link';
+import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
@@ -30,15 +30,15 @@ import {
     CardContent,
     IconButton,
     Tooltip
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     Mail,
     LinkOff,
     ThumbUp,
     ThumbDown,
     Cancel
-} from '@material-ui/icons';
-import LinkIcon from '@material-ui/icons/Link';
+} from '@mui/icons-material';
+import LinkIcon from '@mui/icons-material/Link';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
 
 

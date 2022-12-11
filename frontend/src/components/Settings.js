@@ -7,23 +7,23 @@ import {
     validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage
 } from '../services/UserService';
 import { LANGUAGES } from '../config/env.config';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import Backdrop from './SimpleBackdrop';
-import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import FormLabel from '@material-ui/core/FormLabel';
+import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+import FormLabel from '@mui/material/FormLabel';
 import { updateUser, deleteUser } from '../services/UserService';
 import Error from '../elements/Error';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import Paper from '@material-ui/core/Paper';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
-import FormHelperText from '@material-ui/core/FormHelperText';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import Paper from '@mui/material/Paper';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import FormHelperText from '@mui/material/FormHelperText';
 import { Avatar } from './Avatar';
 import validator from 'validator';
 

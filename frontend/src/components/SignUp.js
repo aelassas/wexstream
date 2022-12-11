@@ -3,16 +3,16 @@ import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
 import { strings } from '../config/app.config';
 import { signup, validateEmail, signin, getCurrentUser, validateAccessToken, signout, getUser, getLanguage, getQueryLanguage } from '../services/UserService';
 import Error from '../elements/Error';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import Button from '@mui/material/Button';
+import Paper from '@mui/material/Paper';
 import ReCAPTCHA from "react-google-recaptcha";
 import Header from './Header';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
 import Backdrop from './SimpleBackdrop';
 
 

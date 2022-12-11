@@ -9,8 +9,8 @@ import {
 import { getMessageId } from '../services/MessageService';
 import { getConferenceId } from '../services/ConferenceService';
 import Error from '../elements/Error';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
 import Header from './Header';
 import {
   Card,
@@ -24,13 +24,13 @@ import {
   Input,
   IconButton,
   Link
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Videocam,
   Security,
   VerifiedUser,
   Close
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { loadFacebookSdk, facebookLogin } from '../auth/facebook';
 import { loadGoogleSdk, googleLogin } from '../auth/google';
 import GooglePlay from '../assets/img/google-play.png';

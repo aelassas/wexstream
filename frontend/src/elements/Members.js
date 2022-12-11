@@ -14,7 +14,7 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import { Avatar } from './Avatar';
 import { getMembers } from '../services/ConferenceService';
 import { strings } from '../config/app.config';

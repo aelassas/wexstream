@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/material/styles';
 import { strings } from '../config/app.config';
 import { getLanguage, searchUsers, getUserById } from '../services/UserService';
-import { TextField, Button } from "@material-ui/core";
+import { TextField, Button } from "@mui/material";
 import MultipleSelect from "./MultipleSelect";
 import { toast } from 'react-toastify';
 import { sendMessage } from '../services/MessageService';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import CloseIcon from '@material-ui/icons/Close';
-import Slide from '@material-ui/core/Slide';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import { PAGE_FETCH_OFFSET } from '../config/env.config';
 
 const useStyles = makeStyles((theme) => ({

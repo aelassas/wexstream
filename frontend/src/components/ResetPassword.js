@@ -4,12 +4,12 @@ import { strings } from '../config/app.config';
 import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, compare, resetPassword, getQueryLanguage } from '../services/UserService';
 import Header from './Header';
 import Error from '../elements/Error';
-import Paper from '@material-ui/core/Paper';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Button from '@material-ui/core/Button';
+import Paper from '@mui/material/Paper';
+import Input from '@mui/material/Input';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
 import Backdrop from './SimpleBackdrop';
 

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { strings } from '../config/app.config';
 import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import { toast } from 'react-toastify';
-import MaterialAvatar from '@material-ui/core/Avatar';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Badge from '@material-ui/core/Badge';
-import PhotoCameraIcon from '@material-ui/icons/PhotoCamera';
-import DeleteIcon from '@material-ui/icons/BrokenImageTwoTone';
-import Box from '@material-ui/core/Box';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
+import MaterialAvatar from '@mui/material/Avatar';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import Badge from '@mui/material/Badge';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import DeleteIcon from '@mui/icons-material/BrokenImageTwoTone';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import { CDN } from '../config/env.config';
 
 export const Avatar = (props) => {
