@@ -5,7 +5,7 @@ export const info = (message) => {
     toast(message, { type: 'info' });
 };
 
-export const error = (err, message) => {
+export const error = (message, err) => {
     if (err && console && console.error) console.error(err);
     if (message) {
         toast(message, { type: 'error' });

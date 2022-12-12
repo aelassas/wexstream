@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { strings } from '../config/app.config';
-import Header from './Header';
-import { toast } from 'react-toastify';
-import { getUser, getLanguage, validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
+import { getLanguage } from '../services/UserService';
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
 import { getConnections, getConnectionIds, deleteConnection } from '../services/ConnectionService';
 import Button from '@mui/material/Button';
@@ -36,68 +34,43 @@ import {
     Cancel,
 } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
+import Master from '../elements/Master';
+import * as Helper from '../common/Helper';
 
+const Connections = () => {
+    const [user, setUser] = useState();
+    const [connections, setConnections] = useState([]);
+    const [notificationsCount, setNotificationsCount] = useState();
+    const [openMessageForm, setOpenMessageForm] = useState(false);
+    const [to, setTo] = useState();
+    const [loading, setLoading] = useState(false);
+    const [openDeclineDialog, setOpenDeclineDialog] = useState(false);
+    const [declineTarget, setDeclineTarget] = useState();
+    const [openDisconnectDialog, setOpenDisconnectDialog] = useState(false);
+    const [disconnectTarget, setDisconnectTarget] = useState();
+    const [connected, setConnected] = useState(false);
+    const [page, setPage] = useState(1);
+    const [fetch, setFetch] = useState(false);
 
-class Connections extends Component {
+    findIndex = (userId) => (
+        connections.findIndex(c => c.user._id === userId)
+    );
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            user: null,
-            connections: [],
-            isAuthenticating: true,
-            isTokenValidated: false,
-            notificationsCount: undefined,
-            isVerified: false,
-            openMessageForm: false,
-            to: null,
-            isLoading: true,
-            openDeclineDialog: false,
-            declineTarget: null,
-            openDisconnectDialog: false,
-            disconnectTarget: null,
-            isConnected: false,
-            page: 1,
-            fetch: false
-        };
-    }
-
-    handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.user.email };
-
-        resendLink(data)
-            .then(status => {
-                if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
-                } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-                }
-            })
-            .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
+    const handleCancelDisconnect = (e) => {
+        setOpenDisconnectDialog(false);
     };
 
-    findIndex = (userId) => (this.state.connections.findIndex(c => c.user._id === userId));
-
-    handleCancelDisconnect = (e) => {
-        this.setState({ openDisconnectDialog: false });
-    };
-
-    handleConnect = (e) => {
-        this.setState({ disconnectTarget: e.currentTarget });
+    const handleConnect = (e) => {
+        setDisconnectTarget(e.currentTarget);
 
         const isApprover = e.currentTarget.getAttribute('data-is-approver') === 'true';
         const isConnectionPending = e.currentTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = e.currentTarget.getAttribute('data-is-connected') === 'true';
+        const connected = e.currentTarget.getAttribute('data-is-connected') === 'true';
         const connectionId = e.currentTarget.getAttribute('data-id');
-        const { user } = this.state;
-        const connections = [...this.state.connections]; // Make a shallow copy of connections
+        const _connections = [...connections]; // Make a shallow copy of connections
 
-        if (isApprover && isConnectionPending && !isConnected) {
+        if (isApprover && isConnectionPending && !connected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
@@ -121,68 +94,69 @@ class Connections extends Component {
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = findIndex(connectionId);
                                                             // Make a shallow copy of the user to mutate
-                                                            const uconn = { ...connections[index] };
+                                                            const uconn = { ..._connections[index] };
                                                             // Update user
                                                             uconn.isPending = false;
                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                            connections[index] = uconn;
+                                                            _connections[index] = uconn;
                                                             // Set the state to our new copy
-                                                            this.setState({ connections });
+                                                            setConnections(_connections);
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' });
+                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    Helper.info(strings.CONNECTION_APPROVE);
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                                                 });
                                                         } else {
-                                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                        Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                                     });
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                         });
                                 } else {
-                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                Helper.error(strings.CONNECTION_APPROVE_ERROR);
                             });
                     } else {
-                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                        Helper.error(strings.CONNECTION_APPROVE_ERROR);
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
                 });
-        } else if (isApprover && (isConnectionPending || isConnected)) {
-            this.setState({ isConnected, openDisconnectDialog: true });
+        } else if (isApprover && (isConnectionPending || connected)) {
+            setConnected(connected);
+            setOpenDisconnectDialog(true);
         } else {
-            if (isConnectionPending || isConnected) {
-                this.setState({ isConnected, openDisconnectDialog: true });
+            if (isConnectionPending || connected) {
+                setConnected(connected);
+                setOpenDisconnectDialog(true);
             }
         }
     };
 
-    handleConfirmDisconnect = (e) => {
-        const { user, disconnectTarget } = this.state;
+    const handleConfirmDisconnect = (e) => {
         const isApprover = disconnectTarget.getAttribute('data-is-approver') === 'true';
         const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = disconnectTarget.getAttribute('data-is-connected') === 'true';
+        const connected = disconnectTarget.getAttribute('data-is-connected') === 'true';
         const connectionId = disconnectTarget.getAttribute('data-id');
-        const connections = [...this.state.connections]; // Make a shallow copy of connections
+        const connections = [...connections]; // Make a shallow copy of connections
 
-        if (isApprover && (isConnectionPending || isConnected)) {
+        if (isApprover && (isConnectionPending || connected)) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
@@ -205,29 +179,30 @@ class Connections extends Component {
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = findIndex(connectionId);
                                                             connections.splice(index, 1);
-                                                            this.setState({ openDisconnectDialog: false, connections });
+                                                            setConnections(connections);
+                                                            setOpenDisconnectDialog(false);
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    Helper.info(strings.CONNECTION_DELETED);
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                                 });
                                                         } else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                     });
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
                                         });
                                 } else { // Disconnect
                                     deleteConnection(user._id, connectionId)
@@ -244,37 +219,38 @@ class Connections extends Component {
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = findIndex(connectionId);
                                                             connections.splice(index, 1);
-                                                            this.setState({ openDisconnectDialog: false, connections });
-                                                            toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                            setConnections(connections);
+                                                            setOpenDisconnectDialog(false);
+                                                            Helper.info(strings.CONNECTION_DELETED);
                                                         }
                                                         else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                     });
                                             }
                                             else {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                Helper.error(strings.CONNECTION_DELETE_ERROR);
                                             }
                                         });
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                Helper.error(strings.CONNECTION_DELETE_ERROR);
                             });
                     } else {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                    Helper.error(strings.CONNECTION_DELETE_ERROR);
                 });
         } else {
-            if (isConnectionPending || isConnected) {
+            if (isConnectionPending || connected) {
                 getConnectionIds(user._id, connectionId)
                     .then(connectionIds => {
                         if (connectionIds) {
@@ -286,19 +262,19 @@ class Connections extends Component {
                                         deleteNotification(notification._id)
                                             .then(status => {
                                                 if (status !== 200) {
-                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                 }
                                             })
                                             .catch(err => {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                Helper.error(strings.CONNECTION_DELETE_ERROR);
                                             });
                                     }
                                 })
                                 .catch(err => {
-                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
                                 });
 
-                            if (isConnected) { // Disconnect
+                            if (connected) { // Disconnect
                                 deleteConnection(user._id, connectionId)
                                     .then(status => {
                                         if (status === 200) {
@@ -313,70 +289,72 @@ class Connections extends Component {
                                             notify(notification)
                                                 .then(notificationStatus => {
                                                     if (notificationStatus === 200) {
-                                                        const index = this.findIndex(connectionId);
+                                                        const index = findIndex(connectionId);
                                                         connections.splice(index, 1);
-                                                        this.setState({ openDisconnectDialog: false, connections });
-                                                        toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                        setConnections(connections);
+                                                        setOpenDisconnectDialog(false);
+                                                        Helper.info(strings.CONNECTION_DELETED);
                                                     }
                                                     else {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                     }
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
                                                 });
                                         }
                                         else {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                                     });
                             } else { // Cancel request
                                 deleteConnection(user._id, connectionId)
                                     .then(status => {
                                         if (status === 200) {
-                                            const index = this.findIndex(connectionId);
+                                            const index = findIndex(connectionId);
                                             connections.splice(index, 1);
-                                            this.setState({ openDisconnectDialog: false, connections });
-                                            toast(strings.CONNECTION_CANCELED, { type: 'info' });
+                                            setConnections(connections);
+                                            setOpenDisconnectDialog(false);
+                                            Helper.info(strings.CONNECTION_CANCELED);
                                         } else {
-                                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                                            Helper.error();
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.GENERIC_ERROR, { type: 'error' });
+                                        Helper.error();
                                     });
                             }
                         } else {
-                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                            Helper.error(strings.CONNECTION_DELETE_ERROR);
                         }
                     })
                     .catch(err => {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                        Helper.error(strings.CONNECTION_DELETE_ERROR);
                     });
             }
         }
     };
 
-    handleCancelDecline = (e) => {
-        this.setState({ openDeclineDialog: false });
+    const handleCancelDecline = (e) => {
+        setOpenDeclineDialog(false);
     };
 
-    handleDecline = (e) => {
-        this.setState({ declineTarget: e.currentTarget, openDeclineDialog: true });
+    const handleDecline = (e) => {
+        setDeclineTarget(e.currentTarget);
+        setOpenDeclineDialog(true);
     };
 
-    handleConfirmDecline = (e) => {
-        const { user, declineTarget } = this.state;
+    const handleConfirmDecline = (e) => {
         const isApprover = declineTarget.getAttribute('data-is-approver') === 'true';
         const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = declineTarget.getAttribute('data-is-connected') === 'true';
+        const connected = declineTarget.getAttribute('data-is-connected') === 'true';
         const connectionId = declineTarget.getAttribute('data-id');
-        const connections = [...this.state.connections]; // Make a shallow copy of users
+        const connections = [...connections]; // Make a shallow copy of users
 
-        if (isApprover && isConnectionPending && !isConnected) {
+        if (isApprover && isConnectionPending && !connected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
@@ -401,371 +379,315 @@ class Connections extends Component {
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = findIndex(connectionId);
                                                             connections.splice(index, 1);
-                                                            this.setState({ connections, openDeclineDialog: false });
+                                                            setConnections(connections);
+                                                            setOpenDeclineDialog(false);
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' });
+                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    Helper.info(strings.CONNECTION_DECLINE);
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                                                 });
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                        Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                                     });
                                             } else {
-                                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                         });
                                 } else {
-                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
                             });
                     } else {
-                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                        Helper.error(strings.CONNECTION_DECLINE_ERROR);
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
                 });
         } else {
-            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+            Helper.error(strings.CONNECTION_DECLINE_ERROR);
         }
     };
 
-    handleSendMessage = (e) => {
+    const handleSendMessage = (e) => {
         const to = e.currentTarget.getAttribute('data-id');
-        this.setState({ openMessageForm: true, to });
+        setTo(to);
+        setOpenMessageForm(true);
     };
 
-    handleMessageFormClose = (e) => {
-        this.setState({ openMessageForm: false });
+    const handleMessageFormClose = (e) => {
+        setOpenMessageForm(false);
     };
 
-    handleAvatarClick = (e) => {
+    const handleAvatarClick = (e) => {
         const userId = e.currentTarget.getAttribute('data-id');
         window.location = '/profile?u=' + userId;
     };
 
-    fetchConnections = () => {
-        const { user, page } = this.state;
-        this.setState({ isLoading: true });
+    const fetchConnections = (page) => {
+        setLoading(true);
 
         getConnections(user._id, page)
             .then(data => {
-                const connections = [...this.state.connections, ...data];
-                this.setState({ connections, isLoading: false, fetch: data.length > 0 });
+                const _connections = [...connections, ...data];
+                setConnections(_connections);
+                setFetch(data.length > 0);
+                setLoading(false);
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error();
             });
     };
 
-    componentDidMount() {
-        let language = getQueryLanguage();
+    const onLoad = (user) => {
+        const language = getLanguage();
+        moment.locale(language);
+        setUser(user);
+        fetchConnections(1);
 
-        if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
-        }
-        strings.setLanguage(language);
-        this.setState({});
-
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-            validateAccessToken().then(status => {
-                getUser(currentUser.id).then(user => {
-                    if (user) {
-
-                        if (user.isBlacklisted) {
-                            signout();
-                            return;
-                        }
-
-                        moment.locale(language);
-                        this.setState({ user, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
-                        this.fetchConnections();
-
-                        const div = document.querySelector('.content');
-                        if (div) {
-                            div.onscroll = (event) => {
-                                if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                                    this.setState({ page: this.state.page + 1 }, () => {
-                                        this.fetchConnections();
-                                    });
-                                }
-                            };
-                        }
-                    } else {
-                        signout();
-                    }
-                }).catch(err => {
-                    signout();
-                });
-            }).catch(err => {
-                signout();
-            });
-        } else {
-            signout();
+        const div = document.querySelector('.content');
+        if (div) {
+            div.onscroll = (event) => {
+                if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
+                    const _page = page + 1;
+                    setPage(_page);
+                    fetchConnections(_page);
+                }
+            };
         }
     };
 
-    render() {
-        const { isAuthenticating } = this.state;
-        if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
-            if (isTokenValidated) {
-                const { notificationsCount, isVerified, connections, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
-                const rtl = user.language === 'ar';
-                return (
-                    <div>
-                        <Header user={user} notificationsCount={notificationsCount} />
-                        {isVerified ?
-                            <div className="connections content">
-                                {!isLoading && connections.length === 0 ?
-                                    <Card variant="outlined" className="content-nc">
-                                        <CardContent>
-                                            <Typography color="textSecondary">
-                                                {strings.NO_CONNECTION}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
+    return (
+        <Master onLoad={onLoad} notificationsCount={notificationsCount} strict>
+            <div className="connections content">
+                {!loading && connections.length === 0 ?
+                    <Card variant="outlined" className="content-nc">
+                        <CardContent>
+                            <Typography color="textSecondary">
+                                {strings.NO_CONNECTION}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    :
+                    <List className="content-list">
+                        {connections.map((connection, i) =>
+                        (
+                            <ListItem key={connection._id}>
+                                <ListItemAvatar data-id={connection.user._id} className="list-item-avatar" onClick={handleAvatarClick}>
+                                    <Link href={`/profile?u=${connection.user._id}`}>
+                                        <Avatar loggedUser={user} user={connection.user} size="medium" isBuffer={false} color="disabled" />
+                                    </Link>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    disableTypography
+                                    data-id={connection.user._id}
+                                    primary={<Link href={`/profile?u=${connection.user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{connection.user.fullName}</Typography></Link>}
+                                    secondary={!connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (connection.isPending ? strings.CONNECTION_PENDING : null)}
+                                />
+
+                                {!isMobile() ?
+                                    (
+                                        <Button
+                                            variant="contained"
+                                            color={!connection.isPending ? "secondary" : (connection.isPending && connection.isApprover ? "default" : "primary")}
+                                            size="small"
+                                            data-id={connection.user._id}
+                                            data-is-approver={!connection.isApprover}
+                                            data-is-connected={!connection.isPending}
+                                            data-is-connection-pending={connection.isPending}
+                                            onClick={handleConnect}
+                                            style={{ minWidth: 'auto' }}
+                                        >
+                                            {!connection.isPending
+                                                ? strings.DISCONNECT
+                                                : (connection.isPending
+                                                    ? (!connection.isApprover
+                                                        ? strings.APPROVE
+                                                        : strings.CANCEL)
+                                                    : strings.CONNECT)
+                                            }
+                                        </Button>
+                                    )
                                     :
-                                    <List className="content-list">
-                                        {connections.map((connection, i) =>
-                                        (
-                                            <ListItem key={connection._id}>
-                                                <ListItemAvatar data-id={connection.user._id} className={rtl ? 'list-item-avatar-rtl' : 'list-item-avatar'} onClick={this.handleAvatarClick}>
-                                                    <Link href={`/profile?u=${connection.user._id}`}>
-                                                        <Avatar loggedUser={user} user={connection.user} size="medium" isBuffer={false} color="disabled" />
-                                                    </Link>
-                                                </ListItemAvatar>
-                                                <ListItemText
-                                                    disableTypography
-                                                    data-id={connection.user._id}
-                                                    primary={<Link href={`/profile?u=${connection.user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{connection.user.fullName}</Typography></Link>}
-                                                    secondary={!connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (connection.isPending ? strings.CONNECTION_PENDING : null)}
-                                                />
-
-                                                {!isMobile() ?
+                                    (
+                                        !connection.isPending
+                                            ?
+                                            (
+                                                <Tooltip title={strings.DISCONNECT}>
+                                                    <IconButton
+                                                        color="secondary"
+                                                        size="small"
+                                                        data-id={connection.user._id}
+                                                        data-is-approver={!connection.isApprover}
+                                                        data-is-connected={!connection.isPending}
+                                                        data-is-connection-pending={connection.isPending}
+                                                        onClick={handleConnect}
+                                                    >
+                                                        <LinkOff />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )
+                                            : (connection.isPending ?
+                                                !connection.isApprover ?
                                                     (
-                                                        <Button
-                                                            variant="contained"
-                                                            color={!connection.isPending ? "secondary" : (connection.isPending && connection.isApprover ? "default" : "primary")}
-                                                            size="small"
-                                                            data-id={connection.user._id}
-                                                            data-is-approver={!connection.isApprover}
-                                                            data-is-connected={!connection.isPending}
-                                                            data-is-connection-pending={connection.isPending}
-                                                            onClick={this.handleConnect}
-                                                            style={{ minWidth: 'auto' }}
-                                                        >
-                                                            {!connection.isPending
-                                                                ? strings.DISCONNECT
-                                                                : (connection.isPending
-                                                                    ? (!connection.isApprover
-                                                                        ? strings.APPROVE
-                                                                        : strings.CANCEL)
-                                                                    : strings.CONNECT)
-                                                            }
-                                                        </Button>
-                                                    )
-                                                    :
-                                                    (
-                                                        !connection.isPending
-                                                            ?
-                                                            (
-                                                                <Tooltip title={strings.DISCONNECT}>
-                                                                    <IconButton
-                                                                        color="secondary"
-                                                                        size="small"
-                                                                        data-id={connection.user._id}
-                                                                        data-is-approver={!connection.isApprover}
-                                                                        data-is-connected={!connection.isPending}
-                                                                        data-is-connection-pending={connection.isPending}
-                                                                        onClick={this.handleConnect}
-                                                                    >
-                                                                        <LinkOff />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            )
-                                                            : (connection.isPending ?
-                                                                !connection.isApprover ?
-                                                                    (
-                                                                        <Tooltip title={strings.APPROVE}>
-                                                                            <IconButton
-                                                                                color="primary"
-                                                                                size="small"
-                                                                                data-id={connection.user._id}
-                                                                                data-is-approver={!connection.isApprover}
-                                                                                data-is-connected={!connection.isPending}
-                                                                                data-is-connection-pending={connection.isPending}
-                                                                                onClick={this.handleConnect}
-                                                                            >
-                                                                                <ThumbUp />
-                                                                            </IconButton>
-                                                                        </Tooltip>
-                                                                    )
-                                                                    :
-                                                                    (
-                                                                        <Tooltip title={strings.CANCEL}>
-                                                                            <IconButton
-                                                                                color="default"
-                                                                                size="small"
-                                                                                data-id={connection.user._id}
-                                                                                data-is-approver={!connection.isApprover}
-                                                                                data-is-connected={!connection.isPending}
-                                                                                data-is-connection-pending={connection.isPending}
-                                                                                onClick={this.handleConnect}
-                                                                            >
-                                                                                <Cancel />
-                                                                            </IconButton>
-                                                                        </Tooltip>
-                                                                    )
-                                                                :
-                                                                (
-                                                                    <Tooltip title={strings.CONNECT}>
-                                                                        <IconButton
-                                                                            color="primary"
-                                                                            size="small"
-                                                                            data-id={connection.user._id}
-                                                                            data-is-approver={!connection.isApprover}
-                                                                            data-is-connected={!connection.isPending}
-                                                                            data-is-connection-pending={connection.isPending}
-                                                                            onClick={this.handleConnect}
-                                                                        >
-                                                                            <LinkIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                ))
-                                                    )
-                                                }
-                                                {connection.isPending && !connection.isApprover ?
-                                                    !isMobile() ?
-                                                        (
-                                                            <Button
-                                                                variant="contained"
-                                                                color="secondary"
+                                                        <Tooltip title={strings.APPROVE}>
+                                                            <IconButton
+                                                                color="primary"
                                                                 size="small"
                                                                 data-id={connection.user._id}
                                                                 data-is-approver={!connection.isApprover}
                                                                 data-is-connected={!connection.isPending}
                                                                 data-is-connection-pending={connection.isPending}
-                                                                onClick={this.handleDecline}
+                                                                onClick={handleConnect}
                                                             >
-                                                                {strings.DECLINE}
-                                                            </Button>
-                                                        )
-                                                        :
-                                                        (
-                                                            < Tooltip title={strings.DECLINE}>
-                                                                <IconButton
-                                                                    color="secondary"
-                                                                    size="small"
-                                                                    data-id={connection.user._id}
-                                                                    data-is-approver={!connection.isApprover}
-                                                                    data-is-connected={!connection.isPending}
-                                                                    data-is-connection-pending={connection.isPending}
-                                                                    onClick={this.handleDecline}
-                                                                >
-                                                                    <ThumbDown />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )
-                                                    : null}
-                                                {connection.user.enablePrivateMessages || !connection.isPending ?
-                                                    !isMobile() ?
-                                                        (
-                                                            <Button
-                                                                variant="contained"
-                                                                color="primary"
+                                                                <ThumbUp />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )
+                                                    :
+                                                    (
+                                                        <Tooltip title={strings.CANCEL}>
+                                                            <IconButton
+                                                                color="default"
                                                                 size="small"
                                                                 data-id={connection.user._id}
-                                                                onClick={this.handleSendMessage}
+                                                                data-is-approver={!connection.isApprover}
+                                                                data-is-connected={!connection.isPending}
+                                                                data-is-connection-pending={connection.isPending}
+                                                                onClick={handleConnect}
                                                             >
-                                                                {strings.SEND_MESSAGE}
-                                                            </Button>
-                                                        )
-                                                        :
-                                                        (
-                                                            <Tooltip title={strings.MESSAGE}>
-                                                                <IconButton
-                                                                    color="default"
-                                                                    size="small"
-                                                                    data-id={connection.user._id}
-                                                                    onClick={this.handleSendMessage}
-                                                                >
-                                                                    <Mail />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )
-
-                                                    : null
-                                                }
-                                            </ListItem>
-                                        )
-                                        )}
-                                    </List>
+                                                                <Cancel />
+                                                            </IconButton>
+                                                        </Tooltip>
+                                                    )
+                                                :
+                                                (
+                                                    <Tooltip title={strings.CONNECT}>
+                                                        <IconButton
+                                                            color="primary"
+                                                            size="small"
+                                                            data-id={connection.user._id}
+                                                            data-is-approver={!connection.isApprover}
+                                                            data-is-connected={!connection.isPending}
+                                                            data-is-connection-pending={connection.isPending}
+                                                            onClick={handleConnect}
+                                                        >
+                                                            <LinkIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                ))
+                                    )
                                 }
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDisconnectDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{isConnected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={this.handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDeclineDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={this.handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                <MessageForm user={user} hideButton={true} open={openMessageForm} onClose={this.handleMessageFormClose} to={to} />
-                            </div>
-                            :
-                            <div className="validate-email">
-                                <span>{strings.VALIDATE_EMAIL}</span>
-                                <Button
-                                    type="button"
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className="btn-resend"
-                                    onClick={this.handleResend}
-                                >{strings.RESEND}</Button>
-                            </div>}
-                        {isLoading && <Backdrop text={strings.LOADING} />}
-                    </div>
-                );
-            } else {
-                signout();
-                return null;
-            }
-        } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
-        }
-    }
-}
+                                {connection.isPending && !connection.isApprover ?
+                                    !isMobile() ?
+                                        (
+                                            <Button
+                                                variant="contained"
+                                                color="secondary"
+                                                size="small"
+                                                data-id={connection.user._id}
+                                                data-is-approver={!connection.isApprover}
+                                                data-is-connected={!connection.isPending}
+                                                data-is-connection-pending={connection.isPending}
+                                                onClick={handleDecline}
+                                            >
+                                                {strings.DECLINE}
+                                            </Button>
+                                        )
+                                        :
+                                        (
+                                            < Tooltip title={strings.DECLINE}>
+                                                <IconButton
+                                                    color="secondary"
+                                                    size="small"
+                                                    data-id={connection.user._id}
+                                                    data-is-approver={!connection.isApprover}
+                                                    data-is-connected={!connection.isPending}
+                                                    data-is-connection-pending={connection.isPending}
+                                                    onClick={handleDecline}
+                                                >
+                                                    <ThumbDown />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+                                    : null}
+                                {connection.user.enablePrivateMessages || !connection.isPending ?
+                                    !isMobile() ?
+                                        (
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                size="small"
+                                                data-id={connection.user._id}
+                                                onClick={handleSendMessage}
+                                            >
+                                                {strings.SEND_MESSAGE}
+                                            </Button>
+                                        )
+                                        :
+                                        (
+                                            <Tooltip title={strings.MESSAGE}>
+                                                <IconButton
+                                                    color="default"
+                                                    size="small"
+                                                    data-id={connection.user._id}
+                                                    onClick={handleSendMessage}
+                                                >
+                                                    <Mail />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )
+
+                                    : null
+                                }
+                            </ListItem>
+                        )
+                        )}
+                    </List>
+                }
+                <Dialog
+                    disableEscapeKeyDown
+                    maxWidth="xs"
+                    open={openDisconnectDialog}
+                >
+                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                    <DialogContent>{connected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    disableEscapeKeyDown
+                    maxWidth="xs"
+                    open={openDeclineDialog}
+                >
+                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                    <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                    </DialogActions>
+                </Dialog>
+                <MessageForm user={user} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={to} />
+            </div>
+            {loading && <Backdrop text={strings.LOADING} />}
+        </Master>
+    );
+};
 
 export default Connections;
