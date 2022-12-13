@@ -40,7 +40,6 @@ import {
 } from '@mui/icons-material';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
 
-
 class Notifications extends Component {
 
     constructor(props) {
@@ -52,7 +51,7 @@ class Notifications extends Component {
             notificationsCount: undefined,
             isAuthenticating: true,
             isTokenValidated: false,
-            isVerified: false,
+            verified: false,
             isLoading: false,
             openDeclineDialog: false,
             declineTarget: null,
@@ -370,13 +369,13 @@ class Notifications extends Component {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
-                        if (user.isBlacklisted) {
+                        if (user.blacklisted) {
                             signout();
                             return;
                         }
 
                         moment.locale(language);
-                        this.setState({ user, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
+                        this.setState({ user, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
                         this.fetchNotifications();
 
                         getNotificationCounter(user._id)
@@ -416,13 +415,13 @@ class Notifications extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { isVerified, notifications, notificationsCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
+                const { verified, notifications, notificationsCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
                 const rtl = user.language === 'ar';
 
                 return (
                     <div>
                         <Header user={user} notificationsCount={notificationsCount} />
-                        {isVerified ?
+                        {verified ?
                             <div className="notifications content">
                                 {isLoading && <Backdrop text={strings.LOADING} />}
                                 {!isLoading && notifications.length === 0 ?

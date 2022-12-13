@@ -75,7 +75,7 @@ class Profile extends Component {
             openDialog: false,
             isAuthenticating: true,
             isTokenValidated: false,
-            isVerified: false,
+            verified: false,
             conferences: [],
             currentTarget: null,
             isLoading: false,
@@ -724,7 +724,7 @@ class Profile extends Component {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
-                        if (user.isBlacklisted) {
+                        if (user.blacklisted) {
                             signout();
                             return;
                         }
@@ -740,14 +740,14 @@ class Profile extends Component {
                                 checkBlockedUser(userId, user._id)
                                     .then(userStatus => {
                                         if (userStatus === 200) {
-                                            this.setState({ loggedUser: user, unauthorized: true, isLoading: false, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                            this.setState({ loggedUser: user, unauthorized: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                         } else if (userStatus === 204) {
                                             getUserById(userId)
                                                 .then(_user => {
                                                     if (_user) {
 
-                                                        if (_user.isBlacklisted) {
-                                                            this.setState({ loggedUser: user, user: null, unauthorized: true, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                                        if (_user.blacklisted) {
+                                                            this.setState({ loggedUser: user, user: null, unauthorized: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                                             return;
                                                         }
 
@@ -759,7 +759,7 @@ class Profile extends Component {
                                                                     if (conn && !conn.isPending) {
                                                                         isPrivate = true;
                                                                     }
-                                                                    this.setState({ loggedUser: user, user: _user, isPrivate, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                                                    this.setState({ loggedUser: user, user: _user, isPrivate, verified: user.verified, isAuthenticating: false, isTokenValidated });
 
                                                                     this.fetchConferences();
                                                                     this.infiniteScroll();
@@ -782,27 +782,27 @@ class Profile extends Component {
                                                             });
 
                                                     } else {
-                                                        this.setState({ loggedUser: user, user: null, userNotFound: true, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                                        this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                                     }
                                                 })
                                                 .catch(err => {
-                                                    this.setState({ loggedUser: user, user: null, error: true, isLoading: false, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                                    this.setState({ loggedUser: user, user: null, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                                 });
                                         } else {
-                                            this.setState({ loggedUser: user, error: true, isLoading: false, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                            this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                         }
                                     })
                                     .catch(err => {
-                                        this.setState({ loggedUser: user, error: true, isLoading: false, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                        this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                     });
 
                             } else {
-                                this.setState({ loggedUser: user, user, isPrivate: true, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                                this.setState({ loggedUser: user, user, isPrivate: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
                                 this.fetchConferences();
                                 this.infiniteScroll();
                             }
                         } else {
-                            this.setState({ loggedUser: user, user: null, userNotFound: true, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated });
+                            this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
                         }
                     } else {
                         signout();
@@ -823,7 +823,7 @@ class Profile extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { isVerified, language, loggedUser, user, userNotFound, isConnected, isConnectionPending, isApprover
+                const { verified, language, loggedUser, user, userNotFound, isConnected, isConnectionPending, isApprover
                     , connectedAt, openDisconnectDialog, openDeclineDialog, notificationsCount, openMessageForm,
                     conferences, isLoading, openDeleteDialog, anchorEl, openActions, error, unauthorized,
                     openReportDialog, reportMessage, openBlockDialog, isBlocked, openMembersDialog, conferenceId, isLoadingAvatar } = this.state;
@@ -845,7 +845,7 @@ class Profile extends Component {
                 return (
                     <div>
                         <Header user={loggedUser} notificationsCount={notificationsCount} />
-                        {isVerified ?
+                        {verified ?
                             <div className={`${isMobile() ? `profile-content${rtl ? '-rtl' : ''}` : ((rtl ? 'profile-rtl' : 'profile') + ' content')}`}>
                                 {userNotFound ?
                                     <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>

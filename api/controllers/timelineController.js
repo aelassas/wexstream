@@ -1,9 +1,9 @@
-import Timeline from '../schema/Timeline.js';
-import User from '../schema/User.js';
-import Conference from '../schema/Conference.js';
-import Notification from '../schema/Notification.js';
-import NotificationCounter from '../schema/NotificationCounter.js';
-import Connection from '../schema/Connection.js';
+import Timeline from '../models/Timeline.js';
+import User from '../models/User.js';
+import Conference from '../models/Conference.js';
+import Notification from '../models/Notification.js';
+import NotificationCounter from '../models/NotificationCounter.js';
+import Connection from '../models/Connection.js';
 import strings from '../config/app.config.js';
 import mongoose from 'mongoose';
 import { escapeRegex } from '../common/helper.js';
@@ -118,7 +118,7 @@ export const getEntries = async (req, res) => {
                         {
                             $match: {
                                 $expr: {
-                                    $and: [{ $eq: ['$_id', '$$userId'] }, { $eq: ['$isBlacklisted', false] }]
+                                    $and: [{ $eq: ['$_id', '$$userId'] }, { $eq: ['$blacklisted', false] }]
                                 }
                             },
                         }

@@ -39,7 +39,7 @@ class Settings extends Component {
             error: false,
             isAuthenticating: true,
             isTokenValidated: false,
-            isVerified: false,
+            verified: false,
             openDialog: false,
             isLoading: false,
             isDeleting: false
@@ -208,12 +208,12 @@ class Settings extends Component {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
-                        if (user.isBlacklisted) {
+                        if (user.blacklisted) {
                             signout();
                             return;
                         }
 
-                        this.setState({ user, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
+                        this.setState({ user, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
                     } else {
                         signout();
                     }
@@ -233,11 +233,11 @@ class Settings extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { isVerified, user, error, openDialog, websiteError, isLoading, isDeleting } = this.state;
+                const { verified, user, error, openDialog, websiteError, isLoading, isDeleting } = this.state;
                 return (
                     <div>
                         <Header user={user} />
-                        {isVerified ? (
+                        {verified ? (
                             <div className="settings content-taspr">
                                 <Paper className="profile-form profile-form-wrapper" elevation={10}>
                                     <div>

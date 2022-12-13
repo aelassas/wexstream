@@ -1,7 +1,7 @@
 import strings from '../config/app.config.js';
-import User from '../schema/User.js';
-import Message from '../schema/Message.js';
-import MessageCounter from '../schema/MessageCounter.js';
+import User from '../models/User.js';
+import Message from '../models/Message.js';
+import MessageCounter from '../models/MessageCounter.js';
 import nodemailer from "nodemailer";
 import mongoose from 'mongoose';
 
@@ -129,7 +129,7 @@ export const getMessages = async (req, res) => {
                         {
                             $match: {
                                 $expr: {
-                                    $and: [{ $eq: ['$_id', '$$userId'] }] // , { $eq: ['$isBlacklisted', false] }
+                                    $and: [{ $eq: ['$_id', '$$userId'] }] // , { $eq: ['$blacklisted', false] }
                                 }
                             },
                         }

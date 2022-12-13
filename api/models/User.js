@@ -26,12 +26,16 @@ const userSchema = new Schema({
     password: {
         type: String
     },
-    isVerified: {
+    verified: {
         type: Boolean,
         default: false
     },
     verifiedAt: {
         type: Date
+    },
+    blacklisted: {
+        type: Boolean,
+        default: false
     },
     language: { // ISO 639-1 (alpha-2 code)
         type: String,
@@ -64,10 +68,6 @@ const userSchema = new Schema({
             validator: value => value === '' || validator.isURL(value, { require_tld: true, require_protocol: false }),
             message: 'Must be a Valid URL'
         }
-    },
-    isBlacklisted: {
-        type: Boolean,
-        default: false
     }
 }, {
     timestamps: true,

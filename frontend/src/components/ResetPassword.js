@@ -33,7 +33,7 @@ class PasswordReset extends Component {
             confirmPasswordError: false,
             isAuthenticating: true,
             isTokenValidated: false,
-            isVerified: false,
+            verified: false,
             showCurrentPassword: false,
             showNewPassword: false,
             showConfirmPassword: false
@@ -137,7 +137,7 @@ class PasswordReset extends Component {
                                 });
                                 toast(strings.PASSWORD_UPDATE, { type: 'info' });
                             }).catch(err => {
-                                this.setState({ isVerified: false, isAuthenticating: false, isTokenValidated: false });
+                                this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
                             });
                         } else {
                             this.setState({ error: true });
@@ -193,12 +193,12 @@ class PasswordReset extends Component {
             validateAccessToken().then(status => {
                 getUser(currentUser.id).then(user => {
                     if (user) {
-                        this.setState({ user, email: user.email, isVerified: user.isVerified, password: user.password, isAuthenticating: false, isTokenValidated: status === 200 });
+                        this.setState({ user, email: user.email, verified: user.verified, password: user.password, isAuthenticating: false, isTokenValidated: status === 200 });
                     } else {
                         signout();
                     }
                 }).catch(err => {
-                    this.setState({ isVerified: false, isAuthenticating: false, isTokenValidated: false });
+                    this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
                     signout();
                 });
             }).catch(err => {
@@ -206,7 +206,7 @@ class PasswordReset extends Component {
                 signout();
             });
         } else {
-            this.setState({ isVerified: false, isAuthenticating: false, isTokenValidated: false });
+            this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
             signout();
         }
     }
@@ -216,13 +216,13 @@ class PasswordReset extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { isVerified, error, currentPassword, newPassword, confirmPassword,
+                const { verified, error, currentPassword, newPassword, confirmPassword,
                     currentPasswordError, passwordLengthError, newPasswordRequiredError,
                     confirmPasswordError, showCurrentPassword, showNewPassword, showConfirmPassword, user } = this.state;
                 return (
                     <div>
                         <Header user={user} />
-                        {isVerified ? (
+                        {verified ? (
                             <div className="password-reset content-taspr">
                                 <Paper className="password-reset-form password-reset-form-wrapper" elevation={10}>
                                     <h1 className="password-reset-form-title"> {strings.SPASSWORD_RESET_HEADING} </h1>

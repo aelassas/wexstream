@@ -549,7 +549,7 @@ export default withRouter(function Header(props) {
                             />
                         </div>
                     }
-                    {(isSignedIn && !isMobile() && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.isVerified && !isLoading) && <Button
+                    {(isSignedIn && !isMobile() && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.verified && !isLoading) && <Button
                         variant="contained"
                         color="secondary"
                         startIcon={<Videocam />}
@@ -623,7 +623,7 @@ export default withRouter(function Header(props) {
                         >
                             <MoreIcon />
                         </IconButton>}
-                        {(isSignedIn && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.isVerified && !isLoading) && <IconButton
+                        {(isSignedIn && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.verified && !isLoading) && <IconButton
                             className={'live-btn-mobile'}
                             onClick={handleClickLive}
                         >

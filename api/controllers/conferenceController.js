@@ -1,9 +1,9 @@
 import express from 'express';
-import Conference from '../schema/Conference.js';
-import User from '../schema/User.js';
-import Connection from '../schema/Connection.js';
-import Notification from '../schema/Notification.js';
-import NotificationCounter from '../schema/NotificationCounter.js';
+import Conference from '../models/Conference.js';
+import User from '../models/User.js';
+import Connection from '../models/Connection.js';
+import Notification from '../models/Notification.js';
+import NotificationCounter from '../models/NotificationCounter.js';
 import routeNames from '../config/conferenceRoutes.config.js';
 import authJwt from '../middlewares/authJwt.js';
 import strings from '../config/app.config.js';
@@ -155,7 +155,7 @@ export const getMembers =  async (req, res) => {
     Conference.findById(req.params.conferenceId)
         .populate({
             path: 'members',
-            match: { isBlacklisted: { $eq: false } }
+            match: { blacklisted: { $eq: false } }
         })
         .sort({ 'members.fullName': 1 })
         .then(conf => {

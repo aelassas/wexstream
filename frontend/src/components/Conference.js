@@ -57,7 +57,7 @@ class Conf extends Component {
             isAuthenticating: true,
             isTokenValidated: false,
             email: '',
-            isVerified: false,
+            verified: false,
             open: false,
             error: false,
             unAuthorized: false,
@@ -376,13 +376,13 @@ class Conf extends Component {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
-                        if (user.isBlacklisted) {
+                        if (user.blacklisted) {
                             signout();
                             return;
                         }
 
-                        this.setState({ user, email: user.email, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
-                        if (user.isVerified) {
+                        this.setState({ user, email: user.email, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
+                        if (user.verified) {
                             const conferenceId = getConferenceId();
                             if (conferenceId !== '') {
                                 if (Helper.isObjectId(conferenceId)) {
@@ -508,7 +508,7 @@ class Conf extends Component {
     render() {
         const { isAuthenticating } = this.state;
         if (!isAuthenticating) {
-            const { isTokenValidated, isVerified } = this.state;
+            const { isTokenValidated, verified } = this.state;
             if (isTokenValidated) {
                 const { conference, conferenceUrl, user, open, error, notFound, unAuthorized,
                     isLoading, closed, isLeaving, externalApiError, fullscreen, mute, showButtons } = this.state;
@@ -521,7 +521,7 @@ class Conf extends Component {
                     <div>
                         <Header hidden={fullscreen} user={user} hideLiveButton={!error && !notFound && !unAuthorized && !closed && !externalApiError} />
                         <div className={fullscreen ? "content-full-screen" : "content"} >
-                            {isVerified ?
+                            {verified ?
                                 (
                                     <div className="conf">
                                         {

@@ -51,7 +51,7 @@ class SignIn extends Component {
       userId: '',
       showPassword: false,
       visible: false,
-      isBlacklisted: false,
+      blacklisted: false,
       openEmailAuthDialog: false,
       emailAuthError: false,
       isGoogleSdkLoaded: false,
@@ -63,11 +63,11 @@ class SignIn extends Component {
     const auth = (data) => {
       googleAuth(data).then(res => {
         if (res.status === 200) {
-          if (res.data.isBlacklisted) {
+          if (res.data.blacklisted) {
             signout(false);
             this.setState({
               error: false,
-              isBlacklisted: true,
+              blacklisted: true,
               loginSuccess: false
             });
           } else {
@@ -93,7 +93,7 @@ class SignIn extends Component {
         } else {
           this.setState({
             error: true,
-            isBlacklisted: false,
+            blacklisted: false,
             loginSuccess: false
           });
         }
@@ -101,7 +101,7 @@ class SignIn extends Component {
         .catch(() => {
           this.setState({
             error: true,
-            isBlacklisted: false,
+            blacklisted: false,
             loginSuccess: false
           });
         });
@@ -118,7 +118,7 @@ class SignIn extends Component {
 
         this.setState({
           error: true,
-          isBlacklisted: false,
+          blacklisted: false,
           loginSuccess: false
         });
       });
@@ -132,7 +132,7 @@ class SignIn extends Component {
   handleGoogleAuthFailure = () => {
     this.setState({
       error: true,
-      isBlacklisted: false,
+      blacklisted: false,
       loginSuccess: false
     });
   };
@@ -141,11 +141,11 @@ class SignIn extends Component {
     const auth = (data) => {
       facebookAuth(data).then(res => {
         if (res.status === 200) {
-          if (res.data.isBlacklisted) {
+          if (res.data.blacklisted) {
             signout(false);
             this.setState({
               error: false,
-              isBlacklisted: true,
+              blacklisted: true,
               loginSuccess: false
             });
           } else {
@@ -171,7 +171,7 @@ class SignIn extends Component {
         } else {
           this.setState({
             error: true,
-            isBlacklisted: false,
+            blacklisted: false,
             loginSuccess: false
           });
         }
@@ -179,7 +179,7 @@ class SignIn extends Component {
         .catch(() => {
           this.setState({
             error: true,
-            isBlacklisted: false,
+            blacklisted: false,
             loginSuccess: false
           });
         });
@@ -200,7 +200,7 @@ class SignIn extends Component {
   handleFacebookAuthFailure = () => {
     this.setState({
       error: true,
-      isBlacklisted: false,
+      blacklisted: false,
       loginSuccess: false
     });
   };
@@ -244,11 +244,11 @@ class SignIn extends Component {
     signin(data)
       .then(res => {
         if (res.status === 200) {
-          if (res.data.isBlacklisted) {
+          if (res.data.blacklisted) {
             signout(false);
             this.setState({
               emailAuthError: false,
-              isBlacklisted: true,
+              blacklisted: true,
               loginSuccess: false
             });
           } else {
@@ -274,7 +274,7 @@ class SignIn extends Component {
         } else {
           this.setState({
             emailAuthError: true,
-            isBlacklisted: false,
+            blacklisted: false,
             loginSuccess: false
           });
         }
@@ -282,7 +282,7 @@ class SignIn extends Component {
       .catch(() => {
         this.setState({
           emailAuthError: true,
-          isBlacklisted: false,
+          blacklisted: false,
           loginSuccess: false
         });
       });
@@ -344,7 +344,7 @@ class SignIn extends Component {
   }
 
   render() {
-    const { visible, error, emailAuthError, language, isBlacklisted, openEmailAuthDialog, isGoogleSdkLoaded, isFacebookSdkLoaded } = this.state;
+    const { visible, error, emailAuthError, language, blacklisted, openEmailAuthDialog, isGoogleSdkLoaded, isFacebookSdkLoaded } = this.state;
     const rtl = language === 'ar';
     const authBtnStyle = { width: language === 'fr' ? 240 : 190 };
 
@@ -430,7 +430,7 @@ class SignIn extends Component {
               </div>
               <div className="form-error">
                 {error && <Error message={strings.ERROR_IN_SIGN_IN} />}
-                {isBlacklisted && <Error message={strings.IS_BLACKLISTED} />}
+                {blacklisted && <Error message={strings.IS_BLACKLISTED} />}
               </div>
             </div>
           </Paper>
@@ -495,7 +495,7 @@ class SignIn extends Component {
                 </div>
                 <div className="form-error">
                   {emailAuthError && <Error message={strings.ERROR_IN_SIGN_IN} />}
-                  {isBlacklisted && <Error message={strings.IS_BLACKLISTED} />}
+                  {blacklisted && <Error message={strings.IS_BLACKLISTED} />}
                 </div>
               </form>
             </DialogContent>

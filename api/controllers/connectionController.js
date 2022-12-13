@@ -1,5 +1,5 @@
-import User from '../schema/User.js';
-import Connection from '../schema/Connection.js';
+import User from '../models/User.js';
+import Connection from '../models/Connection.js';
 import authJwt from '../middlewares/authJwt.js';
 import strings from '../config/app.config.js';
 import mongoose from 'mongoose';
@@ -143,7 +143,7 @@ export const getConnections = async (req, res) => {
                         {
                             $match: {
                                 $expr: {
-                                    $and: [{ $eq: ['$_id', '$$userId'] }, { $eq: ['$isBlacklisted', false] }]
+                                    $and: [{ $eq: ['$_id', '$$userId'] }, { $eq: ['$blacklisted', false] }]
                                 }
                             },
                         }

@@ -54,7 +54,7 @@ class Search extends Component {
             notificationsCount: undefined,
             isAuthenticating: true,
             isTokenValidated: false,
-            isVerified: false,
+            verified: false,
             openMessageForm: false,
             to: null,
             isLoading: true,
@@ -574,13 +574,13 @@ class Search extends Component {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
-                        if (user.isBlacklisted) {
+                        if (user.blacklisted) {
                             signout();
                             return;
                         }
 
                         moment.locale(language);
-                        this.setState({ user, searchKeyword: getSearchKeyword(), isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
+                        this.setState({ user, searchKeyword: getSearchKeyword(), verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
                         this.fetchUsers();
 
                         const div = document.querySelector('.content');
@@ -612,12 +612,12 @@ class Search extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { isVerified, users, notificationsCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
+                const { verified, users, notificationsCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
                 const rtl = user.language === 'ar';
                 return (
                     <div>
                         <Header user={user} notificationsCount={notificationsCount} />
-                        {isVerified ?
+                        {verified ?
                             <div className="search content">
                                 {!isLoading && users.length === 0 ?
                                     <Card variant="outlined" className="content-nc">

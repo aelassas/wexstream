@@ -1,16 +1,16 @@
-import User from '../schema/User.js';
-import Connection from '../schema/Connection.js';
-import Notification from '../schema/Notification.js';
-import Token from '../schema/Token.js';
-import NotificationCounter from '../schema/NotificationCounter.js';
+import User from '../models/User.js';
+import Connection from '../models/Connection.js';
+import Notification from '../models/Notification.js';
+import Token from '../models/Token.js';
+import NotificationCounter from '../models/NotificationCounter.js';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import strings from '../config/app.config.js';
 import escapeStringRegexp from 'escape-string-regexp';
-import Timeline from '../schema/Timeline.js';
-import Conference from '../schema/Conference.js';
-import Message from '../schema/Message.js';
-import MessageCounter from '../schema/MessageCounter.js';
+import Timeline from '../models/Timeline.js';
+import Conference from '../models/Conference.js';
+import Message from '../models/Message.js';
+import MessageCounter from '../models/MessageCounter.js';
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
@@ -41,8 +41,8 @@ export const googleAuth = (req, res) => {
             const { body } = req;
 
             if (!user) {
-                body.isVerified = true;
-                body.isBlacklisted = false;
+                body.verified = true;
+                body.blacklisted = false;
 
                 let newUser = new User(body);
                 try {
@@ -99,7 +99,7 @@ export const googleAuth = (req, res) => {
                 enableEmailNotifications: user.enableEmailNotifications,
                 enablePrivateMessages: user.enablePrivateMessages,
                 accessToken: token,
-                isBlacklisted: user.isBlacklisted
+                blacklisted: user.blacklisted
             });
         })
         .catch(err => {
@@ -114,8 +114,8 @@ export const facebookAuth = (req, res) => {
             const { body } = req;
 
             if (!user) {
-                body.isVerified = true;
-                body.isBlacklisted = false;
+                body.verified = true;
+                body.blacklisted = false;
 
                 let newUser = new User(body);
                 try {
@@ -172,7 +172,7 @@ export const facebookAuth = (req, res) => {
                 enableEmailNotifications: user.enableEmailNotifications,
                 enablePrivateMessages: user.enablePrivateMessages,
                 accessToken: token,
-                isBlacklisted: user.isBlacklisted
+                blacklisted: user.blacklisted
             });
         })
         .catch(err => {
@@ -214,7 +214,7 @@ export const signin = (req, res) => {
                             enableEmailNotifications: user.enableEmailNotifications,
                             enablePrivateMessages: user.enablePrivateMessages,
                             accessToken: token,
-                            isBlacklisted: user.isBlacklisted
+                            blacklisted: user.blacklisted
                         });
                     } else {
                         res.sendStatus(204);
@@ -230,8 +230,8 @@ export const validateAccessToken = (req, res) => {
 
 export const signup = (req, res) => {
     const { body } = req;
-    body.isVerified = false;
-    body.isBlacklisted = false;
+    body.verified = false;
+    body.blacklisted = false;
 
     const user = new User(body);
     user.save()
@@ -306,13 +306,13 @@ export const confirmEmail = (req, res) => {
                     return res.status(401).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_LINK_ERROR));
                 }
                 // user is already verified
-                else if (user.isVerified) {
+                else if (user.verified) {
                     return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED));
                 }
                 // verify user
                 else {
-                    // change isVerified to true
-                    user.isVerified = true;
+                    // change verified to true
+                    user.verified = true;
                     user.verifiedAt = Date.now();
                     user.save((err) => {
                         // error occur
@@ -341,7 +341,7 @@ export const resendLink = (req, res, next) => {
             return res.status(400).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_RESEND_ERROR));
         }
         // user has been already verified
-        else if (user.isVerified) {
+        else if (user.verified) {
             return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED));
 
         }
@@ -661,9 +661,9 @@ export const search = async (req, res) => {
         const pageSize = parseInt(req.params.pageSize);
         const messages = req.params.messages.toLowerCase() === 'true';
 
-        let $match = { isBlacklisted: false };
+        let $match = { blacklisted: false };
         if (messages) {
-            $match = { $and: [{ isBlacklisted: false }, { $or: [{ enablePrivateMessages: true }, { connection: { $ne: undefined } }] }] };
+            $match = { $and: [{ blacklisted: false }, { $or: [{ enablePrivateMessages: true }, { connection: { $ne: undefined } }] }] };
         }
 
         const user = await User.findById(req.params.userId);
