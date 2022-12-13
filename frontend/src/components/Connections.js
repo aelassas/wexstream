@@ -3,22 +3,22 @@ import { strings } from '../config/app.config';
 import { getLanguage } from '../services/UserService';
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
 import { getConnections, getConnectionIds, deleteConnection } from '../services/ConnectionService';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import { MessageForm } from '../elements/MessageForm';
 import { Avatar } from '../elements/Avatar';
 import Backdrop from '../elements/SimpleBackdrop';
-import Link from '@mui/material/Link';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
 import {
+    Button,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Card,
+    CardContent,
+    Typography,
+    Link,
     Dialog,
     DialogTitle,
     DialogContent,
@@ -32,8 +32,8 @@ import {
     ThumbUp,
     ThumbDown,
     Cancel,
+    Link as LinkIcon
 } from '@mui/icons-material';
-import LinkIcon from '@mui/icons-material/Link';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
 import Master from '../elements/Master';
 import * as Helper from '../common/Helper';
