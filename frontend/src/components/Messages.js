@@ -2,33 +2,38 @@ import React, { useState } from 'react';
 import { strings } from '../config/app.config';
 import { getLanguage } from '../services/UserService';
 import { getMessages, markMessageAsRead, markMessageAsUnread, deleteMessage, getMessageCounter, getMessageId } from '../services/MessageService';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Backdrop from '../elements/SimpleBackdrop';
-import Delete from '@mui/icons-material/Delete';
-import { IconButton } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import UnreadIcon from '@mui/icons-material/Email';
-import ReadIcon from '@mui/icons-material/Drafts';
 import { MessageForm } from '../elements/MessageForm';
 import { MessageBox } from '../elements/MessageBox';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import Tooltip from '@mui/material/Tooltip';
+import Backdrop from '../elements/SimpleBackdrop';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
 import { MESSAGES_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
 import * as Helper from '../common/Helper';
 import Master from '../elements/Master';
+import {
+    Button,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemAvatar,
+    Avatar,
+    IconButton,
+    Card,
+    CardContent,
+    Typography,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Tooltip
+} from '@mui/material';
+
+import {
+    Delete,
+    Email as UnreadIcon,
+    Drafts as ReadIcon
+} from '@mui/icons-material';
 
 const Messages = () => {
     const [user, setUser] = useState();
