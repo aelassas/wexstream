@@ -13,7 +13,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import Header from './Header';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-import Backdrop from './SimpleBackdrop';
+import Backdrop from '../elements/SimpleBackdrop';
 
 
 export default class SignUp extends Component {

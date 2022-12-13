@@ -34,7 +34,7 @@ import {
     WhatsappShareButton,
     WhatsappIcon
 } from "react-share";
-import Backdrop from './SimpleBackdrop';
+import Backdrop from '../elements/SimpleBackdrop';
 import { getLanguage } from '../services/UserService';
 import * as Helper from '../common/Helper';
 import { isMobile } from '../config/env.config';

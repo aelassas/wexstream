@@ -15,7 +15,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Info from '@mui/icons-material/Info';
-import Backdrop from './SimpleBackdrop';
+import Backdrop from '../elements/SimpleBackdrop';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ReadIcon from '@mui/icons-material/Drafts';
 import UnreadIcon from '@mui/icons-material/Email';

@@ -10,8 +10,8 @@ import { getConferences, deleteConference } from '../services/ConferenceService'
 import { deleteSpeakerEntries } from '../services/TimelineService'
 import Header from './Header';
 import { toast } from 'react-toastify';
-import Backdrop from './SimpleBackdrop';
-import { Avatar } from './Avatar';
+import Backdrop from '../elements/SimpleBackdrop';
+import { Avatar } from '../elements/Avatar';
 import {
     Typography,
     Card,
@@ -50,9 +50,9 @@ import {
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
-import { MessageForm } from './MessageForm';
+import { MessageForm } from '../elements/MessageForm';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
-import { Members } from './Members';
+import { Members } from '../elements/Members';
 import * as Helper from '../common/Helper';
 
 

@@ -8,7 +8,7 @@ import {
 } from '../services/UserService';
 import { LANGUAGES } from '../config/env.config';
 import Button from '@mui/material/Button';
-import Backdrop from './SimpleBackdrop';
+import Backdrop from '../elements/SimpleBackdrop';
 import FormControl from '@mui/material/FormControl';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -24,7 +24,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import FormHelperText from '@mui/material/FormHelperText';
-import { Avatar } from './Avatar';
+import { Avatar } from '../elements/Avatar';
 import validator from 'validator';
 
 
