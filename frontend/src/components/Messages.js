@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { strings } from '../config/app.config';
-import Header from './Header';
-import { toast } from 'react-toastify';
-import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
+import { getLanguage } from '../services/UserService';
 import { getMessages, markMessageAsRead, markMessageAsUnread, deleteMessage, getMessageCounter, getMessageId } from '../services/MessageService';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
@@ -28,415 +26,328 @@ import Tooltip from '@mui/material/Tooltip';
 import moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/ar';
-import { MESSAGES_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
+import { MESSAGES_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
+import * as Helper from '../common/Helper';
+import Master from '../elements/Master';
 
+const Messages = () => {
+    const [user, setUser] = useState();
+    const [messages, setMessages] = useState([]);
+    const [messagesCount, setMessagesCount] = useState();
+    const [selectedMessage, setSelectedMessage] = useState();
+    const [openMessageBox, setOpenMessageBox] = useState();
+    const [messageId, setMessageId] = useState('');
+    const [openDialog, setOpenDialog] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+    const [fetch, setFetch] = useState(false);
+    const [firstLoad, setFirstLoad] = useState(true);
 
-class Messages extends Component {
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            user: null,
-            messages: [],
-            messagesCount: undefined,
-            selectedMessage: null,
-            openMessageBox: false,
-            isAuthenticating: true,
-            isTokenValidated: false,
-            isVerified: false,
-            messageId: '',
-            openDialog: false,
-            isLoading: true,
-            page: 1,
-            fetch: false,
-            firstLoad: true
-        };
-    }
-
-    handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.user.email };
-
-        resendLink(data)
-            .then(status => {
-                if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
-                } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-                }
-            })
-            .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    };
-
-    handleMessageClick = (event, msgId) => {
+    const handleMessageClick = (event, msgId) => {
         if (event) {
             event.preventDefault();
         }
 
         const messageId = msgId || event.currentTarget.getAttribute('data-id');
-        const { user } = this.state;
-        const message = this.state.messages.find(msg => msg._id === messageId);
-        const messages = [...this.state.messages]; // Make a shallow copy of messages
+        const message = _messages.find(msg => msg._id === messageId);
+        const _messages = [...messages]; // Make a shallow copy of messages
         if (!message.isRead) {
             markMessageAsRead(message._id)
                 .then(status => {
                     if (status === 200) {
                         getMessageCounter(user._id)
                             .then(messageCounter => {
-                                const index = this.findIndex(message._id);
+                                const index = findIndex(message._id);
                                 // Make a shallow copy of the message to mutate
-                                const msg = { ...messages[index] };
+                                const msg = { ..._messages[index] };
                                 // Update message
                                 msg.isRead = true;
                                 // Put it back into messages array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                messages[index] = msg;
+                                _messages[index] = msg;
                                 // Set the state to our new copy
-                                this.setState({ messages, selectedMessage: message, openMessageBox: true, messagesCount: messageCounter.count });
+                                setMessages(_messages);
+                                setSelectedMessage(message);
+                                setOpenMessageBox(true);
+                                setMessagesCount(messageCounter.count);
                             })
                             .catch(err => {
-                                toast(strings.GENERIC_ERROR, { type: 'error' });
+                                Helper.error(err);
                             });
                     }
                 })
                 .catch(err => {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    Helper.error(err);
                 });
         } else {
-            this.setState({ selectedMessage: message, openMessageBox: true });
+            setSelectedMessage(message);
+            setOpenMessageBox(true);
         }
     };
 
-    handleCloseMessageBox = (e) => {
+    const handleCloseMessageBox = (e) => {
         e.preventDefault();
-        this.setState({ openMessageBox: false });
+        setOpenMessageBox(false);
         const messageId = getMessageId();
         if (messageId !== '') {
             window.history.pushState({}, null, '/messages');
         }
     };
 
-    findIndex = (messageId) => (this.state.messages.findIndex(msg => msg._id === messageId));
+    const findIndex = (messageId) => (
+        messages.findIndex(msg => msg._id === messageId)
+    );
 
-    openDialog = () => {
-        this.setState({ openDialog: true });
-    };
-
-    handleDeleteMessage = (e) => {
+    const handleDeleteMessage = (e) => {
         e.preventDefault();
         const messageId = e.currentTarget.getAttribute('data-id');
-        this.setState({ messageId });
-        this.openDialog();
+        setMessageId(messageId);
+        setOpenDialog(true);
     };
 
-    handleDelete = (e) => {
+    const handleDelete = (e) => {
         e.preventDefault();
 
-        const { messageId } = this.state;
-        const messages = [...this.state.messages]; // Make a shallow copy of messages
+        const _messages = [...messages]; // Make a shallow copy of messages
         deleteMessage(messageId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
-                    const index = this.findIndex(messageId);
-                    const message = messages[index];
-                    messages.splice(index, 1);
-                    this.setState({ messages });
+                    const index = findIndex(messageId);
+                    const message = _messages[index];
+                    _messages.splice(index, 1);
+                    setMessages(_messages);
 
                     if (!message.isRead) {
                         getMessageCounter(user._id)
                             .then(messageCounter => {
-                                this.closeDialog();
-                                this.setState({ messagesCount: messageCounter.count });
+                                closeDialog();
+                                setMessagesCount(messageCounter.count);
                             })
                             .catch(err => {
-                                this.closeDialog();
-                                toast(strings.GENERIC_ERROR, { type: 'error' });
+                                closeDialog();
+                                Helper.error();
                             });
                     } else {
-                        this.closeDialog();
+                        closeDialog();
                     }
                 } else {
-                    this.closeDialog();
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    closeDialog();
+                    Helper.error();
                 }
             })
             .catch(err => {
-                this.closeDialog();
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                closeDialog();
+                Helper.error(err);
             });
     };
 
-    closeDialog = () => {
-        this.setState({ openDialog: false });
+    const closeDialog = () => {
+        setOpenDialog(false);
     };
 
-    handleMarkAsRead = (e) => {
+    const handleMarkAsRead = (e) => {
         e.preventDefault();
 
         const messageId = e.currentTarget.getAttribute('data-id');
-        const messages = [...this.state.messages]; // Make a shallow copy of messages
+        const _messages = [...messages]; // Make a shallow copy of messages
 
         markMessageAsRead(messageId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
-
                     getMessageCounter(user._id)
                         .then(messageCounter => {
-                            const index = this.findIndex(messageId);
+                            const index = findIndex(messageId);
                             // Make a shallow copy of the message to mutate
-                            const msg = { ...messages[index] };
+                            const msg = { ..._messages[index] };
                             // Update message
                             msg.isRead = true;
                             // Put it back into messages array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                            messages[index] = msg;
+                            _messages[index] = msg;
                             // Set the state to our new copy
-                            this.setState({ messages, messagesCount: messageCounter.count });
+                            setMessages(_messages);
+                            setMessagesCount(messageCounter.count);
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            Helper.error();
                         });
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    Helper.error();
                 }
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error(err);
             });
     };
 
-    handleMarkAsUnread = (e) => {
+    const handleMarkAsUnread = (e) => {
         e.preventDefault();
 
         const messageId = e.currentTarget.getAttribute('data-id');
-        const messages = [...this.state.messages]; // Make a shallow copy of messages
+        const _messages = [...messages]; // Make a shallow copy of messages
 
         markMessageAsUnread(messageId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
-
                     getMessageCounter(user._id)
                         .then(messageCounter => {
-                            const index = this.findIndex(messageId);
+                            const index = findIndex(messageId);
                             // Make a shallow copy of the message to mutate
-                            const msg = { ...messages[index] };
+                            const msg = { ..._messages[index] };
                             // Update message
                             msg.isRead = false;
                             // Put it back into messages array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                            messages[index] = msg;
+                            _messages[index] = msg;
                             // Set the state to our new copy
-                            this.setState({ messages });
-                            this.setState({ messages, messagesCount: messageCounter.count });
+                            setMessages(_messages);
+                            setMessagesCount(messageCounter.count);
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            Helper.error(err);
                         });
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    Helper.error();
                 }
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error(err);
             });
     };
 
-    handleCancelDelete = (e) => {
-        this.closeDialog();
+    const handleCancelDelete = (e) => {
+        closeDialog();
     };
 
-    fetchMessages = (onFetch) => {
-        const { user, page } = this.state;
-        this.setState({ isLoading: true });
+    const fetchMessages = (page, onFetch) => {
+        setLoading(true);
 
         getMessages(user._id, page)
             .then(data => {
-                const messages = [...this.state.messages, ...data];
-                this.setState({ messages, isLoading: false, fetch: data.length > 0 });
+                const _messages = [...messages, ...data];
+                setMessages(_messages);
+                setFetch(data.length > 0);
                 if (onFetch) {
                     onFetch();
                 }
+                setLoading(false);
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error(err);
             });
     };
 
-    componentDidMount() {
-        let language = getQueryLanguage();
+    const onLoad = (user) => {
+        const language = getLanguage();
+        moment.locale(language);
+        setUser(user);
 
-        if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
-        }
-        strings.setLanguage(language);
-        this.setState({});
-
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-            validateAccessToken().then(status => {
-                getUser(currentUser.id).then(user => {
-                    if (user) {
-
-                        if (user.isBlacklisted) {
-                            signout();
-                            return;
-                        }
-
-                        moment.locale(language);
-                        this.setState({ user, isVerified: user.isVerified, isAuthenticating: false, isTokenValidated: status === 200 });
-                        this.fetchMessages(() => {
-                            const messageId = getMessageId();
-                            if (messageId !== '') {
-                                this.handleMessageClick(null, messageId);
-                            }
-                            this.setState({ firstLoad: false });
-                        });
-
-                        const ul = document.querySelector('.message-items');
-                        if (ul) {
-                            ul.onscroll = (event) => {
-                                if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - MESSAGES_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                                    this.setState({ page: this.state.page + 1 }, () => {
-                                        this.fetchMessages();
-                                    });
-                                }
-                            };
-                        }
-                    } else {
-                        signout();
-                    }
-                }).catch(err => {
-                    signout();
-                });
-            }).catch(err => {
-                signout();
-            });
-        } else {
-            signout();
-        }
-    }
-
-    render() {
-        const { isAuthenticating } = this.state;
-        if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
-            if (isTokenValidated) {
-                const { isVerified, messages, messagesCount, selectedMessage, openMessageBox, openDialog, user, isLoading, firstLoad } = this.state;
-                return (
-                    <div>
-                        <Header user={user} messagesCount={messagesCount} />
-                        {isVerified ? (
-                            <div className="messages content">
-                                <div className="message-form-ctn">
-                                    <MessageForm user={user} hideButton={firstLoad} />
-                                </div>
-                                {(!isLoading && messages.length === 0) &&
-                                    <Card variant="outlined" className="no-message-ctn">
-                                        <CardContent>
-                                            <Typography color="textSecondary">
-                                                {strings.NO_MESSAGE}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                }
-                                <List className="message-items">
-                                    {
-                                        messages.map((message, i) =>
-                                        (
-                                            <ListItem key={message._id} className={"message-item " + (message.isRead ? "message-read" : "message-unread")} >
-                                                <ListItemAvatar>
-                                                    <Avatar>
-                                                        {message.isRead ? <ReadIcon /> : <UnreadIcon />}
-                                                    </Avatar>
-                                                </ListItemAvatar>
-                                                <ListItemText primary={message.from.fullName}
-                                                    secondary={
-                                                        <span>
-                                                            <span>{message.subject}</span>
-                                                            <br />
-                                                            <span>{moment(message.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</span>
-                                                        </span>
-                                                    }
-                                                    data-id={message._id}
-                                                    onClick={this.handleMessageClick}
-                                                >
-                                                </ListItemText>
-                                                {!message.isRead
-                                                    ?
-                                                    <Tooltip title={strings.MARK_AS_READ}>
-                                                        <IconButton
-                                                            color="default"
-                                                            data-id={message._id}
-                                                            onClick={this.handleMarkAsRead}
-                                                        >
-                                                            <ReadIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                    :
-                                                    <Tooltip title={strings.MARK_AS_UNREAD}>
-                                                        <IconButton
-                                                            color="default"
-                                                            data-id={message._id}
-                                                            onClick={this.handleMarkAsUnread}
-                                                        >
-                                                            <UnreadIcon />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                }
-                                                <Tooltip title={strings.DELETE}>
-                                                    <IconButton
-                                                        color="secondary"
-                                                        data-id={message._id}
-                                                        onClick={this.handleDeleteMessage}
-                                                    >
-                                                        <Delete />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </ListItem>
-                                        ))
-                                    }
-                                </List>
-                                <MessageBox user={user} message={selectedMessage} open={openMessageBox} onClose={this.handleCloseMessageBox} />
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{strings.DELETE_MESSAGE_CONFIRM}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={this.handleDelete} color="secondary">{strings.DELETE}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                {isLoading && <Backdrop text={strings.LOADING} />}
-                            </div>
-                        ) :
-                            <div className="validate-email">
-                                <span>{strings.VALIDATE_EMAIL}</span>
-                                <Button
-                                    type="button"
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className="btn-resend"
-                                    onClick={this.handleResend}
-                                >{strings.RESEND}</Button>
-                            </div>
-                        }
-                    </div >
-                );
-            } else {
-                signout();
-                return null;
+        fetchMessages(page, () => {
+            const messageId = getMessageId();
+            if (messageId !== '') {
+                handleMessageClick(null, messageId);
             }
-        } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
+            setFirstLoad(false);
+        });
+
+        const ul = document.querySelector('.message-items');
+        if (ul) {
+            ul.onscroll = (event) => {
+                if (fetch && !loading && (((window.innerHeight - MESSAGES_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
+                    const _page = page + 1;
+                    setPage(_page);
+                    fetchMessages(_page);
+                }
+            };
         }
-    }
+    };
+
+    return (
+        <Master onLoad={onLoad} messagesCount={messagesCount} strict>
+            <div className="messages content">
+                <div className="message-form-ctn">
+                    <MessageForm user={user} hideButton={firstLoad} />
+                </div>
+                {(!loading && messages.length === 0) &&
+                    <Card variant="outlined" className="no-message-ctn">
+                        <CardContent>
+                            <Typography color="textSecondary">
+                                {strings.NO_MESSAGE}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                }
+                <List className="message-items">
+                    {
+                        messages.map((message, i) =>
+                        (
+                            <ListItem key={message._id} className={"message-item " + (message.isRead ? "message-read" : "message-unread")} >
+                                <ListItemAvatar>
+                                    <Avatar>
+                                        {message.isRead ? <ReadIcon /> : <UnreadIcon />}
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText primary={message.from.fullName}
+                                    secondary={
+                                        <span>
+                                            <span>{message.subject}</span>
+                                            <br />
+                                            <span>{moment(message.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</span>
+                                        </span>
+                                    }
+                                    data-id={message._id}
+                                    onClick={handleMessageClick}
+                                >
+                                </ListItemText>
+                                {!message.isRead
+                                    ?
+                                    <Tooltip title={strings.MARK_AS_READ}>
+                                        <IconButton
+                                            color="default"
+                                            data-id={message._id}
+                                            onClick={handleMarkAsRead}
+                                        >
+                                            <ReadIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                    :
+                                    <Tooltip title={strings.MARK_AS_UNREAD}>
+                                        <IconButton
+                                            color="default"
+                                            data-id={message._id}
+                                            onClick={handleMarkAsUnread}
+                                        >
+                                            <UnreadIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                }
+                                <Tooltip title={strings.DELETE}>
+                                    <IconButton
+                                        color="secondary"
+                                        data-id={message._id}
+                                        onClick={handleDeleteMessage}
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </Tooltip>
+                            </ListItem>
+                        ))
+                    }
+                </List>
+            </div>
+            <MessageBox user={user} message={selectedMessage} open={openMessageBox} onClose={handleCloseMessageBox} />
+            <Dialog
+                disableEscapeKeyDown
+                maxWidth="xs"
+                open={openDialog}
+            >
+                <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                <DialogContent>{strings.DELETE_MESSAGE_CONFIRM}</DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
+                    <Button onClick={handleDelete} color="secondary">{strings.DELETE}</Button>
+                </DialogActions>
+            </Dialog>
+            {loading && <Backdrop text={strings.LOADING} />}
+        </Master>
+    );
 }
 
 export default Messages;
