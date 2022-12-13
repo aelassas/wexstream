@@ -67,7 +67,7 @@ class Profile extends Component {
             isConnectionPending: false,
             isApprover: false,
             connectedAt: null,
-            notificationsCount: undefined,
+            notificationCount: undefined,
             openDisconnectDialog: false,
             openDeclineDialog: false,
             openMessageForm: false,
@@ -162,7 +162,7 @@ class Profile extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_DELETED, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -351,7 +351,7 @@ class Profile extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_APPROVE, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -472,7 +472,7 @@ class Profile extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_DECLINE, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -824,7 +824,7 @@ class Profile extends Component {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
                 const { verified, language, loggedUser, user, userNotFound, isConnected, isConnectionPending, isApprover
-                    , connectedAt, openDisconnectDialog, openDeclineDialog, notificationsCount, openMessageForm,
+                    , connectedAt, openDisconnectDialog, openDeclineDialog, notificationCount, openMessageForm,
                     conferences, isLoading, openDeleteDialog, anchorEl, openActions, error, unauthorized,
                     openReportDialog, reportMessage, openBlockDialog, isBlocked, openMembersDialog, conferenceId, isLoadingAvatar } = this.state;
                 const rtl = language === 'ar';
@@ -844,7 +844,7 @@ class Profile extends Component {
                 };
                 return (
                     <div>
-                        <Header user={loggedUser} notificationsCount={notificationsCount} />
+                        <Header user={loggedUser} notificationCount={notificationCount} />
                         {verified ?
                             <div className={`${isMobile() ? `profile-content${rtl ? '-rtl' : ''}` : ((rtl ? 'profile-rtl' : 'profile') + ' content')}`}>
                                 {userNotFound ?

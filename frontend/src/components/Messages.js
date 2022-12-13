@@ -37,7 +37,7 @@ import {
 const Messages = () => {
     const [user, setUser] = useState();
     const [messages, setMessages] = useState([]);
-    const [messagesCount, setMessagesCount] = useState();
+    const [messageCount, setMessageCount] = useState();
     const [selectedMessage, setSelectedMessage] = useState();
     const [openMessageBox, setOpenMessageBox] = useState();
     const [messageId, setMessageId] = useState('');
@@ -72,7 +72,7 @@ const Messages = () => {
                                 setMessages(_messages);
                                 setSelectedMessage(message);
                                 setOpenMessageBox(true);
-                                setMessagesCount(messageCounter.count);
+                                setMessageCount(messageCounter.count);
                             })
                             .catch(err => {
                                 Helper.error(err);
@@ -124,7 +124,7 @@ const Messages = () => {
                         getMessageCounter(user._id)
                             .then(messageCounter => {
                                 closeDialog();
-                                setMessagesCount(messageCounter.count);
+                                setMessageCount(messageCounter.count);
                             })
                             .catch(err => {
                                 closeDialog();
@@ -168,7 +168,7 @@ const Messages = () => {
                             _messages[index] = msg;
                             // Set the state to our new copy
                             setMessages(_messages);
-                            setMessagesCount(messageCounter.count);
+                            setMessageCount(messageCounter.count);
                         })
                         .catch(err => {
                             Helper.error();
@@ -202,7 +202,7 @@ const Messages = () => {
                             _messages[index] = msg;
                             // Set the state to our new copy
                             setMessages(_messages);
-                            setMessagesCount(messageCounter.count);
+                            setMessageCount(messageCounter.count);
                         })
                         .catch(err => {
                             Helper.error(err);
@@ -264,7 +264,7 @@ const Messages = () => {
     };
 
     return (
-        <Master onLoad={onLoad} messagesCount={messagesCount} strict>
+        <Master onLoad={onLoad} messageCount={messageCount} strict>
             <div className="messages content">
                 <div className="message-form-ctn">
                     <MessageForm user={user} hideButton={firstLoad} />

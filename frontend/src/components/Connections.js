@@ -41,7 +41,7 @@ import * as Helper from '../common/Helper';
 const Connections = () => {
     const [user, setUser] = useState();
     const [connections, setConnections] = useState([]);
-    const [notificationsCount, setNotificationsCount] = useState();
+    const [notificationCount, setNotificationCount] = useState();
     const [openMessageForm, setOpenMessageForm] = useState(false);
     const [to, setTo] = useState();
     const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const Connections = () => {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    setNotificationCount(notificationCounter.count);
                                                                     Helper.info(strings.CONNECTION_APPROVE);
                                                                 })
                                                                 .catch(err => {
@@ -186,7 +186,7 @@ const Connections = () => {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    setNotificationCount(notificationCounter.count);
                                                                     Helper.info(strings.CONNECTION_DELETED);
                                                                 })
                                                                 .catch(err => {
@@ -386,7 +386,7 @@ const Connections = () => {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationsCount(notificationCounter.count);
+                                                                    setNotificationCount(notificationCounter.count);
                                                                     Helper.info(strings.CONNECTION_DECLINE);
                                                                 })
                                                                 .catch(err => {
@@ -472,7 +472,7 @@ const Connections = () => {
     };
 
     return (
-        <Master onLoad={onLoad} notificationsCount={notificationsCount} strict>
+        <Master onLoad={onLoad} notificationCount={notificationCount} strict>
             <div className="connections content">
                 {!loading && connections.length === 0 ?
                     <Card variant="outlined" className="content-nc">

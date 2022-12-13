@@ -48,7 +48,7 @@ class Notifications extends Component {
         this.state = {
             user: null,
             notifications: [],
-            notificationsCount: undefined,
+            notificationCount: undefined,
             isAuthenticating: true,
             isTokenValidated: false,
             verified: false,
@@ -112,7 +112,7 @@ class Notifications extends Component {
                                                     notification.isDeclined = false;
                                                     notifications[index] = notification;
 
-                                                    this.setState({ notifications, notificationsCount: notificationCounter.count });
+                                                    this.setState({ notifications, notificationCount: notificationCounter.count });
                                                     toast(strings.CONNECTION_APPROVE, { type: 'info' });
                                                 })
                                                 .catch(err => {
@@ -185,7 +185,7 @@ class Notifications extends Component {
 
                                             getNotificationCounter(user._id)
                                                 .then(notificationCounter => {
-                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                    this.setState({ notificationCount: notificationCounter.count });
 
                                                     toast(strings.CONNECTION_DECLINE, { type: 'info' });
                                                 })
@@ -231,7 +231,7 @@ class Notifications extends Component {
                             const notification = { ...notifications[index] };
                             notification.isRead = true;
                             notifications[index] = notification;
-                            this.setState({ notifications, notificationsCount: notificationCounter.count });
+                            this.setState({ notifications, notificationCount: notificationCounter.count });
                         })
                         .catch(err => {
                             toast(strings.GENERIC_ERROR, { type: 'error' });
@@ -259,7 +259,7 @@ class Notifications extends Component {
                             const notification = { ...notifications[index] };
                             notification.isRead = false;
                             notifications[index] = notification;
-                            this.setState({ notifications, notificationsCount: notificationCounter.count });
+                            this.setState({ notifications, notificationCount: notificationCounter.count });
                         })
                         .catch(err => {
                             toast(strings.GENERIC_ERROR, { type: 'error' });
@@ -285,7 +285,7 @@ class Notifications extends Component {
                             const notifications = [...this.state.notifications];
                             const index = this.findIndex(notificationId);
                             notifications.splice(index, 1);
-                            this.setState({ notifications, notificationsCount: notificationCounter.count });
+                            this.setState({ notifications, notificationCount: notificationCounter.count });
                             toast(strings.NOTIFICATION_DELETE, { type: 'info' });
                         })
                         .catch(err => {
@@ -312,7 +312,7 @@ class Notifications extends Component {
     handleConfirmDelete = () => {
         deleteNotifications(this.state.user._id).then(status => {
             if (status === 200) {
-                this.setState({ notifications: [], notificationsCount: 0, openDeleteDialog: false });
+                this.setState({ notifications: [], notificationCount: 0, openDeleteDialog: false });
             } else {
                 this.setState({ openDeleteDialog: false });
                 toast(strings.GENERIC_ERROR, { type: 'error' });
@@ -332,7 +332,7 @@ class Notifications extends Component {
                     }
                 }
 
-                this.setState({ notifications, notificationsCount: 0 });
+                this.setState({ notifications, notificationCount: 0 });
             } else {
                 toast(strings.GENERIC_ERROR, { type: 'error' });
             }
@@ -380,7 +380,7 @@ class Notifications extends Component {
 
                         getNotificationCounter(user._id)
                             .then(notificationCounter => {
-                                this.setState({ notificationsCount: notificationCounter.count });
+                                this.setState({ notificationCount: notificationCounter.count });
                             })
                             .catch(err => {
                                 toast(strings.GENERIC_ERROR, { type: 'error' });
@@ -415,12 +415,12 @@ class Notifications extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { verified, notifications, notificationsCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
+                const { verified, notifications, notificationCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
                 const rtl = user.language === 'ar';
 
                 return (
                     <div>
-                        <Header user={user} notificationsCount={notificationsCount} />
+                        <Header user={user} notificationCount={notificationCount} />
                         {verified ?
                             <div className="notifications content">
                                 {isLoading && <Backdrop text={strings.LOADING} />}
@@ -444,7 +444,7 @@ class Notifications extends Component {
                                                         <DeleteIcon />
                                                     </IconButton>
                                                 </Tooltip>
-                                                {notificationsCount > 0 && <Tooltip title={strings.MARK_ALL_AS_READ}>
+                                                {notificationCount > 0 && <Tooltip title={strings.MARK_ALL_AS_READ}>
                                                     <IconButton
                                                         color="default"
                                                         onClick={this.handleMarkAllAsRead}

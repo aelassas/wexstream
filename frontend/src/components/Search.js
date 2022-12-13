@@ -51,7 +51,7 @@ class Search extends Component {
             searchKeyword: '',
             user: null,
             users: [],
-            notificationsCount: undefined,
+            notificationCount: undefined,
             isAuthenticating: true,
             isTokenValidated: false,
             verified: false,
@@ -145,7 +145,7 @@ class Search extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_APPROVE, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -274,7 +274,7 @@ class Search extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_DELETED, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -497,7 +497,7 @@ class Search extends Component {
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationsCount: notificationCounter.count });
+                                                                    this.setState({ notificationCount: notificationCounter.count });
                                                                     toast(strings.CONNECTION_DECLINE, { type: 'info' });
                                                                 })
                                                                 .catch(err => {
@@ -612,11 +612,11 @@ class Search extends Component {
         if (!isAuthenticating) {
             const { isTokenValidated } = this.state;
             if (isTokenValidated) {
-                const { verified, users, notificationsCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
+                const { verified, users, notificationCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
                 const rtl = user.language === 'ar';
                 return (
                     <div>
-                        <Header user={user} notificationsCount={notificationsCount} />
+                        <Header user={user} notificationCount={notificationCount} />
                         {verified ?
                             <div className="search content">
                                 {!isLoading && users.length === 0 ?

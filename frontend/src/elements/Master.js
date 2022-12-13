@@ -86,7 +86,13 @@ const Master = (props) => {
 
     return (
         <>
-            <Header user={user} hidden={loading || props.hideHeader} hideLiveButton={props.hideLiveButton} notificationCount={props.notificationCount} />
+            <Header
+                user={user}
+                hidden={loading || props.hideHeader}
+                hideLiveButton={props.hideLiveButton}
+                notificationCount={props.notificationCount}
+                messageCount={props.messageCount}
+            />
             {((!user && !loading) || (user && user.verified))
                 ?
                 <div className='content'>{props.children}</div>

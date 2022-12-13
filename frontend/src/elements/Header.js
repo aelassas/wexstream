@@ -65,8 +65,8 @@ export default withRouter(function Header(props) {
     const [sideAnchorEl, setSideAnchorEl] = useState(null);
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [notificationsCount, setNotificationsCount] = useState(0);
-    const [messagesCount, setMessagesCount] = useState(0);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [messageCount, setMessageCount] = useState(0);
     const [init, setInit] = useState(false);
     const [openLiveDialog, setOpenLiveDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
@@ -345,13 +345,13 @@ export default withRouter(function Header(props) {
             setIsLoading(true);
 
             let countUpdated = false;
-            if (init && (props.messagesCount !== undefined)) {
-                setMessagesCount(props.messagesCount);
+            if (init && (props.messageCount !== undefined)) {
+                setMessageCount(props.messageCount);
                 countUpdated = true;
             }
 
-            if (init && (props.notificationsCount !== undefined)) {
-                setNotificationsCount(props.notificationsCount);
+            if (init && (props.notificationCount !== undefined)) {
+                setNotificationCount(props.notificationCount);
                 countUpdated = true;
             }
 
@@ -380,8 +380,8 @@ export default withRouter(function Header(props) {
                             .then(messageCounter => {
                                 setIsSignedIn(true);
                                 setSearchKeyword(getSearchKeyword());
-                                setNotificationsCount(notificationCounter.count);
-                                setMessagesCount(messageCounter.count);
+                                setNotificationCount(notificationCounter.count);
+                                setMessageCount(messageCounter.count);
                                 setIsLoading(false);
                                 setIsLoaded(true);
                                 setInit(true);
@@ -561,12 +561,12 @@ export default withRouter(function Header(props) {
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         {isSignedIn && <IconButton aria-label="" color="inherit" onClick={handleMessagesClick}>
-                            <Badge badgeContent={messagesCount > 0 ? messagesCount : null} color="secondary">
+                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="secondary">
                                 <MailIcon />
                             </Badge>
                         </IconButton>}
                         {isSignedIn && <IconButton aria-label="" color="inherit" onClick={handleNotificationsClick}>
-                            <Badge badgeContent={notificationsCount > 0 ? notificationsCount : null} color="secondary">
+                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>}
@@ -605,12 +605,12 @@ export default withRouter(function Header(props) {
                             {getLang(lang)}
                         </Button>}
                         {isSignedIn && <IconButton color="inherit" onClick={handleMessagesClick}>
-                            <Badge badgeContent={messagesCount > 0 ? messagesCount : null} color="secondary" >
+                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="secondary" >
                                 <MailIcon />
                             </Badge>
                         </IconButton>}
                         {isSignedIn && <IconButton color="inherit" onClick={handleNotificationsClick}>
-                            <Badge badgeContent={notificationsCount > 0 ? notificationsCount : null} color="secondary">
+                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="secondary">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>}
