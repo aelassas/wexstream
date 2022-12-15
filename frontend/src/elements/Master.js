@@ -97,7 +97,8 @@ const Master = (props) => {
                 ?
                 <div>{props.children}</div>
                 :
-                !loading && <div className="validate-email">
+                !loading &&
+                <div className="validate-email">
                     <span>{strings.VALIDATE_EMAIL}</span>
                     <Button
                         type="button"
