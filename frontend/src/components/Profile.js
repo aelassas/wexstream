@@ -55,7 +55,6 @@ import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUA
 import { Members } from '../elements/Members';
 import * as Helper from '../common/Helper';
 
-
 class Profile extends Component {
 
     constructor(props) {

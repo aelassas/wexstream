@@ -95,7 +95,7 @@ const Master = (props) => {
             />
             {((!user && !loading) || (user && user.verified))
                 ?
-                <div className='content'>{props.children}</div>
+                <div>{props.children}</div>
                 :
                 !loading && <div className="validate-email">
                     <span>{strings.VALIDATE_EMAIL}</span>
