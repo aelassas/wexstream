@@ -75,12 +75,12 @@ const Messages = () => {
                                 setMessageCount(messageCounter.count);
                             })
                             .catch(err => {
-                                Helper.error(err);
+                                Helper.error(null, err);
                             });
                     }
                 })
                 .catch(err => {
-                    Helper.error(err);
+                    Helper.error(null, err);
                 });
         } else {
             setSelectedMessage(message);
@@ -140,7 +140,7 @@ const Messages = () => {
             })
             .catch(err => {
                 closeDialog();
-                Helper.error(err);
+                Helper.error(null, err);
             });
     };
 
@@ -178,7 +178,7 @@ const Messages = () => {
                 }
             })
             .catch(err => {
-                Helper.error(err);
+                Helper.error(null, err);
             });
     };
 
@@ -205,14 +205,14 @@ const Messages = () => {
                             setMessageCount(messageCounter.count);
                         })
                         .catch(err => {
-                            Helper.error(err);
+                            Helper.error(null, err);
                         });
                 } else {
                     Helper.error();
                 }
             })
             .catch(err => {
-                Helper.error(err);
+                Helper.error(null, err);
             });
     };
 
@@ -234,7 +234,7 @@ const Messages = () => {
                 setLoading(false);
             })
             .catch(err => {
-                Helper.error(err);
+                Helper.error(null, err);
             });
     };
 

@@ -1,8 +1,6 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { strings } from '../config/app.config';
-import Header from './Header';
-import { toast } from 'react-toastify';
-import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
+import { getLanguage } from '../services/UserService';
 import {
     notify, getNotifications, getNotificationCounter, deleteNotification, approve, decline,
     markAsRead, markAsUnread, markAllAsRead, deleteNotifications
@@ -32,55 +30,32 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
+    DialogActions
 } from '@mui/material';
 import {
     ThumbUp,
-    ThumbDown,
+    ThumbDown
 } from '@mui/icons-material';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
+import Master from '../elements/Master';
+import * as Helper from '../common/Helper';
 
-class Notifications extends Component {
+const Notifications = () => {
+    const [user, setUser] = useState();
+    const [notifications, setNotifications] = useState([]);
+    const [notificationCount, setNotificationCount] = useState();
+    const [loading, setLoading] = useState(false);
+    const [openDeclineDialog, setOpenDeclineDialog] = useState(false);
+    const [declineTarget, setDeclineTarget] = useState(null);
+    const [page, setPage] = useState(1);
+    const [fetch, setFetch] = useState(false);
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(null);
 
-    constructor(props) {
-        super(props);
+    const findIndex = (notificationId) => (
+        notifications.findIndex(n => n._id === notificationId)
+    );
 
-        this.state = {
-            user: null,
-            notifications: [],
-            notificationCount: undefined,
-            isAuthenticating: true,
-            isTokenValidated: false,
-            verified: false,
-            isLoading: false,
-            openDeclineDialog: false,
-            declineTarget: null,
-            page: 1,
-            fetch: false,
-            openDeleteDialog: false
-        };
-    }
-
-    handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.user.email };
-
-        resendLink(data)
-            .then(status => {
-                if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
-                } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-                }
-            })
-            .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    };
-
-    findIndex = (notificationId) => (this.state.notifications.findIndex(n => n._id === notificationId));
-
-    handleApprove = (e) => {
+    const handleApprove = (e) => {
         const notificationId = e.currentTarget.getAttribute('data-id');
         const connId = e.currentTarget.getAttribute('data-conn-id');
 
@@ -90,7 +65,6 @@ class Notifications extends Component {
                     getConnectionById(connId)
                         .then(conn => {
                             if (conn) {
-                                const { user } = this.state;
                                 const notification = {
                                     user: conn.user,
                                     isRequest: false,
@@ -104,54 +78,55 @@ class Notifications extends Component {
                                         if (notificationStatus === 200) {
                                             getNotificationCounter(user._id)
                                                 .then(notificationCounter => {
-                                                    const notifications = [...this.state.notifications];
-                                                    const index = this.findIndex(notificationId);
-                                                    const notification = { ...notifications[index] };
+                                                    const _notifications = [...notifications];
+                                                    const index = findIndex(notificationId);
+                                                    const notification = { ..._notifications[index] };
                                                     notification.isRead = true;
                                                     notification.isConnected = true;
                                                     notification.isDeclined = false;
-                                                    notifications[index] = notification;
+                                                    _notifications[index] = notification;
 
-                                                    this.setState({ notifications, notificationCount: notificationCounter.count });
-                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' });
+                                                    setNotifications(_notifications);
+                                                    setNotificationCount(notificationCounter.count);
+                                                    Helper.info(strings.CONNECTION_APPROVE);
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
                                                 });
                                         } else {
-                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                        Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
                                     });
                             }
                             else {
-                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                Helper.error(strings.CONNECTION_APPROVE_ERROR);
                             }
                         })
                         .catch(err => {
-                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                            Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
                         });
                 } else {
-                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
                 }
             })
             .catch(err => {
-                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
             });
     };
 
-    handleCancelDecline = (e) => {
-        this.setState({ openDeclineDialog: false });
+    const handleCancelDecline = (e) => {
+        setOpenDeclineDialog(false);
     };
 
-    handleDecline = (e) => {
-        this.setState({ declineTarget: e.currentTarget, openDeclineDialog: true });
+    const handleDecline = (e) => {
+        setDeclineTarget(e.currentTarget);
+        setOpenDeclineDialog(true);
     };
 
-    handleConfirmDecline = (e) => {
-        const { declineTarget } = this.state;
+    const handleConfirmDecline = (e) => {
         const notificationId = declineTarget.getAttribute('data-id');
         const connId = declineTarget.getAttribute('data-conn-id');
 
@@ -161,7 +136,6 @@ class Notifications extends Component {
                     decline(notificationId)
                         .then(status => {
                             if (status === 200) {
-                                const { user } = this.state;
                                 const notification = {
                                     user: conn.user,
                                     isRequest: false,
@@ -173,485 +147,430 @@ class Notifications extends Component {
                                 notify(notification)
                                     .then(notificationStatus => {
                                         if (notificationStatus === 200) {
-                                            const notifications = [...this.state.notifications];
-                                            const index = this.findIndex(notificationId);
-                                            const notification = { ...notifications[index] };
+                                            const _notifications = [...notifications];
+                                            const index = findIndex(notificationId);
+                                            const notification = { ..._notifications[index] };
                                             notification.isRead = true;
                                             notification.isConnected = false;
                                             notification.isDeclined = true;
-                                            notifications[index] = notification;
+                                            _notifications[index] = notification;
 
-                                            this.setState({ notifications, openDeclineDialog: false });
+                                            setNotifications(_notifications);
+                                            setOpenDeclineDialog(false);
 
                                             getNotificationCounter(user._id)
                                                 .then(notificationCounter => {
-                                                    this.setState({ notificationCount: notificationCounter.count });
-
-                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' });
+                                                    setNotificationCount(notificationCounter.count);
+                                                    Helper.info(strings.CONNECTION_DECLINE);
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
                                                 });
                                         }
                                         else {
-                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                            Helper.error(strings.CONNECTION_DECLINE_ERROR);
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                        Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
                                     });
                             } else {
-                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
                             }
                         })
                         .catch(err => {
-                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                            Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
                         });
 
                 } else {
-                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
                 }
             })
             .catch(err => {
-                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
             });
     };
 
-    handleMarkAsRead = (e) => {
+    const handleMarkAsRead = (e) => {
         const notificationId = e.currentTarget.getAttribute('data-id');
 
         markAsRead(notificationId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const notifications = [...this.state.notifications];
-                            const index = this.findIndex(notificationId);
-                            const notification = { ...notifications[index] };
+                            const _notifications = [...notifications];
+                            const index = findIndex(notificationId);
+                            const notification = { ..._notifications[index] };
                             notification.isRead = true;
-                            notifications[index] = notification;
-                            this.setState({ notifications, notificationCount: notificationCounter.count });
+                            _notifications[index] = notification;
+                            setNotifications(_notifications);
+                            setNotificationCount(notificationCounter.count);
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            Helper.error(null, err);
                         });
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    Helper.error();
                 }
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error(null, err);
             });
     };
 
-    handleMarkAsUnread = (e) => {
+    const handleMarkAsUnread = (e) => {
         const notificationId = e.currentTarget.getAttribute('data-id');
 
         markAsUnread(notificationId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const notifications = [...this.state.notifications];
-                            const index = this.findIndex(notificationId);
-                            const notification = { ...notifications[index] };
+                            const _notifications = [...notifications];
+                            const index = findIndex(notificationId);
+                            const notification = { ..._notifications[index] };
                             notification.isRead = false;
-                            notifications[index] = notification;
-                            this.setState({ notifications, notificationCount: notificationCounter.count });
+                            _notifications[index] = notification;
+                            setNotifications(_notifications);
+                            setNotificationCount(notificationCounter.count);
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            Helper.error(null, err);
                         });
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    Helper.error();
                 }
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error(null, err);
             });
     };
 
-    handleDeleteNotification = (e) => {
+    const handleDeleteNotification = (e) => {
         const notificationId = e.currentTarget.getAttribute('data-id');
 
         deleteNotification(notificationId)
             .then(status => {
                 if (status === 200) {
-                    const { user } = this.state;
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const notifications = [...this.state.notifications];
-                            const index = this.findIndex(notificationId);
-                            notifications.splice(index, 1);
-                            this.setState({ notifications, notificationCount: notificationCounter.count });
-                            toast(strings.NOTIFICATION_DELETE, { type: 'info' });
+                            const _notifications = [...notifications];
+                            const index = findIndex(notificationId);
+                            _notifications.splice(index, 1);
+                            setNotifications(_notifications);
+                            setNotificationCount(notificationCounter.count);
+                            Helper.info(strings.NOTIFICATION_DELETE);
                         })
                         .catch(err => {
-                            toast(strings.NOTIFICATION_DELETE_ERROR, { type: 'error' });
+                            Helper.error(strings.NOTIFICATION_DELETE_ERROR, err);
                         });
                 } else {
-                    toast(strings.NOTIFICATION_DELETE_ERROR, { type: 'error' });
+                    Helper.error(strings.NOTIFICATION_DELETE_ERROR);
                 }
             })
             .catch(err => {
-                toast(strings.NOTIFICATION_DELETE_ERROR, { type: 'error' });
+                Helper.error(strings.NOTIFICATION_DELETE_ERROR, err);
             });
 
     };
 
-    handleDeleteAllNotifications = () => {
-        this.setState({ openDeleteDialog: true });
+    const handleDeleteAllNotifications = () => {
+        setOpenDeleteDialog(true);
     };
 
-    handleCancelDelete = () => {
-        this.setState({ openDeleteDialog: false });
+    const handleCancelDelete = () => {
+        setOpenDeleteDialog(false);
     };
 
-    handleConfirmDelete = () => {
-        deleteNotifications(this.state.user._id).then(status => {
+    const handleConfirmDelete = () => {
+        deleteNotifications(user._id).then(status => {
             if (status === 200) {
-                this.setState({ notifications: [], notificationCount: 0, openDeleteDialog: false });
+                setNotifications([]);
+                setNotificationCount(0);
+                setOpenDeleteDialog(false);
             } else {
-                this.setState({ openDeleteDialog: false });
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                setOpenDeleteDialog(false);
+                Helper.error();
             }
         });
     };
 
-    handleMarkAllAsRead = () => {
-        markAllAsRead(this.state.user._id).then(status => {
+    const handleMarkAllAsRead = () => {
+        markAllAsRead(user._id).then(status => {
             if (status === 200) {
-                const notifications = [...this.state.notifications];
+                const _notifications = [...notifications];
 
-                for (let i = 0; i < notifications.length; i++) {
-                    const notification = notifications[i];
+                for (let i = 0; i < _notifications.length; i++) {
+                    const notification = _notifications[i];
                     if (!notification.isRead) {
                         notification.isRead = true;
                     }
                 }
 
-                this.setState({ notifications, notificationCount: 0 });
+                setNotifications(_notifications);
+                setNotificationCount(0);
             } else {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                Helper.error();
             }
         });
     };
 
-    fetchNotifications = () => {
-        const { user, page } = this.state;
-        this.setState({ isLoading: true });
+    const fetchNotifications = (page) => {
+        setLoading(true);
 
         getNotifications(user._id, page)
             .then(data => {
-                const notifications = [...this.state.notifications, ...data];
-                this.setState({ notifications, isLoading: false, fetch: data.length > 0 });
+                const _notifications = [...notifications, ...data];
+                setNotifications(_notifications);
+                setFetch(data.length > 0);
+                setLoading(false);
             })
             .catch(err => {
-                this.setState({ isLoading: false });
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                setLoading(false);
+                Helper.error(null, err);
             });
     };
 
-    componentDidMount() {
-        let language = getQueryLanguage();
+    const onLoad = (user) => {
+        const language = getLanguage();
+        moment.locale(language);
+        setUser(user);
 
-        if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
-        }
-        strings.setLanguage(language);
-        this.setState({ isLoading: true });
+        fetchNotifications(page);
 
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-            validateAccessToken().then(status => {
-                getUser(currentUser.id).then(user => {
-                    if (user) {
-
-                        if (user.blacklisted) {
-                            signout();
-                            return;
-                        }
-
-                        moment.locale(language);
-                        this.setState({ user, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
-                        this.fetchNotifications();
-
-                        getNotificationCounter(user._id)
-                            .then(notificationCounter => {
-                                this.setState({ notificationCount: notificationCounter.count });
-                            })
-                            .catch(err => {
-                                toast(strings.GENERIC_ERROR, { type: 'error' });
-                            });
-
-                        const ul = document.querySelector('.notifications-list');
-                        if (ul) {
-                            ul.onscroll = (event) => {
-                                if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                                    this.setState({ page: this.state.page + 1 }, () => {
-                                        this.fetchNotifications();
-                                    });
-                                }
-                            };
-                        }
-                    } else {
-                        signout();
-                    }
-                }).catch(err => {
-                    signout();
-                });
-            }).catch(err => {
-                signout();
+        getNotificationCounter(user._id)
+            .then(notificationCounter => {
+                setNotificationCount(notificationCounter.count);
+            })
+            .catch(err => {
+                Helper.error(null, err);
             });
-        } else {
-            signout();
+
+        const ul = document.querySelector('.notifications-list');
+        if (ul) {
+            ul.onscroll = (event) => {
+                if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
+                    const _page = page + 1;
+                    setPage(_page);
+                    fetchNotifications(_page);
+                }
+            };
         }
     };
 
-    render() {
-        const { isAuthenticating } = this.state;
-        if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
-            if (isTokenValidated) {
-                const { verified, notifications, notificationCount, user, isLoading, openDeclineDialog, openDeleteDialog } = this.state;
-                const rtl = user.language === 'ar';
-
-                return (
+    return (
+        <Master onLoad={onLoad} notificationCount={notificationCount} strict>
+            <div className="notifications content">
+                {loading && <Backdrop text={strings.LOADING} />}
+                {!loading && notifications.length === 0 ?
+                    <Card variant="outlined" className="content-nc">
+                        <CardContent>
+                            <Typography color="textSecondary">
+                                {strings.NO_NOTIFICATION}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                    :
                     <div>
-                        <Header user={user} notificationCount={notificationCount} />
-                        {verified ?
-                            <div className="notifications content">
-                                {isLoading && <Backdrop text={strings.LOADING} />}
-                                {!isLoading && notifications.length === 0 ?
-                                    <Card variant="outlined" className="content-nc">
-                                        <CardContent>
-                                            <Typography color="textSecondary">
-                                                {strings.NO_NOTIFICATION}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                    :
-                                    <div>
-                                        <Card variant="outlined" className={`notifications-actions${rtl ? '-rtl' : ''}`} style={notifications.length === 0 ? { display: 'none' } : null}>
-                                            <CardContent>
-                                                <Tooltip title={strings.DELETE_ALL}>
+                        <Card variant="outlined" className={`notifications-actions${rtl ? '-rtl' : ''}`} style={notifications.length === 0 ? { display: 'none' } : null}>
+                            <CardContent>
+                                <Tooltip title={strings.DELETE_ALL}>
+                                    <IconButton
+                                        color="secondary"
+                                        onClick={handleDeleteAllNotifications}
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                {notificationCount > 0 && <Tooltip title={strings.MARK_ALL_AS_READ}>
+                                    <IconButton
+                                        color="default"
+                                        onClick={handleMarkAllAsRead}
+                                    >
+                                        <ReadIcon />
+                                    </IconButton>
+                                </Tooltip>}
+                            </CardContent>
+                        </Card>
+                        <List className="notifications-list">
+                            {
+                                notifications.map((notification, i) => (
+                                    <ListItem key={notification._id}>
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <Info />
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText
+                                            disableTypography
+                                            primary={<Typography style={{ fontWeight: !notification.isRead ? 'bold' : 'normal', color: '#373737' }}>{moment(notification.notifiedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography>}
+                                            secondary={
+                                                <div>
+                                                    {
+                                                        notification.isLink ?
+                                                            <Link href={notification.link} style={{ wordBreak: 'break-all' }}>{notification.message}</Link>
+                                                            : <div style={{ wordBreak: 'break-all' }}>{notification.message}</div>
+                                                    }
+                                                    {isMobile() ?
+                                                        <div>
+                                                            {
+                                                                notification.isRequest && !notification.isConnected && !notification.isDeclined ?
+                                                                    <div style={{ display: 'inline-block' }}>
+                                                                        <Tooltip title={strings.APPROVE}>
+                                                                            <IconButton
+                                                                                color="primary"
+                                                                                data-id={notification._id}
+                                                                                data-conn-id={notification.senderConnection._id}
+                                                                                onClick={handleApprove}
+                                                                            >
+                                                                                <ThumbUp />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                        <Tooltip title={strings.DECLINE}>
+                                                                            <IconButton
+                                                                                color="secondary"
+                                                                                data-id={notification._id}
+                                                                                data-conn-id={notification.senderConnection._id}
+                                                                                onClick={handleDecline}
+                                                                            >
+                                                                                <ThumbDown />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    </div>
+                                                                    : null
+                                                            }
+                                                            {!notification.isRead
+                                                                ?
+                                                                <Tooltip title={strings.MARK_AS_READ}>
+                                                                    <IconButton
+                                                                        color="default"
+                                                                        data-id={notification._id}
+                                                                        onClick={handleMarkAsRead}
+                                                                    >
+                                                                        <ReadIcon />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                                :
+                                                                <Tooltip title={strings.MARK_AS_UNREAD}>
+                                                                    <IconButton
+                                                                        color="default"
+                                                                        data-id={notification._id}
+                                                                        onClick={handleMarkAsUnread}
+                                                                    >
+                                                                        <UnreadIcon />
+                                                                    </IconButton>
+                                                                </Tooltip>
+                                                            }
+                                                            <Tooltip title={strings.DELETE}>
+                                                                <IconButton
+                                                                    color="secondary"
+                                                                    data-id={notification._id}
+                                                                    onClick={handleDeleteNotification}
+                                                                >
+                                                                    <DeleteIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </div>
+                                                        : null
+                                                    }
+                                                </div>
+                                            } />
+                                        {!isMobile() ?
+                                            <div>
+                                                {
+                                                    notification.isRequest && !notification.isConnected && !notification.isDeclined ?
+                                                        <div style={{ display: 'inline-block' }}>
+                                                            <Button
+                                                                variant="contained"
+                                                                color={notification.isConnected ? "secondary" : (notification.isConnectionPending && !notification.isApprover ? "default" : "primary")}
+                                                                size="small"
+                                                                data-id={notification._id}
+                                                                data-conn-id={notification.senderConnection._id}
+                                                                onClick={handleApprove}
+                                                            >
+                                                                {strings.APPROVE}
+                                                            </Button>
+                                                            <Button
+                                                                variant="contained"
+                                                                color="secondary"
+                                                                size="small"
+                                                                data-id={notification._id}
+                                                                data-conn-id={notification.senderConnection._id}
+                                                                onClick={handleDecline}
+                                                            >
+                                                                {strings.DECLINE}
+                                                            </Button>
+                                                        </div>
+                                                        : null
+                                                }
+                                                {!notification.isRead
+                                                    ?
+                                                    <Tooltip title={strings.MARK_AS_READ}>
+                                                        <IconButton
+                                                            color="default"
+                                                            data-id={notification._id}
+                                                            onClick={handleMarkAsRead}
+                                                        >
+                                                            <ReadIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                    :
+                                                    <Tooltip title={strings.MARK_AS_UNREAD}>
+                                                        <IconButton
+                                                            color="default"
+                                                            data-id={notification._id}
+                                                            onClick={handleMarkAsUnread}
+                                                        >
+                                                            <UnreadIcon />
+                                                        </IconButton>
+                                                    </Tooltip>
+                                                }
+                                                <Tooltip title={strings.DELETE}>
                                                     <IconButton
                                                         color="secondary"
-                                                        onClick={this.handleDeleteAllNotifications}
+                                                        data-id={notification._id}
+                                                        onClick={handleDeleteNotification}
                                                     >
                                                         <DeleteIcon />
                                                     </IconButton>
                                                 </Tooltip>
-                                                {notificationCount > 0 && <Tooltip title={strings.MARK_ALL_AS_READ}>
-                                                    <IconButton
-                                                        color="default"
-                                                        onClick={this.handleMarkAllAsRead}
-                                                    >
-                                                        <ReadIcon />
-                                                    </IconButton>
-                                                </Tooltip>}
-                                            </CardContent>
-                                        </Card>
-                                        <List className="notifications-list">
-                                            {
-                                                notifications.map((notification, i) => (
-                                                    <ListItem key={notification._id}>
-                                                        <ListItemAvatar>
-                                                            <Avatar>
-                                                                <Info />
-                                                            </Avatar>
-                                                        </ListItemAvatar>
-                                                        <ListItemText
-                                                            disableTypography
-                                                            primary={<Typography style={{ fontWeight: !notification.isRead ? 'bold' : 'normal', color: '#373737' }}>{moment(notification.notifiedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography>}
-                                                            secondary={
-                                                                <div>
-                                                                    {
-                                                                        notification.isLink ?
-                                                                            <Link href={notification.link} style={{ wordBreak: 'break-all' }}>{notification.message}</Link>
-                                                                            : <div style={{ wordBreak: 'break-all' }}>{notification.message}</div>
-                                                                    }
-                                                                    {isMobile() ?
-                                                                        <div>
-                                                                            {
-                                                                                notification.isRequest && !notification.isConnected && !notification.isDeclined ?
-                                                                                    <div style={{ display: 'inline-block' }}>
-                                                                                        <Tooltip title={strings.APPROVE}>
-                                                                                            <IconButton
-                                                                                                color="primary"
-                                                                                                data-id={notification._id}
-                                                                                                data-conn-id={notification.senderConnection._id}
-                                                                                                onClick={this.handleApprove}
-                                                                                            >
-                                                                                                <ThumbUp />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
-                                                                                        <Tooltip title={strings.DECLINE}>
-                                                                                            <IconButton
-                                                                                                color="secondary"
-                                                                                                data-id={notification._id}
-                                                                                                data-conn-id={notification.senderConnection._id}
-                                                                                                onClick={this.handleDecline}
-                                                                                            >
-                                                                                                <ThumbDown />
-                                                                                            </IconButton>
-                                                                                        </Tooltip>
-                                                                                    </div>
-                                                                                    : null
-                                                                            }
-                                                                            {!notification.isRead
-                                                                                ?
-                                                                                <Tooltip title={strings.MARK_AS_READ}>
-                                                                                    <IconButton
-                                                                                        color="default"
-                                                                                        data-id={notification._id}
-                                                                                        onClick={this.handleMarkAsRead}
-                                                                                    >
-                                                                                        <ReadIcon />
-                                                                                    </IconButton>
-                                                                                </Tooltip>
-                                                                                :
-                                                                                <Tooltip title={strings.MARK_AS_UNREAD}>
-                                                                                    <IconButton
-                                                                                        color="default"
-                                                                                        data-id={notification._id}
-                                                                                        onClick={this.handleMarkAsUnread}
-                                                                                    >
-                                                                                        <UnreadIcon />
-                                                                                    </IconButton>
-                                                                                </Tooltip>
-                                                                            }
-                                                                            <Tooltip title={strings.DELETE}>
-                                                                                <IconButton
-                                                                                    color="secondary"
-                                                                                    data-id={notification._id}
-                                                                                    onClick={this.handleDeleteNotification}
-                                                                                >
-                                                                                    <DeleteIcon />
-                                                                                </IconButton>
-                                                                            </Tooltip>
-                                                                        </div>
-                                                                        : null
-                                                                    }
-                                                                </div>
-                                                            } />
-                                                        {!isMobile() ?
-                                                            <div>
-                                                                {
-                                                                    notification.isRequest && !notification.isConnected && !notification.isDeclined ?
-                                                                        <div style={{ display: 'inline-block' }}>
-                                                                            <Button
-                                                                                variant="contained"
-                                                                                color={notification.isConnected ? "secondary" : (notification.isConnectionPending && !notification.isApprover ? "default" : "primary")}
-                                                                                size="small"
-                                                                                data-id={notification._id}
-                                                                                data-conn-id={notification.senderConnection._id}
-                                                                                onClick={this.handleApprove}
-                                                                            >
-                                                                                {strings.APPROVE}
-                                                                            </Button>
-                                                                            <Button
-                                                                                variant="contained"
-                                                                                color="secondary"
-                                                                                size="small"
-                                                                                data-id={notification._id}
-                                                                                data-conn-id={notification.senderConnection._id}
-                                                                                onClick={this.handleDecline}
-                                                                            >
-                                                                                {strings.DECLINE}
-                                                                            </Button>
-                                                                        </div>
-                                                                        : null
-                                                                }
-                                                                {!notification.isRead
-                                                                    ?
-                                                                    <Tooltip title={strings.MARK_AS_READ}>
-                                                                        <IconButton
-                                                                            color="default"
-                                                                            data-id={notification._id}
-                                                                            onClick={this.handleMarkAsRead}
-                                                                        >
-                                                                            <ReadIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                    :
-                                                                    <Tooltip title={strings.MARK_AS_UNREAD}>
-                                                                        <IconButton
-                                                                            color="default"
-                                                                            data-id={notification._id}
-                                                                            onClick={this.handleMarkAsUnread}
-                                                                        >
-                                                                            <UnreadIcon />
-                                                                        </IconButton>
-                                                                    </Tooltip>
-                                                                }
-                                                                <Tooltip title={strings.DELETE}>
-                                                                    <IconButton
-                                                                        color="secondary"
-                                                                        data-id={notification._id}
-                                                                        onClick={this.handleDeleteNotification}
-                                                                    >
-                                                                        <DeleteIcon />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </div>
-                                                            : null
-                                                        }
-                                                    </ListItem>
-                                                )
-                                                )}
-                                        </List>
-                                    </div>
-                                }
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDeclineDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={this.handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDeleteDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{strings.DELETE_ALL_NOTIFICATIONS}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={this.handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={this.handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                            </div>
-                            :
-                            <div className="validate-email">
-                                <span>{strings.VALIDATE_EMAIL}</span>
-                                <Button
-                                    type="button"
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className="btn-resend"
-                                    onClick={this.handleResend}
-                                >{strings.RESEND}</Button>
-                            </div>}
-                    </div >
-                );
-            } else {
-                signout();
-                return null;
-            }
-        } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
-        }
-    }
+                                            </div>
+                                            : null
+                                        }
+                                    </ListItem>
+                                )
+                                )}
+                        </List>
+                    </div>
+                }
+                <Dialog
+                    disableEscapeKeyDown
+                    maxWidth="xs"
+                    open={openDeclineDialog}
+                >
+                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                    <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog
+                    disableEscapeKeyDown
+                    maxWidth="xs"
+                    open={openDeleteDialog}
+                >
+                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                    <DialogContent>{strings.DELETE_ALL_NOTIFICATIONS}</DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        </Master>
+    );
 }
 
 export default Notifications;
