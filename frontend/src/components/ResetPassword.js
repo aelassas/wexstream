@@ -1,354 +1,223 @@
-import React, { Component } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { strings } from '../config/app.config';
-import { getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, compare, resetPassword, getQueryLanguage } from '../services/UserService';
-import Header from './Header';
+import { getUser, compare, resetPassword } from '../services/UserService';
+import {
+    Paper,
+    FormControl,
+    FormHelperText,
+    InputLabel,
+    Input,
+    Button
+} from '@mui/material';
 import Error from '../elements/Error';
-import Paper from '@mui/material/Paper';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import Button from '@mui/material/Button';
-import { toast } from 'react-toastify';
-import Backdrop from '../elements/SimpleBackdrop';
+import Master from '../elements/Master';
+import * as Helper from '../common/Helper';
 
-import { LANGUAGES } from '../config/env.config';
+const ResetPassword = () => {
+    const [user, setUser] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [currentPassword, setCurrentPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState(false);
+    const [passwordLengthError, setPasswordLengthError] = useState(false);
+    const [currentPasswordError, setCurrentPasswordError] = useState(false);
+    const [newPasswordRequiredError, setNewPasswordRequiredError] = useState(false);
+    const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
-class PasswordReset extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null,
-            email: '',
-            password: '',
-            currentPassword: '',
-            newPassword: '',
-            confirmPassword: '',
-            error: false,
-            passwordLengthError: false,
-            currentPasswordError: false,
-            newPasswordRequiredError: false,
-            confirmPasswordError: false,
-            isAuthenticating: true,
-            isTokenValidated: false,
-            verified: false,
-            showCurrentPassword: false,
-            showNewPassword: false,
-            showConfirmPassword: false
-        };
-    }
-
-    handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.email };
-
-        resendLink(data)
-            .then(status => {
-                if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
-                } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-                }
-            })
-            .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    }
-
-    handleCurrentPasswordChange = (e) => {
-        e.preventDefault();
-        this.setState({ currentPassword: e.target.value });
+    const handleCurrentPasswordChange = (e) => {
+        setCurrentPassword(e.target.value);
     };
 
-    handleNewPasswordChange = (e) => {
-        e.preventDefault();
-        this.setState({ newPassword: e.target.value });
+    const handleNewPasswordChange = (e) => {
+        setNewPassword(e.target.value);
     };
 
-    handleConfirmPasswordChange = (e) => {
-        e.preventDefault();
-        this.setState({ confirmPassword: e.target.value });
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
     };
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-
-        compare(this.state.currentPassword, this.state.password).then((passwordMatch) => {
-            this.setState({ currentPasswordError: !passwordMatch });
-
-            if (passwordMatch) {
-                if (this.state.newPassword.length === 0) {
-                    this.setState({
-                        newPasswordRequiredError: true,
-                        passwordLengthError: false,
-                        confirmPasswordError: false
-                    });
-                    return;
-                } else {
-                    this.setState({
-                        newPasswordRequiredError: false
-                    });
-                }
-
-                if (this.state.newPassword.length < 6) {
-                    this.setState({
-                        passwordLengthError: true,
-                        confirmPasswordError: false
-                    });
-                    return;
-                } else {
-                    this.setState({
-                        passwordLengthError: false
-                    });
-                }
-
-                if (this.state.newPassword !== this.state.confirmPassword) {
-                    this.setState({
-                        confirmPasswordError: true
-                    });
-                    return;
-                } else {
-                    this.setState({
-                        confirmPasswordError: false
-                    });
-                }
-
-                const data = {
-                    email: this.state.email,
-                    password: this.state.password,
-                    newPassword: this.state.newPassword
-                };
-
-                resetPassword(data)
-                    .then(status => {
-                        if (status === 200) {
-                            getUser(this.state.user._id).then(user => {
-                                this.setState({
-                                    user,
-                                    password: user.password,
-                                    currentPassword: '',
-                                    newPassword: '',
-                                    confirmPassword: '',
-                                    showCurrentPassword: false,
-                                    showNewPassword: false,
-                                    showConfirmPassword: false
-                                });
-                                toast(strings.PASSWORD_UPDATE, { type: 'info' });
-                            }).catch(err => {
-                                this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
-                            });
-                        } else {
-                            this.setState({ error: true });
-                            toast(strings.PASSWORD_UPDATE_ERROR, { type: 'error' });
-                        }
-                    })
-                    .catch(err => {
-                        this.setState({ error: true });
-                        toast(strings.PASSWORD_UPDATE_ERROR, { type: 'error' });
-                    });
-            }
-        });
-
-    };
-
-    handleOnConfirmPasswordKeyDown = (e) => {
+    const handleOnConfirmPasswordKeyDown = (e) => {
         if (e.key === 'Enter') {
-            this.handleSubmit(e);
+            handleSubmit(e);
         }
-    }
+    };
 
-    handleMouseDownPassword = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-    };
 
-    handleClickShowCurrentPassword = (e) => {
-        this.setState({ showCurrentPassword: !this.state.showCurrentPassword });
-    };
+        compare(currentPassword, password)
+            .then((passwordMatch) => {
+                setCurrentPasswordError(!passwordMatch);
 
-    handleClickShowNewPassword = (e) => {
-        this.setState({ showNewPassword: !this.state.showNewPassword });
-    };
-
-    handleClickShowConfirmPassword = (e) => {
-        this.setState({ showConfirmPassword: !this.state.showConfirmPassword });
-    };
-
-    handleChange = (e) => {
-        e.preventDefault();
-    };
-
-    componentDidMount() {
-        let language = getQueryLanguage();
-
-        if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
-        }
-        strings.setLanguage(language);
-        this.setState({});
-
-        const currentUser = getCurrentUser();
-        if (currentUser) {
-            validateAccessToken().then(status => {
-                getUser(currentUser.id).then(user => {
-                    if (user) {
-                        this.setState({ user, email: user.email, verified: user.verified, password: user.password, isAuthenticating: false, isTokenValidated: status === 200 });
+                if (passwordMatch) {
+                    if (newPassword.length === 0) {
+                        setNewPasswordRequiredError(true);
+                        setPasswordLengthError(false);
+                        setConfirmPasswordError(false);
+                        return;
                     } else {
-                        signout();
+                        setNewPasswordRequiredError(false);
                     }
-                }).catch(err => {
-                    this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
-                    signout();
-                });
-            }).catch(err => {
-                this.setState({ isAuthenticating: false, isTokenValidated: false });
-                signout();
+
+                    if (newPassword.length < 6) {
+                        setPasswordLengthError(true);
+                        setConfirmPasswordError(false);
+                        return;
+                    } else {
+                        setPasswordLengthError(false);
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        setConfirmPasswordError(true);
+                        return;
+                    } else {
+                        setConfirmPasswordError(false);
+                    }
+
+                    const data = {
+                        email: email,
+                        password: password,
+                        newPassword: newPassword
+                    };
+
+                    resetPassword(data)
+                        .then(status => {
+                            if (status === 200) {
+                                getUser(user._id)
+                                    .then(user => {
+                                        setUser(user);
+                                        setPassword(user.password);
+                                        setCurrentPassword('');
+                                        setNewPassword('');
+                                        setConfirmPassword('');
+                                        Helper.info(strings.PASSWORD_UPDATE);
+                                    })
+                                    .catch(err => {
+                                        Helper.error(null, err);
+                                    });
+                            } else {
+                                setError(true);
+                                Helper.error(strings.PASSWORD_UPDATE_ERROR);
+                            }
+                        })
+                        .catch(err => {
+                            setError(true);
+                            Helper.error(strings.PASSWORD_UPDATE_ERROR, err);
+                        });
+                }
             });
-        } else {
-            this.setState({ verified: false, isAuthenticating: false, isTokenValidated: false });
-            signout();
-        }
-    }
 
-    render() {
-        const { isAuthenticating } = this.state;
-        if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
-            if (isTokenValidated) {
-                const { verified, error, currentPassword, newPassword, confirmPassword,
-                    currentPasswordError, passwordLengthError, newPasswordRequiredError,
-                    confirmPasswordError, showCurrentPassword, showNewPassword, showConfirmPassword, user } = this.state;
-                return (
-                    <div>
-                        <Header user={user} />
-                        {verified ? (
-                            <div className="password-reset content-taspr">
-                                <Paper className="password-reset-form password-reset-form-wrapper" elevation={10}>
-                                    <h1 className="password-reset-form-title"> {strings.SPASSWORD_RESET_HEADING} </h1>
-                                    <form className="form" onSubmit={this.handleSubmit}>
-                                        <FormControl fullWidth margin="dense">
-                                            <InputLabel
-                                                htmlFor="password-current"
-                                                error={currentPasswordError}
-                                            >
-                                                {strings.CURRENT_PASSWORD}
-                                            </InputLabel>
-                                            <Input
-                                                id="password-current"
-                                                name="currentPass"
-                                                onChange={this.handleCurrentPasswordChange}
-                                                value={currentPassword}
-                                                error={currentPasswordError}
-                                                type={showCurrentPassword ? 'text' : 'password'}
-                                                required
-                                            />
-                                            <FormHelperText
-                                                error={currentPasswordError}
-                                            >
-                                                {currentPasswordError
-                                                    ? strings.CURRENT_PASSWORD_ERROR
-                                                    : ''}
-                                            </FormHelperText>
-                                        </FormControl>
-                                        <FormControl
-                                            fullWidth
-                                            margin="dense"
-                                            error={newPasswordRequiredError}
-                                        >
-                                            <InputLabel
-                                                htmlFor="password-new"
-                                                error={newPasswordRequiredError}
-                                            >
-                                                {strings.NEW_PASSWORD}
-                                            </InputLabel>
-                                            <Input
-                                                id="password-new"
-                                                name="newPass"
-                                                onChange={this.handleNewPasswordChange}
-                                                value={newPassword}
-                                                error={newPasswordRequiredError}
-                                                type={showNewPassword ? 'text' : 'password'}
-                                                required
-                                            />
-                                            <FormHelperText
-                                                error={newPasswordRequiredError}
-                                            >
-                                                {newPasswordRequiredError ? strings.NEW_PASSWORD_REQUIRED_ERROR : ''}
-                                            </FormHelperText>
-                                        </FormControl>
-                                        <FormControl
-                                            fullWidth
-                                            margin="dense"
-                                            error={confirmPasswordError}
-                                        >
-                                            <InputLabel
-                                                htmlFor="password-confirm"
-                                                error={confirmPasswordError}
-                                            >
-                                                {strings.CONFIRM_PASSWORD}
-                                            </InputLabel>
-                                            <Input
-                                                id="password-confirm"
-                                                name="confirmPass"
-                                                onChange={this.handleConfirmPasswordChange}
-                                                onKeyDown={this.handleOnConfirmPasswordKeyDown}
-                                                value={confirmPassword}
-                                                error={confirmPasswordError || passwordLengthError}
-                                                type={showConfirmPassword ? 'text' : 'password'}
-                                                required
-                                            />
-                                            <FormHelperText
-                                                error={confirmPasswordError || passwordLengthError}
-                                            >
-                                                {confirmPasswordError
-                                                    ? strings.PASSWORDS_DONT_MATCH
-                                                    : (passwordLengthError ? strings.ERROR_IN_PASSWORD : '')}
-                                            </FormHelperText>
-                                        </FormControl>
-                                        <div className={user.language === 'ar' ? 'buttons-rtl' : 'buttons'}>
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                color="primary"
-                                                size="small"
-                                            >
-                                                {strings.RESET_PASSWORD}
-                                            </Button>
-                                            <Button
-                                                variant="contained"
-                                                color="default"
-                                                size="small"
-                                                href="/home"> {strings.CANCEL}
-                                            </Button>
-                                        </div>
-                                        <div className="form-error">
-                                            {error && <Error message={strings.PASSWORD_UPDATE_ERROR} />}
-                                        </div>
-                                    </form>
-                                </Paper>
-                            </div>)
-                            :
-                            (<div className="validate-email">
-                                <span>{strings.VALIDATE_EMAIL}</span>
-                                <Button
-                                    type="button"
-                                    variant="contained"
-                                    color="secondary"
-                                    size="small"
-                                    className="btn-resend"
-                                    onClick={this.handleResend}
-                                >{strings.RESEND}</Button>
-                            </div>)}
-                    </div>
-                );
-            } else {
-                return (<Navigate to={'/sign-in' + window.location.search} />);
-            }
-        } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
-        }
-    }
-}
+    };
 
-export default PasswordReset;
+    const onLoad = (user) => {
+        setUser(user);
+        setEmail(user.email);
+        setPassword(user.password);
+    };
+
+    return (
+        <Master onLoad={onLoad} strict>
+            <div className="password-reset content-taspr">
+                <Paper className="password-reset-form password-reset-form-wrapper" elevation={10}>
+                    <h1 className="password-reset-form-title"> {strings.SPASSWORD_RESET_HEADING} </h1>
+                    <form className="form" onSubmit={handleSubmit}>
+                        <FormControl fullWidth margin="dense">
+                            <InputLabel
+                                htmlFor="password-current"
+                                error={currentPasswordError}
+                            >
+                                {strings.CURRENT_PASSWORD}
+                            </InputLabel>
+                            <Input
+                                id="password-current"
+                                name="currentPass"
+                                onChange={handleCurrentPasswordChange}
+                                value={currentPassword}
+                                error={currentPasswordError}
+                                type="password"
+                                required
+                            />
+                            <FormHelperText error={currentPasswordError}>
+                                {(currentPasswordError && strings.CURRENT_PASSWORD_ERROR) || ''}
+                            </FormHelperText>
+                        </FormControl>
+                        <FormControl
+                            fullWidth
+                            margin="dense"
+                            error={newPasswordRequiredError}
+                        >
+                            <InputLabel
+                                htmlFor="password-new"
+                                error={newPasswordRequiredError}
+                            >
+                                {strings.NEW_PASSWORD}
+                            </InputLabel>
+                            <Input
+                                id="password-new"
+                                name="newPass"
+                                onChange={handleNewPasswordChange}
+                                value={newPassword}
+                                error={newPasswordRequiredError}
+                                type="password"
+                                required
+                            />
+                            <FormHelperText error={newPasswordRequiredError}>
+                                {(newPasswordRequiredError && strings.NEW_PASSWORD_REQUIRED_ERROR) || ''}
+                            </FormHelperText>
+                        </FormControl>
+                        <FormControl
+                            fullWidth
+                            margin="dense"
+                            error={confirmPasswordError}
+                        >
+                            <InputLabel
+                                htmlFor="password-confirm"
+                                error={confirmPasswordError}
+                            >
+                                {strings.CONFIRM_PASSWORD}
+                            </InputLabel>
+                            <Input
+                                id="password-confirm"
+                                name="confirmPass"
+                                onChange={handleConfirmPasswordChange}
+                                onKeyDown={handleOnConfirmPasswordKeyDown}
+                                value={confirmPassword}
+                                error={confirmPasswordError || passwordLengthError}
+                                type="password"
+                                required
+                            />
+                            <FormHelperText error={confirmPasswordError || passwordLengthError}>
+                                {(confirmPasswordError && strings.PASSWORDS_DONT_MATCH) || (passwordLengthError && strings.ERROR_IN_PASSWORD) || ''}
+                            </FormHelperText>
+                        </FormControl>
+                        <div className={user.language === 'ar' ? 'buttons-rtl' : 'buttons'}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                            >
+                                {strings.RESET_PASSWORD}
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="default"
+                                size="small"
+                                href="/home"
+                            >
+                                {strings.CANCEL}
+                            </Button>
+                        </div>
+                        <div className="form-error">
+                            {error && <Error message={strings.PASSWORD_UPDATE_ERROR} />}
+                        </div>
+                    </form>
+                </Paper>
+            </div>
+        </Master>
+    );
+};
+
+export default ResetPassword;
