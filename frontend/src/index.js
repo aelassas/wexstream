@@ -3,11 +3,11 @@ import ReactDOM from "react-dom/client";
 import App from './App';
 import Env from './config/env.config';
 import { strings as commonStrings } from './lang/common';
-import * as UserService from './services/UserService';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ToastContainer, toast } from 'react-toastify';
 import { frFR, enUS } from '@mui/material/locale';
+import * as UserService from './services/UserService';
 
 import 'react-toastify/dist/ReactToastify.min.css';
 import './assets/css/common.css';
