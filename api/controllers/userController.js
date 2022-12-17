@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import BlockedUser from '../models/BlockedUser.js';
+import ReportedUser from '../models/ReportedUser.js';
 import Connection from '../models/Connection.js';
 import Notification from '../models/Notification.js';
 import Token from '../models/Token.js';
