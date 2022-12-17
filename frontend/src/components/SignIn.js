@@ -35,7 +35,6 @@ import { loadFacebookSdk, facebookLogin } from '../auth/facebook';
 import { loadGoogleSdk, googleLogin } from '../auth/google';
 import GooglePlay from '../assets/img/google-play.png';
 
-
 class SignIn extends Component {
 
   constructor(props) {

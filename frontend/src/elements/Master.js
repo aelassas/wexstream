@@ -77,10 +77,10 @@ const Master = (props) => {
             if (status === 200) {
                 Helper.info(strings.VALIDATION_EMAIL_SENT);
             } else {
-                Helper.error(null, strings.VALIDATION_EMAIL_ERROR);
+                Helper.error(strings.VALIDATION_EMAIL_ERROR);
             }
         }).catch(err => {
-            Helper.error(null, strings.VALIDATION_EMAIL_ERROR);
+            Helper.error(strings.VALIDATION_EMAIL_ERROR, err);
         });
     };
 
@@ -95,7 +95,7 @@ const Master = (props) => {
             />
             {((!user && !loading) || (user && user.verified))
                 ?
-                <div>{props.children}</div>
+                <>{props.children}</>
                 :
                 !loading &&
                 <div className="validate-email">
