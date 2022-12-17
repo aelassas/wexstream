@@ -63,41 +63,17 @@ const Settings = () => {
         setWebsiteError(websiteError);
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        const data = {
-            email: user.email,
-            fullName,
-            bio,
-            location,
-            website
-        };
-
-        updateUser(data)
-            .then(status => {
-                if (status === 200) {
-                    Helper.info(strings.USER_UPDATE);
-                } else {
-                    Helper.error(strings.USER_UPDATE_ERROR);
-                }
-            })
-            .catch((err) => {
-                Helper.error(strings.USER_UPDATE_ERROR, err);
-            });
-    };
-
     const _openDialog = () => {
         setOpenDialog(true);
+    };
+
+    const _closeDialog = () => {
+        setOpenDialog(false);
     };
 
     const deleteAccount = (e) => {
         e.preventDefault();
         _openDialog();
-    };
-
-    const _closeDialog = () => {
-        setOpenDialog(false);
     };
 
     const handleCancelDelete = (e) => {
@@ -133,10 +109,12 @@ const Settings = () => {
                     setUser(user);
                     Helper.info(strings.SETTING_UPDATED);
                 } else {
+                    setEnableEmailNotifications(!e.target.checked);
                     Helper.error();
                 }
             })
             .catch((err) => {
+                setEnableEmailNotifications(!e.target.checked);
                 Helper.error(null, err);
             });
     };
@@ -151,10 +129,12 @@ const Settings = () => {
                     setUser(user);
                     Helper.info(strings.SETTING_UPDATED);
                 } else {
+                    setEnablePrivateMessages(!e.target.checked);
                     Helper.error();
                 }
             })
             .catch((err) => {
+                setEnablePrivateMessages(!e.target.checked);
                 Helper.error(null, err);
             });
     };
@@ -166,6 +146,30 @@ const Settings = () => {
     const onAvatarChange = (user) => {
         setLoading(false);
         setUser(Helper.clone(user));
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const data = {
+            email: user.email,
+            fullName,
+            bio,
+            location,
+            website
+        };
+
+        updateUser(data)
+            .then(status => {
+                if (status === 200) {
+                    Helper.info(strings.USER_UPDATE);
+                } else {
+                    Helper.error(strings.USER_UPDATE_ERROR);
+                }
+            })
+            .catch((err) => {
+                Helper.error(strings.USER_UPDATE_ERROR, err);
+            });
     };
 
     const onLoad = (user) => {
