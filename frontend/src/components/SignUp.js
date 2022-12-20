@@ -1,308 +1,204 @@
-import React, { Component } from 'react';
-import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
+import React, { useEffect, useState } from 'react';
 import { strings } from '../config/app.config';
-import { signup, validateEmail, signin, getCurrentUser, validateAccessToken, signout, getUser, getLanguage, getQueryLanguage } from '../services/UserService';
-import Error from '../elements/Error';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import FormHelperText from '@mui/material/FormHelperText';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
-import ReCAPTCHA from "react-google-recaptcha";
-import Header from './Header';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
+import * as UserService from '../services/UserService';
+import * as Helper from '../common/Helper';
 import Backdrop from '../elements/SimpleBackdrop';
+import Error from '../elements/Error';
+import {
+    Input,
+    InputLabel,
+    FormControl,
+    FormHelperText,
+    Button,
+    Paper,
+    Checkbox,
+    Link
+} from '@mui/material';
 
+const SignUp = () => {
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [tosChecked, setTosChecked] = useState(false);
+    const [error, setError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-export default class SignUp extends Component {
+    const handleOnChangeFullName = (e) => {
+        setFullName(e.target.value);
+    };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            language: DEFAULT_LANGUAGE,
-            fullName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            reCaptchaToken: '',
-            error: false,
-            recaptchaError: false,
-            passwordError: false,
-            passwordsDontMatch: false,
-            emailError: false,
-            showPassword: false,
-            showConfirmPassword: false,
-            visible: false,
-            tosChecked: false,
-            isLoading: false
+    const handleOnChangeEmail = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const handleOnChangePassword = (e) => {
+        setPassword(e.target.value);
+    };
+
+    const handleOnChangeConfirmPassword = (e) => {
+        setConfirmPassword(e.target.value);
+    };
+
+    const handleOnBlur = (e) => {
+        setEmail(e.target.value);
+
+        const data = {
+            email: email
         };
+
+        UserService.validateEmail(data)
+            .then(status => {
+                if (status === 204) {
+                    setEmailError(true);
+                } else {
+                    setEmailError(false);
+                }
+            }).catch(err => {
+                setEmailError(false);
+                Helper.error(null, err);
+            });
+    };
+
+    const preventDefault = (e) => {
+        e.preventDefault();
     }
 
-    handleOnChangeFullName = e => {
-        this.setState({
-            fullName: e.target.value,
-        });
+    const handleTosChange = (e) => {
+        setTosChecked(e.target.checked);
     };
 
-    handleOnChangeEmail = e => {
-        this.setState({
-            email: e.target.value,
-        });
-
-    };
-
-    handleOnChangePassword = e => {
-        this.setState({
-            password: e.target.value,
-        });
-    };
-
-    handleOnChangeConfirmPassword = e => {
-        this.setState({
-            confirmPassword: e.target.value,
-        });
-    };
-
-    handleOnBlur = e => {
-        this.setState({
-            email: e.target.value,
-        });
-
-        const emailData = {
-            email: this.state.email,
-        };
-
-        // let emailStatus = 400;
-        // try {
-        //     emailStatus = await validateEmail(emailData);
-        // } catch (err) {
-        //     emailStatus = 204;
-        // }
-
-        // if (emailStatus === 204) {
-        //     this.setState({ emailError: true });
-        // } else {
-        //     this.setState({ emailError: false });
-        // }
-
-        validateEmail(emailData).then(emailStatus=>{
-            if (emailStatus === 204) {
-                this.setState({ emailError: true });
-            } else {
-                this.setState({ emailError: false });
-            }
-        }).catch(err=>{
-            this.setState({ emailError: false });
-        });
-    };
-
-    handleOnRecaptchaVerify = (token) => {
-        this.setState({ reCaptchaToken: token });
-    };
-
-    handleClickShowPassword = () => {
-        this.setState({ showPassword: !this.state.showPassword });
-    };
-
-    handleMouseDownPassword = (event) => {
-        event.preventDefault();
-    };
-
-    handleClickShowConfirmPassword = () => {
-        this.setState({ showConfirmPassword: !this.state.showConfirmPassword });
-    };
-
-    handleMouseDownConfirmPassword = (event) => {
-        event.preventDefault();
-    };
-
-    preventDefault = (event) => event.preventDefault();
-
-    handleTosChange = (event) => {
-        this.setState({ tosChecked: event.target.checked });
-    };
-
-    handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         const emailData = {
-            email: this.state.email,
+            email: email
         };
 
-        // let emailStatus = 400;
-        // try {
-        //     emailStatus = await validateEmail(emailData);
-        // } catch (err) {
-        //     emailStatus = 204;
-        // }
-
-        // if (emailStatus === 204) {
-        //     this.setState({ emailError: true });
-        //     return;
-        // } else {
-        //     this.setState({ emailError: false });
-        // }
-
-        validateEmail(emailData)
+        UserService.validateEmail(emailData)
             .then(emailStatus => {
                 if (emailStatus === 204) {
-                    this.setState({ emailError: true });
+                    setEmailError(true);
                 } else {
-                    this.setState({ emailError: false });
+                    setEmailError(false);
 
-                    if (this.state.password.length < 6) {
-                        this.setState({
-                            passwordError: true,
-                            recaptchaError: false,
-                            passwordsDontMatch: false,
-                            error: false,
-                            register: false
-                        });
+                    if (password.length < 6) {
+                        setPasswordError(true);
+                        setPasswordsDontMatch(false);
+                        setError(false);
                         return;
                     }
-            
-                    if (this.state.password !== this.state.confirmPassword) {
-                        this.setState({
-                            passwordsDontMatch: true,
-                            recaptchaError: false,
-                            passwordError: false,
-                            error: false,
-                            register: false
-                        });
+
+                    if (password !== confirmPassword) {
+                        setPasswordError(false);
+                        setPasswordsDontMatch(true);
+                        setError(false);
                         return;
                     }
-            
-                    if (!this.state.reCaptchaToken) {
-                        this.setState({
-                            recaptchaError: true,
-                            passwordsDontMatch: false,
-                            passwordError: false,
-                            error: false,
-                            register: false
-                        });
-                        return;
-                    }
-            
-                    this.setState({ isLoading: true });
-            
+
+                    setLoading(true);
+
                     const data = {
-                        email: this.state.email,
-                        password: this.state.password,
-                        fullName: this.state.fullName,
-                        language: getLanguage()
+                        email: email,
+                        password: password,
+                        fullName: fullName,
+                        language: UserService.getLanguage()
                     };
-            
-                    signup(data)
+
+                    UserService.signup(data)
                         .then(
                             registerStatus => {
                                 if (registerStatus === 200) {
-                                    signin({
-                                        email: this.state.email,
-                                        password: this.state.password
+                                    UserService.signin({
+                                        email: email,
+                                        password: password
                                     })
                                         .then(signInResult => {
                                             if (signInResult.status === 200) {
                                                 window.location = '/home' + window.location.search;
                                             } else {
-                                                this.setState({
-                                                    error: true,
-                                                    passwordError: false,
-                                                    passwordsDontMatch: false,
-                                                    register: false,
-                                                    isLoading: false
-                                                });
+                                                setError(true);
+                                                setPasswordError(false);
+                                                setPasswordsDontMatch(false);
+                                                setLoading(false);
                                             }
                                         })
-                                        .catch(err => {
-                                            this.setState({
-                                                error: true,
-                                                passwordError: false,
-                                                passwordsDontMatch: false,
-                                                register: false,
-                                                isLoading: false
-                                            });
+                                        .catch((err) => {
+                                            setError(true);
+                                            setPasswordError(false);
+                                            setPasswordsDontMatch(false);
+                                            setLoading(false);
                                         });
                                 } else
-                                    this.setState({
-                                        error: true,
-                                        passwordError: false,
-                                        passwordsDontMatch: false,
-                                        register: false,
-                                        isLoading: false
-                                    });
+                                    setError(true);
+                                setPasswordError(false);
+                                setPasswordsDontMatch(false);
+                                setLoading(false);
                             })
-                        .catch(err => {
-                            this.setState({
-                                error: true,
-                                passwordError: false,
-                                passwordsDontMatch: false,
-                                register: false,
-                                isLoading: false
-                            });
+                        .catch((err) => {
+                            setError(true);
+                            setPasswordError(false);
+                            setPasswordsDontMatch(false);
+                            setLoading(false);
                         });
                 }
 
-        }).catch(err=>{
-            this.setState({ emailError: true });
-        })
+            }).catch((err) => {
+                setEmailError(true);
+            })
     };
 
-    handleChange = (e) => {
-        e.preventDefault();
-    };
-
-    componentDidMount() {
-        let language = getQueryLanguage();
-
-        if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
+    const onLoad = (user) => {
+        if (user) {
+            window.location.href = '/home';
+        } else {
+            setVisible(true);
         }
-        strings.setLanguage(language);
-        this.setState({ language });
+    };
 
-        const currentUser = getCurrentUser();
+    useEffect(() => {
+        const currentUser = UserService.getCurrentUser();
         if (currentUser) {
-            validateAccessToken().then(status => {
-                getUser(currentUser.id).then(user => {
+            UserService.validateAccessToken().then(status => {
+                UserService.getUser(currentUser.id).then(user => {
                     if (user) {
                         window.location.href = '/home';
                     } else {
-                        signout();
+                        UserService.signout();
                     }
-                }).catch(err => {
-                    signout();
+                }).catch(() => {
+                    UserService.signout();
                 });
-            }).catch(err => {
-                signout();
+            }).catch(() => {
+                UserService.signout();
             });
         } else {
-            this.setState({ visible: true });
+            setVisible(true);
         }
-    }
+    }, []);
 
-    render() {
-        const { error, passwordError, passwordsDontMatch, emailError, recaptchaError, language,
-            showPassword, showConfirmPassword, visible, tosChecked, isLoading } = this.state;
-
-        return (
-            <div>
-                <Header />
-                <Paper className="signup-form signup-form-wrapper" elevation={10} style={visible ? null : { display: 'none' }}>
-                    <div className="signup">
-                        <h1 className="signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
-                        <form onSubmit={this.handleSubmit}>
+    return (
+        <div>
+            <Header />
+            {visible &&
+                <Paper className="UserService.signup-form UserService.signup-form-wrapper" elevation={10}>
+                    <div className="UserService.signup">
+                        <h1 className="UserService.signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
+                        <form onSubmit={handleSubmit}>
                             <div>
                                 <FormControl fullWidth margin="dense">
                                     <InputLabel htmlFor="full-name">{strings.FULL_NAME}</InputLabel>
                                     <Input
                                         id="full-name"
                                         type="text"
-                                        value={this.state.fullName}
+                                        value={fullName}
                                         name="FullName"
                                         required
-                                        onChange={this.handleOnChangeFullName}
+                                        onChange={handleOnChangeFullName}
                                     />
                                 </FormControl>
                                 <FormControl fullWidth margin="dense">
@@ -311,10 +207,10 @@ export default class SignUp extends Component {
                                         id="email"
                                         type="text"
                                         error={emailError}
-                                        value={this.state.email}
+                                        value={email}
                                         name="Email"
-                                        onBlur={this.handleOnBlur}
-                                        onChange={this.handleOnChangeEmail}
+                                        onBlur={handleOnBlur}
+                                        onChange={handleOnChangeEmail}
                                         autoComplete="Email"
                                         required
                                     />
@@ -326,53 +222,46 @@ export default class SignUp extends Component {
                                     <InputLabel htmlFor="password">{strings.PASSWORD}</InputLabel>
                                     <Input
                                         id="password"
-                                        value={this.state.password}
+                                        value={password}
                                         name="Password"
-                                        onChange={this.handleOnChangePassword}
+                                        onChange={handleOnChangePassword}
                                         autoComplete="password"
                                         required
-                                        type={showPassword ? 'text' : 'password'}
+                                        type="password"
                                     />
                                 </FormControl>
                                 <FormControl fullWidth margin="dense">
                                     <InputLabel htmlFor="confirm-password">{strings.CONFIRM_PASSWORD}</InputLabel>
                                     <Input
                                         id="confirm-password"
-                                        value={this.state.confirmPassword}
+                                        value={confirmPassword}
                                         name="ConfirmPassword"
-                                        onChange={this.handleOnChangeConfirmPassword}
+                                        onChange={handleOnChangeConfirmPassword}
                                         autoComplete="password"
                                         required
-                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        type="password"
                                     />
                                 </FormControl>
-                                <div className="recaptcha">
-                                    <ReCAPTCHA
-                                        sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-                                        hl={language}
-                                        onChange={this.handleOnRecaptchaVerify}
-                                    />
-                                </div>
-                                <div className="signup-tos">
+                                <div className="UserService.signup-tos">
                                     <table>
                                         <tbody>
                                             <tr>
                                                 <td>
                                                     <Checkbox
                                                         checked={tosChecked}
-                                                        onChange={this.handleTosChange}
+                                                        onChange={handleTosChange}
                                                         name="tosChecked"
                                                         color="primary"
                                                     />
                                                 </td>
                                                 <td>
-                                                    <Link href="/tos" onClick={this.preventDefault}>{strings.TOS_SIGN_UP}</Link>
+                                                    <Link href="/tos" onClick={preventDefault}>{strings.TOS_SIGN_UP}</Link>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className={language === 'ar' ? 'buttons-rtl' : 'buttons'}>
+                                <div className="buttons">
                                     <Button
                                         type="submit"
                                         variant="contained"
@@ -386,25 +275,28 @@ export default class SignUp extends Component {
                                         variant="contained"
                                         color="default"
                                         size="small"
-                                        href="/sign-in"> {strings.CANCEL}
+                                        href="/sign-in"
+                                    >
+                                        {strings.CANCEL}
                                     </Button>
                                 </div>
                             </div>
                             <div className="form-error">
-                                {(passwordError || passwordsDontMatch || recaptchaError || error) ?
+                                {(passwordError || passwordsDontMatch || error) &&
                                     <div>
                                         {passwordError && <Error message={strings.ERROR_IN_PASSWORD} />}
                                         {passwordsDontMatch && <Error message={strings.PASSWORDS_DONT_MATCH} />}
-                                        {recaptchaError && <Error message={strings.ERROR_IN_RECAPTCHA} />}
                                         {error && <Error message={strings.ERROR_IN_SIGN_UP} />}
                                     </div>
-                                    : null}
+                                }
                             </div>
                         </form>
                     </div>
                 </Paper>
-                {isLoading && <Backdrop text={strings.PLEASE_WAIT} />}
-            </div>
-        );
-    }
-}
+            }
+            {loading && <Backdrop text={strings.PLEASE_WAIT} />}
+        </div>
+    );
+};
+
+export default SignUp;
