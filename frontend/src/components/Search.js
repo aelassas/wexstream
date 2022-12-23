@@ -41,7 +41,6 @@ import {
 import LinkIcon from '@mui/icons-material/Link';
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
 
-
 class Search extends Component {
 
     constructor(props) {
