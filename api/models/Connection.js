@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const connectionSchema = new Schema({
     user: {
@@ -27,18 +27,18 @@ const connectionSchema = new Schema({
 }, {
     strict: true,
     collection: 'Connection'
-});
+})
 
-connectionSchema.index({ user: 1, connection: 1 }, { unique: true });
+connectionSchema.index({ user: 1, connection: 1 }, { unique: true })
 
-const connectionModel = mongoose.model('Connection', connectionSchema);
+const connectionModel = mongoose.model('Connection', connectionSchema)
 
 connectionModel.on('index', (err) => {
     if (err) {
-        console.error('Connection index error: %s', err);
+        console.error('Connection index error: %s', err)
     } else {
-        console.info('Connection indexing complete');
+        console.info('Connection indexing complete')
     }
-});
+})
 
-export default connectionModel;
+export default connectionModel

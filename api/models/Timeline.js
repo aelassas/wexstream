@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const timelineSchema = new Schema({
     speaker: {
@@ -24,16 +24,16 @@ const timelineSchema = new Schema({
     timestamps: true,
     strict: true,
     collection: 'Timeline'
-});
+})
 
-const timelineModel = mongoose.model('Timeline', timelineSchema);
+const timelineModel = mongoose.model('Timeline', timelineSchema)
 
 timelineModel.on('index', (err) => {
     if (err) {
-        console.error('Timeline index error: %s', err);
+        console.error('Timeline index error: %s', err)
     } else {
-        console.info('Timeline indexing complete');
+        console.info('Timeline indexing complete')
     }
-});
+})
 
-export default timelineModel;
+export default timelineModel

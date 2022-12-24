@@ -5,4 +5,4 @@ export default {
     delete: '/api/delete-connection/:userId/:connectionId',
     getConnection: '/api/connection/:connectionId',
     getConnections: '/api/connections/:userId/:page/:pageSize'
-};
+}

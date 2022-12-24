@@ -8,4 +8,4 @@ export default {
     getConferences: '/api/get-conferences/:userId/:isPrivate/:page/:pageSize',
     getMembers:  '/api/get-members/:conferenceId',
     close:  '/api/close-conference/:userId/:conferenceId'
-};
+}

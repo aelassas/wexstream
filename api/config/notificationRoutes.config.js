@@ -10,4 +10,4 @@ export default {
     delete: '/api/delete-notification/:notificationId',
     deleteAll: '/api/delete-notifications/:userId',
     notificationCounter: '/api/notification-counter/:userId'
-};
+}

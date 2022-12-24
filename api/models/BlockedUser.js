@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const blockedUserSchema = new Schema({
     user: {
@@ -20,18 +20,18 @@ const blockedUserSchema = new Schema({
 }, {
     strict: true,
     collection: 'BlockedUser'
-});
+})
 
-blockedUserSchema.index({ user: 1, blockedUser: 1 }, { unique: true });
+blockedUserSchema.index({ user: 1, blockedUser: 1 }, { unique: true })
 
-const blockedUserModel = mongoose.model('BlockedUser', blockedUserSchema);
+const blockedUserModel = mongoose.model('BlockedUser', blockedUserSchema)
 
 blockedUserModel.on('index', (err) => {
     if (err) {
-        console.error('BlockedUser index error: %s', err);
+        console.error('BlockedUser index error: %s', err)
     } else {
-        console.info('BlockedUser indexing complete');
+        console.info('BlockedUser indexing complete')
     }
-});
+})
 
-export default blockedUserModel;
+export default blockedUserModel

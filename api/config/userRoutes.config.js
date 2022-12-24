@@ -24,4 +24,4 @@ export default {
     block: '/api/block/:userId/:blockedUserId',
     unblock: '/api/unblock/:userId/:blockedUserId',
     report: '/api/report'
-};
+}

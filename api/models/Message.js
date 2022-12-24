@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const messageSchema = new Schema({
     from: {
@@ -31,16 +31,16 @@ const messageSchema = new Schema({
     timestamps: true,
     strict: true,
     collection: 'Message'
-});
+})
 
-const messageModel = mongoose.model('Message', messageSchema);
+const messageModel = mongoose.model('Message', messageSchema)
 
 messageModel.on('index', (err) => {
     if (err) {
-        console.error('Message index error: %s', err);
+        console.error('Message index error: %s', err)
     } else {
-        console.info('Message indexing complete');
+        console.info('Message indexing complete')
     }
-});
+})
 
-export default messageModel;
+export default messageModel

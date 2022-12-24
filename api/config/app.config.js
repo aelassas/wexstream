@@ -1,4 +1,4 @@
-import LocalizedStrings from 'localized-strings';
+import LocalizedStrings from 'localized-strings'
 
 export default new LocalizedStrings.default({
     en: {
@@ -73,4 +73,4 @@ export default new LocalizedStrings.default({
         CONFERENCE_NOTIFICATION: 'a démarré la conférence',
         CONFERENCE_NOTIFICATION_CLOSED: 'a terminé la conférence'
     }
-});
+})

@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const messageCounterSchema = new Schema({
     user: {
@@ -21,16 +21,16 @@ const messageCounterSchema = new Schema({
     timestamps: true,
     strict: true,
     collection: 'MessageCounter'
-});
+})
 
-const messageCounterModel = mongoose.model('MessageCounter', messageCounterSchema);
+const messageCounterModel = mongoose.model('MessageCounter', messageCounterSchema)
 
 messageCounterModel.on('index', (err) => {
     if (err) {
-        console.error('MessageCounter index error: %s', err);
+        console.error('MessageCounter index error: %s', err)
     } else {
-        console.info('MessageCounter indexing complete');
+        console.info('MessageCounter indexing complete')
     }
-});
+})
 
-export default messageCounterModel;
+export default messageCounterModel

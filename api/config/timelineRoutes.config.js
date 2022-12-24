@@ -3,4 +3,4 @@ export default {
     deleteSpeakerEntries: '/api/delete-speaker-entry/:speakerId/:conferenceId',
     deleteSubscriberEntry: '/api/delete-subscriber-entry/:entryId',
     getEntries: '/api/get-timeline-entries/:subscriberId/:page/:pageSize'
-};
+}

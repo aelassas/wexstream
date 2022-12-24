@@ -1,7 +1,7 @@
-import validator from 'validator';
-import mongoose from 'mongoose';
+import validator from 'validator'
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const userSchema = new Schema({
     googleId: {
@@ -73,16 +73,16 @@ const userSchema = new Schema({
     timestamps: true,
     strict: true,
     collection: 'User'
-});
+})
 
-const userModel = mongoose.model('User', userSchema);
+const userModel = mongoose.model('User', userSchema)
 
 userModel.on('index', (err) => {
     if (err) {
-        console.error('User index error: %s', err);
+        console.error('User index error: %s', err)
     } else {
-        console.info('User indexing complete');
+        console.info('User indexing complete')
     }
-});
+})
 
-export default userModel;
+export default userModel

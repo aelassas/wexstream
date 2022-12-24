@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const reportedUserSchema = new Schema({
     user: {
@@ -20,18 +20,18 @@ const reportedUserSchema = new Schema({
 }, {
     strict: true,
     collection: 'ReportedUser'
-});
+})
 
-reportedUserSchema.index({ user: 1, reportedUser: 1 }, { unique: true });
+reportedUserSchema.index({ user: 1, reportedUser: 1 }, { unique: true })
 
-const reportedUserModel = mongoose.model('ReportedUser', reportedUserSchema);
+const reportedUserModel = mongoose.model('ReportedUser', reportedUserSchema)
 
 reportedUserModel.on('index', (err) => {
     if (err) {
-        console.error('ReportedUser index error: %s', err);
+        console.error('ReportedUser index error: %s', err)
     } else {
-        console.info('ReportedUser indexing complete');
+        console.info('ReportedUser indexing complete')
     }
-});
+})
 
-export default reportedUserModel;
+export default reportedUserModel

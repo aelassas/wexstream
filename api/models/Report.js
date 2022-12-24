@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const reportSchema = new Schema({
     reportedAt: {
@@ -14,16 +14,16 @@ const reportSchema = new Schema({
 }, {
     strict: true,
     collection: 'Report'
-});
+})
 
-const reportModel = mongoose.model('Report', reportSchema);
+const reportModel = mongoose.model('Report', reportSchema)
 
 reportModel.on('index', (err) => {
     if (err) {
-        console.error('Report index error: %s', err);
+        console.error('Report index error: %s', err)
     } else {
-        console.info('Report indexing complete');
+        console.info('Report indexing complete')
     }
-});
+})
 
-export default reportModel;
+export default reportModel

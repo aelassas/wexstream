@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const conferenceSchema = new Schema({
     title: {
@@ -39,16 +39,16 @@ const conferenceSchema = new Schema({
     timestamps: true,
     strict: true,
     collection: 'Conference'
-});
+})
 
-const conferenceModel = mongoose.model('Conference', conferenceSchema);
+const conferenceModel = mongoose.model('Conference', conferenceSchema)
 
 conferenceModel.on('index', (err) => {
     if (err) {
-        console.error('Conference index error: %s', err);
+        console.error('Conference index error: %s', err)
     } else {
-        console.info('Conference indexing complete');
+        console.info('Conference indexing complete')
     }
-});
+})
 
-export default conferenceModel;
+export default conferenceModel

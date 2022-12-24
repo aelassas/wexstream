@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
-import { strings } from '../config/app.config';
-import Header from './Header';
-import { toast } from 'react-toastify';
+import React, { Component } from 'react'
+import { strings } from '../config/app.config'
+import Header from './Header'
+import { toast } from 'react-toastify'
 import {
     getLanguage, getUser, validateAccessToken, resendLink, getCurrentUser, signout, getSearchKeyword, searchUsers,
     getQueryLanguage
-} from '../services/UserService';
-import { connect, getConnection, getConnectionIds, deleteConnection } from '../services/ConnectionService';
-import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Backdrop from '../elements/SimpleBackdrop';
-import { MessageForm } from '../elements/MessageForm';
-import { Avatar } from '../elements/Avatar';
-import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/ar';
+} from '../services/UserService'
+import { connect, getConnection, getConnectionIds, deleteConnection } from '../services/ConnectionService'
+import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
+import Button from '@mui/material/Button'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Backdrop from '../elements/SimpleBackdrop'
+import { MessageForm } from '../elements/MessageForm'
+import { Avatar } from '../elements/Avatar'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+import moment from 'moment'
+import 'moment/locale/fr'
+import 'moment/locale/ar'
 import {
     Dialog,
     DialogTitle,
@@ -30,21 +30,21 @@ import {
     CardContent,
     IconButton,
     Tooltip
-} from '@mui/material';
+} from '@mui/material'
 import {
     Mail,
     LinkOff,
     ThumbUp,
     ThumbDown,
     Cancel
-} from '@mui/icons-material';
-import LinkIcon from '@mui/icons-material/Link';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config';
+} from '@mui/icons-material'
+import LinkIcon from '@mui/icons-material/Link'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES } from '../config/env.config'
 
 class Search extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
 
         this.state = {
             searchKeyword: '',
@@ -64,47 +64,47 @@ class Search extends Component {
             isConnected: false,
             page: 1,
             fetch: false
-        };
+        }
     }
 
     handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.user.email };
+        e.preventDefault()
+        const data = { email: this.state.user.email }
 
         resendLink(data)
             .then(status => {
                 if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
+                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' })
                 } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
+                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
                 }
             })
             .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    };
+                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
+            })
+    }
 
-    findIndex = (userId) => (this.state.users.findIndex(u => u._id === userId));
+    findIndex = (userId) => (this.state.users.findIndex(u => u._id === userId))
 
     handleCancelDisconnect = (e) => {
-        this.setState({ openDisconnectDialog: false });
-    };
+        this.setState({ openDisconnectDialog: false })
+    }
 
     handleConnect = (e) => {
-        this.setState({ disconnectTarget: e.currentTarget });
+        this.setState({ disconnectTarget: e.currentTarget })
 
-        const isApprover = e.currentTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = e.currentTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = e.currentTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = e.currentTarget.getAttribute('data-id');
-        const { user } = this.state;
-        const users = [...this.state.users]; // Make a shallow copy of users
+        const isApprover = e.currentTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = e.currentTarget.getAttribute('data-is-connection-pending') === 'true'
+        const isConnected = e.currentTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = e.currentTarget.getAttribute('data-id')
+        const { user } = this.state
+        const users = [...this.state.users] // Make a shallow copy of users
 
         if (isApprover && isConnectionPending && !isConnected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Connect
@@ -118,7 +118,7 @@ class Search extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
@@ -126,66 +126,66 @@ class Search extends Component {
                                                                 .then(
                                                                     conn => {
                                                                         if (conn) {
-                                                                            const index = this.findIndex(connectionId);
+                                                                            const index = this.findIndex(connectionId)
                                                                             // Make a shallow copy of the user to mutate
-                                                                            const uuser = { ...users[index] };
+                                                                            const uuser = { ...users[index] }
                                                                             // Update user
-                                                                            uuser.connection = conn;
+                                                                            uuser.connection = conn
                                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                                            users[index] = uuser;
+                                                                            users[index] = uuser
                                                                             // Set the state to our new copy
-                                                                            this.setState({ users });
+                                                                            this.setState({ users })
                                                                         }
                                                                     })
                                                                 .catch(err => {
-                                                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                                })
 
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                        })
                                 } else {
-                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                })
         } else if (isApprover && (isConnectionPending || isConnected)) {
-            this.setState({ openDisconnectDialog: true, isConnected });
+            this.setState({ openDisconnectDialog: true, isConnected })
         } else {
             if (isConnectionPending || isConnected) {
-                this.setState({ openDisconnectDialog: true, isConnected });
+                this.setState({ openDisconnectDialog: true, isConnected })
             } else { // Send connection request
-                const data = { _id: user._id, connectionId: connectionId };
+                const data = { _id: user._id, connectionId: connectionId }
                 connect(data)
                     .then(connectionIds => {
                         if (connectionIds) {
@@ -198,52 +198,52 @@ class Search extends Component {
                                 isLink: true,
                                 senderUser: user._id,
                                 link: `${window.location.origin}/profile?u=${user._id}`
-                            };
+                            }
 
                             notify(notification)
                                 .then(notificationStatus => {
                                     if (notificationStatus === 200) {
-                                        const index = this.findIndex(connectionId);
+                                        const index = this.findIndex(connectionId)
                                         // Make a shallow copy of users you want to mutate
-                                        const uuser = { ...users[index] };
+                                        const uuser = { ...users[index] }
                                         // Update user
-                                        uuser.connection = { isPending: true, isApprover: false };
+                                        uuser.connection = { isPending: true, isApprover: false }
                                         // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                        users[index] = uuser;
+                                        users[index] = uuser
                                         // Set the state to our new copy
-                                        this.setState({ users });
-                                        toast(strings.CONNECTION_REQUEST_SENT, { type: 'info' });
+                                        this.setState({ users })
+                                        toast(strings.CONNECTION_REQUEST_SENT, { type: 'info' })
                                     } else {
-                                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
+                                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
                                     }
                                 })
                                 .catch(err => {
-                                    toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
-                                });
+                                    toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
+                                })
                         } else {
-                            toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
+                            toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
                         }
                     })
                     .catch(err => {
-                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
-                    });
+                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
+                    })
             }
         }
-    };
+    }
 
     handleConfirmDisconnect = (e) => {
-        const { user, disconnectTarget } = this.state;
-        const isApprover = disconnectTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = disconnectTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = disconnectTarget.getAttribute('data-id');
-        const users = [...this.state.users]; // Make a shallow copy of users
+        const { user, disconnectTarget } = this.state
+        const isApprover = disconnectTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true'
+        const isConnected = disconnectTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = disconnectTarget.getAttribute('data-id')
+        const users = [...this.state.users] // Make a shallow copy of users
 
         if (isApprover && (isConnectionPending || isConnected)) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Disconnect
@@ -257,43 +257,43 @@ class Search extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = this.findIndex(connectionId)
                                                             // Make a shallow copy of the user to mutate
-                                                            const uuser = { ...users[index] };
+                                                            const uuser = { ...users[index] }
                                                             // Update user
-                                                            uuser.connection = undefined;
+                                                            uuser.connection = undefined
                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                            users[index] = uuser;
+                                                            users[index] = uuser
                                                             // Set the state to our new copy
-                                                            this.setState({ openDisconnectDialog: false, users });
+                                                            this.setState({ openDisconnectDialog: false, users })
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                        })
                                 } else {
                                     deleteConnection(user._id, connectionId)
                                         .then(status => {
@@ -305,65 +305,65 @@ class Search extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = this.findIndex(connectionId)
                                                             // Make a shallow copy of the user to mutate
-                                                            const uuser = { ...users[index] };
+                                                            const uuser = { ...users[index] }
                                                             // Update user
-                                                            uuser.connection = undefined;
+                                                            uuser.connection = undefined
                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                            users[index] = uuser;
+                                                            users[index] = uuser
                                                             // Set the state to our new copy
-                                                            this.setState({ openDisconnectDialog: false, users });
-                                                            toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                            this.setState({ openDisconnectDialog: false, users })
+                                                            toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                         }
                                                         else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                        })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                })
         } else {
             if (isConnectionPending || isConnected) {
                 getConnectionIds(user._id, connectionId)
                     .then(connectionIds => {
                         if (connectionIds) {
-                            const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                            const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                             getNotification(connectionId, _senderConnectionId, _approverConnectionId)
                                 .then(notification => {
                                     if (notification) {
                                         deleteNotification(notification._id)
                                             .then(status => {
                                                 if (status !== 200) {
-                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                 }
-                                            });
+                                            })
                                     }
-                                });
+                                })
 
                             if (isConnected) { // Disconnect
                                 deleteConnection(user._id, connectionId)
@@ -377,93 +377,93 @@ class Search extends Component {
                                                 isLink: true,
                                                 senderUser: user._id,
                                                 link: `${window.location.origin}/profile?u=${user._id}`
-                                            };
+                                            }
 
                                             notify(notification)
                                                 .then(notificationStatus => {
                                                     if (notificationStatus === 200) {
-                                                        const index = this.findIndex(connectionId);
+                                                        const index = this.findIndex(connectionId)
                                                         // Make a shallow copy of the user to mutate
-                                                        const uuser = { ...users[index] };
+                                                        const uuser = { ...users[index] }
                                                         // Update user
-                                                        uuser.connection = undefined;
+                                                        uuser.connection = undefined
                                                         // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                        users[index] = uuser;
+                                                        users[index] = uuser
                                                         // Set the state to our new copy
-                                                        this.setState({ openDisconnectDialog: false, users });
-                                                        toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                        this.setState({ openDisconnectDialog: false, users })
+                                                        toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                     }
                                                     else {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                     }
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                });
+                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                })
                                         }
                                         else {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                    });
+                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                    })
 
                             } else { // Cancel request
                                 deleteConnection(user._id, connectionId)
                                     .then(status => {
                                         if (status === 200) {
-                                            const index = this.findIndex(connectionId);
+                                            const index = this.findIndex(connectionId)
                                             // Make a shallow copy of the user to mutate
-                                            const uuser = { ...users[index] };
+                                            const uuser = { ...users[index] }
                                             // Update user
-                                            uuser.connection = undefined;
+                                            uuser.connection = undefined
                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                            users[index] = uuser;
+                                            users[index] = uuser
                                             // Set the state to our new copy
-                                            this.setState({ openDisconnectDialog: false, users });
-                                            toast(strings.CONNECTION_CANCELED, { type: 'info' });
+                                            this.setState({ openDisconnectDialog: false, users })
+                                            toast(strings.CONNECTION_CANCELED, { type: 'info' })
                                         } else {
-                                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                                            toast(strings.GENERIC_ERROR, { type: 'error' })
                                         }
                                     })
                                     .catch(err => {
-                                        toast(strings.GENERIC_ERROR, { type: 'error' });
-                                    });
+                                        toast(strings.GENERIC_ERROR, { type: 'error' })
+                                    })
                             }
                         } else {
-                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                         }
                     })
                     .catch(err => {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                    });
+                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                    })
             }
         }
-    };
+    }
 
     handleCancelDecline = (e) => {
-        this.setState({ openDeclineDialog: false });
-    };
+        this.setState({ openDeclineDialog: false })
+    }
 
     handleDecline = (e) => {
-        this.setState({ declineTarget: e.currentTarget, openDeclineDialog: true });
-    };
+        this.setState({ declineTarget: e.currentTarget, openDeclineDialog: true })
+    }
 
     handleConfirmDecline = (event) => {
-        const { declineTarget } = this.state;
-        const isApprover = declineTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true';
-        const isConnected = declineTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = declineTarget.getAttribute('data-id');
+        const { declineTarget } = this.state
+        const isApprover = declineTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true'
+        const isConnected = declineTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = declineTarget.getAttribute('data-id')
 
-        const { user } = this.state;
-        const users = [...this.state.users]; // Make a shallow copy of users
+        const { user } = this.state
+        const users = [...this.state.users] // Make a shallow copy of users
         if (isApprover && isConnectionPending && !isConnected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) {
@@ -479,140 +479,140 @@ class Search extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
 
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = this.findIndex(connectionId);
+                                                            const index = this.findIndex(connectionId)
                                                             // Make a shallow copy of the user to mutate
-                                                            const uuser = { ...users[index] };
+                                                            const uuser = { ...users[index] }
                                                             // Update user
-                                                            uuser.connection = undefined;
+                                                            uuser.connection = undefined
                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                            users[index] = uuser;
+                                                            users[index] = uuser
                                                             // Set the state to our new copy
-                                                            this.setState({ users, openDeclineDialog: false });
+                                                            this.setState({ users, openDeclineDialog: false })
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                                    })
                                             } else {
-                                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                        })
                                 } else {
-                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                })
         } else {
-            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
         }
-    };
+    }
 
     handleSendMessage = (e) => {
-        const to = e.currentTarget.getAttribute('data-id');
-        this.setState({ openMessageForm: true, to });
-    };
+        const to = e.currentTarget.getAttribute('data-id')
+        this.setState({ openMessageForm: true, to })
+    }
 
     handleMessageFormClose = (e) => {
-        this.setState({ openMessageForm: false });
-    };
+        this.setState({ openMessageForm: false })
+    }
 
     fetchUsers = () => {
-        const { user, page } = this.state;
-        this.setState({ isLoading: true });
+        const { user, page } = this.state
+        this.setState({ isLoading: true })
 
         searchUsers(user._id, this.state.searchKeyword, false, page)
             .then(data => {
-                const users = [...this.state.users, ...data];
-                this.setState({ users, isLoading: false, fetch: data.length > 0 });
+                const users = [...this.state.users, ...data]
+                this.setState({ users, isLoading: false, fetch: data.length > 0 })
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
-            });
-    };
+                toast(strings.GENERIC_ERROR, { type: 'error' })
+            })
+    }
 
     componentDidMount() {
-        let language = getQueryLanguage();
+        let language = getQueryLanguage()
 
         if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
+            language = getLanguage()
         }
-        strings.setLanguage(language);
-        this.setState({});
+        strings.setLanguage(language)
+        this.setState({})
 
-        const currentUser = getCurrentUser();
+        const currentUser = getCurrentUser()
         if (currentUser) {
             validateAccessToken().then(status => {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
                         if (user.blacklisted) {
-                            signout();
-                            return;
+                            signout()
+                            return
                         }
 
-                        moment.locale(language);
-                        this.setState({ user, searchKeyword: getSearchKeyword(), verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
-                        this.fetchUsers();
+                        moment.locale(language)
+                        this.setState({ user, searchKeyword: getSearchKeyword(), verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 })
+                        this.fetchUsers()
 
-                        const div = document.querySelector('.content');
+                        const div = document.querySelector('.content')
                         if (div) {
                             div.onscroll = (event) => {
                                 if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                                     this.setState({ page: this.state.page + 1 }, () => {
-                                        this.fetchUsers();
-                                    });
+                                        this.fetchUsers()
+                                    })
                                 }
-                            };
+                            }
                         }
                     } else {
-                        signout();
+                        signout()
                     }
                 }).catch(err => {
-                    signout();
-                });
+                    signout()
+                })
             }).catch(err => {
-                signout();
-            });
+                signout()
+            })
         } else {
-            signout();
+            signout()
         }
     }
 
     render() {
-        const { isAuthenticating } = this.state;
+        const { isAuthenticating } = this.state
         if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
+            const { isTokenValidated } = this.state
             if (isTokenValidated) {
-                const { verified, users, notificationCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state;
-                const rtl = user.language === 'ar';
+                const { verified, users, notificationCount, openMessageForm, to, user, isLoading, openDeclineDialog, openDisconnectDialog, isConnected } = this.state
+                const rtl = user.language === 'ar'
                 return (
                     <div>
                         <Header user={user} notificationCount={notificationCount} />
@@ -848,15 +848,15 @@ class Search extends Component {
                         }
                         {isLoading && <Backdrop text={strings.LOADING} />}
                     </div >
-                );
+                )
             } else {
-                signout();
-                return null;
+                signout()
+                return null
             }
         } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />)
         }
     }
 }
 
-export default Search;
+export default Search
