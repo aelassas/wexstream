@@ -106,7 +106,9 @@ const Master = (props) => {
                         size="small"
                         className="btn-primary btn-resend"
                         onClick={handleResend}
-                    >{strings.RESEND}</Button>
+                    >
+                        {strings.RESEND}
+                    </Button>
                 </div>
             }
         </>
