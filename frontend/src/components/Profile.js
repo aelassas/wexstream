@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { strings } from '../config/app.config';
+import React, { Component } from 'react'
+import { strings } from '../config/app.config'
 import {
     getLanguage, getUser, getUserId, getUserById, validateAccessToken, resendLink,
     getCurrentUser, signout, checkBlockedUser, reportUser, blockUser, unblockUser, getQueryLanguage
-} from '../services/UserService';
-import { getConnection, getConnectionIds, deleteConnection, connect } from '../services/ConnectionService';
-import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
+} from '../services/UserService'
+import { getConnection, getConnectionIds, deleteConnection, connect } from '../services/ConnectionService'
+import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
 import { getConferences, deleteConference } from '../services/ConferenceService'
 import { deleteSpeakerEntries } from '../services/TimelineService'
-import Header from './Header';
-import { toast } from 'react-toastify';
-import Backdrop from '../elements/SimpleBackdrop';
-import { Avatar } from '../elements/Avatar';
+import Header from './Header'
+import { toast } from 'react-toastify'
+import Backdrop from '../elements/SimpleBackdrop'
+import { Avatar } from '../elements/Avatar'
 import {
     Typography,
     Card,
@@ -32,7 +32,7 @@ import {
     FormControl,
     InputLabel,
     Input,
-} from '@mui/material';
+} from '@mui/material'
 import {
     LocationOnOutlined,
     LinkOutlined,
@@ -46,19 +46,19 @@ import {
     Lock,
     Public,
     People
-} from '@mui/icons-material';
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/ar';
-import { MessageForm } from '../elements/MessageForm';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
-import { Members } from '../elements/Members';
-import * as Helper from '../common/Helper';
+} from '@mui/icons-material'
+import moment from 'moment'
+import 'moment/locale/fr'
+import 'moment/locale/ar'
+import { MessageForm } from '../elements/MessageForm'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET, LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config'
+import { Members } from '../elements/Members'
+import * as Helper from '../common/Helper'
 
 class Profile extends Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             user: null,
             loggedUser: null,
@@ -94,52 +94,52 @@ class Profile extends Component {
             openMembersDialog: false,
             conferenceId: '',
             language: DEFAULT_LANGUAGE
-        };
+        }
     }
 
     handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.user.email };
+        e.preventDefault()
+        const data = { email: this.state.user.email }
 
         resendLink(data)
             .then(status => {
                 if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
+                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' })
                 } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
+                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
                 }
             })
             .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    };
+                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
+            })
+    }
 
     onBeforeUpload = () => {
-        this.setState({ isLoadingAvatar: true });
-    };
+        this.setState({ isLoadingAvatar: true })
+    }
 
     onAvatarChange = (user) => {
-        this.setState({ isLoadingAvatar: false, user, loggedUser: user });
-    };
+        this.setState({ isLoadingAvatar: false, user, loggedUser: user })
+    }
 
     handleSendMessage = (e) => {
-        this.setState({ openMessageForm: true, to: this.state.user._id });
-    };
+        this.setState({ openMessageForm: true, to: this.state.user._id })
+    }
 
     handleMessageFormClose = (e) => {
-        this.setState({ openMessageForm: false });
-    };
+        this.setState({ openMessageForm: false })
+    }
 
     handleConfirmDisconnect = (e) => {
-        const connectionId = this.state.user._id;
-        const { isConnected, isConnectionPending, isApprover } = this.state;
-        const user = this.state.loggedUser;
+        const connectionId = this.state.user._id
+        const { isConnected, isConnectionPending, isApprover } = this.state
+        const user = this.state.loggedUser
 
         if (isApprover && (isConnectionPending || isConnected)) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Disconnect
@@ -153,35 +153,35 @@ class Profile extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false });
+                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false })
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                        })
                                 } else {
                                     deleteConnection(user._id, connectionId)
                                         .then(status => {
@@ -193,56 +193,56 @@ class Profile extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false });
-                                                            toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false })
+                                                            toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                         }
                                                         else {
-                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                        })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                })
         } else if (isConnectionPending || isConnected) {
             getConnectionIds(user._id, connectionId)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(connectionId, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) {
                                     deleteNotification(notification._id)
                                         .then(status => {
                                             if (status !== 200) {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                             }
-                                        });
+                                        })
                                 }
-                            });
+                            })
 
                         if (isConnected) { // Disconnect
                             deleteConnection(user._id, connectionId)
@@ -256,68 +256,68 @@ class Profile extends Component {
                                             isLink: true,
                                             senderUser: user._id,
                                             link: `${window.location.origin}/profile?u=${user._id}`
-                                        };
+                                        }
 
                                         notify(notification)
                                             .then(notificationStatus => {
                                                 if (notificationStatus === 200) {
-                                                    this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false });
-                                                    toast(strings.CONNECTION_DELETED, { type: 'info' });
+                                                    this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false })
+                                                    toast(strings.CONNECTION_DELETED, { type: 'info' })
                                                 }
                                                 else {
-                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                                 }
                                             })
                                             .catch(err => {
-                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                            });
+                                                toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                            })
                                     }
                                     else {
-                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                                     }
                                 })
                                 .catch(err => {
-                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                                });
+                                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                                })
 
                         } else { // Cancel request
                             deleteConnection(user._id, connectionId)
                                 .then(status => {
                                     if (status === 200) {
-                                        this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false });
-                                        toast(strings.CONNECTION_CANCELED, { type: 'info' });
+                                        this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDisconnectDialog: false })
+                                        toast(strings.CONNECTION_CANCELED, { type: 'info' })
                                     } else {
-                                        toast(strings.GENERIC_ERROR, { type: 'error' });
+                                        toast(strings.GENERIC_ERROR, { type: 'error' })
                                     }
                                 })
                                 .catch(err => {
-                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                });
+                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                })
                         }
                     } else {
-                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_DELETE_ERROR, { type: 'error' })
+                })
         }
-    };
+    }
 
     handleCancelDisconnect = (e) => {
-        this.setState({ openDisconnectDialog: false });
-    };
+        this.setState({ openDisconnectDialog: false })
+    }
 
     handleConnect = (e) => {
-        const connectionId = this.state.user._id;
-        const { isConnected, isConnectionPending, isApprover } = this.state;
-        const user = this.state.loggedUser;
+        const connectionId = this.state.user._id
+        const { isConnected, isConnectionPending, isApprover } = this.state
+        const user = this.state.loggedUser
 
         if (isApprover && isConnectionPending && !isConnected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Connect
@@ -331,67 +331,67 @@ class Profile extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            this.setState({ isConnected: true, isConnectionPending: false });
+                                                            this.setState({ isConnected: true, isConnectionPending: false })
 
                                                             getConnection(user._id, connectionId)
                                                                 .then(
                                                                     conn => {
                                                                         if (conn) {
-                                                                            this.setState({ connectedAt: conn.connectedAt });
+                                                                            this.setState({ connectedAt: conn.connectedAt })
                                                                         }
                                                                     })
                                                                 .catch(err => {
-                                                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                                })
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_APPROVE, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                                    })
                                             }
                                             else {
-                                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                                        })
                                 } else {
-                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_APPROVE_ERROR, { type: 'error' })
+                })
         } else if (isApprover && (isConnectionPending || isConnected)) {
-            this.setState({ openDisconnectDialog: true });
+            this.setState({ openDisconnectDialog: true })
         } else {
             if (isConnectionPending || isConnected) {
-                this.setState({ openDisconnectDialog: true });
+                this.setState({ openDisconnectDialog: true })
             } else { // Send connection request
-                const data = { _id: user._id, connectionId: connectionId };
+                const data = { _id: user._id, connectionId: connectionId }
                 connect(data)
                     .then(connectionIds => {
                         if (connectionIds) {
@@ -404,49 +404,49 @@ class Profile extends Component {
                                 isLink: true,
                                 senderUser: user._id,
                                 link: `${window.location.origin}/profile?u=${user._id}`
-                            };
+                            }
 
                             notify(notification)
                                 .then(notificationStatus => {
                                     if (notificationStatus === 200) {
-                                        this.setState({ isConnected: false, isConnectionPending: true, isApprover: false });
-                                        toast(strings.CONNECTION_REQUEST_SENT, { type: 'info' });
+                                        this.setState({ isConnected: false, isConnectionPending: true, isApprover: false })
+                                        toast(strings.CONNECTION_REQUEST_SENT, { type: 'info' })
                                     } else {
-                                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
+                                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
                                     }
                                 })
                                 .catch(err => {
-                                    toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
-                                });
+                                    toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
+                                })
                         } else {
-                            toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
+                            toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
                         }
                     })
                     .catch(err => {
-                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' });
-                    });
+                        toast(strings.CONNECTION_REQUEST_ERROR, { type: 'error' })
+                    })
             }
         }
-    };
+    }
 
     handleDecline = (e) => {
-        this.setState({ openDeclineDialog: true });
-    };
+        this.setState({ openDeclineDialog: true })
+    }
 
     handleCancelDecline = (e) => {
-        this.setState({ openDeclineDialog: false });
-    };
+        this.setState({ openDeclineDialog: false })
+    }
 
     handleConfirmDecline = (e) => {
-        const { isApprover, isConnectionPending, isConnected } = this.state;
-        const connectionId = this.state.user._id;
-        const user = this.state.loggedUser;
+        const { isApprover, isConnectionPending, isConnected } = this.state
+        const connectionId = this.state.user._id
+        const user = this.state.loggedUser
 
         if (isApprover && isConnectionPending && !isConnected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) {
@@ -462,276 +462,276 @@ class Profile extends Component {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
 
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDeclineDialog: false });
+                                                            this.setState({ isConnected: false, isConnectionPending: false, isApprover: false, openDeclineDialog: false })
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    this.setState({ notificationCount: notificationCounter.count });
-                                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' });
+                                                                    this.setState({ notificationCount: notificationCounter.count })
+                                                                    toast(strings.CONNECTION_DECLINE, { type: 'info' })
                                                                 })
                                                                 .catch(err => {
-                                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                                                });
+                                                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                                                })
                                                         } else {
-                                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                                    });
+                                                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                                    })
                                             } else {
-                                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                             }
                                         })
                                         .catch(err => {
-                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                                        });
+                                            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                                        })
                                 } else {
-                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                                 }
                             })
                             .catch(err => {
-                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                            });
+                                toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                            })
                     } else {
-                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+                        toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
-                });
+                    toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
+                })
         } else {
-            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' });
+            toast(strings.CONNECTION_DECLINE_ERROR, { type: 'error' })
         }
-    };
+    }
 
-    findIndex = (conferenceId) => (this.state.conferences.findIndex(u => u._id === conferenceId));
+    findIndex = (conferenceId) => (this.state.conferences.findIndex(u => u._id === conferenceId))
 
     handleDelete = (event) => {
-        event.preventDefault();
-        this.setState({ currentTarget: event.currentTarget, openDeleteDialog: true });
-    };
+        event.preventDefault()
+        this.setState({ currentTarget: event.currentTarget, openDeleteDialog: true })
+    }
 
     handleCancelDelete = (event) => {
-        event.preventDefault();
-        this.setState({ openDeleteDialog: false });
-    };
+        event.preventDefault()
+        this.setState({ openDeleteDialog: false })
+    }
 
     handleConfirmDelete = (event) => {
-        event.preventDefault();
-        const conferenceId = this.state.currentTarget.getAttribute('data-id');
+        event.preventDefault()
+        const conferenceId = this.state.currentTarget.getAttribute('data-id')
 
         deleteConference(conferenceId)
             .then(status => {
                 if (status === 200) {
-                    const index = this.findIndex(conferenceId);
-                    const conferences = [...this.state.conferences];
-                    conferences.splice(index, 1);
-                    this.setState({ conferences, openDeleteDialog: false });
+                    const index = this.findIndex(conferenceId)
+                    const conferences = [...this.state.conferences]
+                    conferences.splice(index, 1)
+                    this.setState({ conferences, openDeleteDialog: false })
 
-                    const { loggedUser } = this.state;
+                    const { loggedUser } = this.state
                     deleteSpeakerEntries(loggedUser._id, conferenceId)
                         .then(status => {
                             if (status !== 200) {
-                                toast(strings.GENERIC_ERROR, { type: 'error' });
+                                toast(strings.GENERIC_ERROR, { type: 'error' })
                             }
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
-                        });
+                            toast(strings.GENERIC_ERROR, { type: 'error' })
+                        })
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                    this.setState({ openDeleteDialog: false });
+                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                    this.setState({ openDeleteDialog: false })
                 }
             })
             .catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
-                this.setState({ openDeleteDialog: false });
-            });
-    };
+                toast(strings.GENERIC_ERROR, { type: 'error' })
+                this.setState({ openDeleteDialog: false })
+            })
+    }
 
     fetchConferences = () => {
-        const { user, page, isPrivate } = this.state;
-        this.setState({ isLoading: true });
+        const { user, page, isPrivate } = this.state
+        this.setState({ isLoading: true })
 
         getConferences(user._id, isPrivate, page)
             .then(data => {
-                const conferences = [...this.state.conferences, ...data];
+                const conferences = [...this.state.conferences, ...data]
                 this.setState({ conferences, isLoading: false, fetch: data.length > 0 })
             })
             .catch(err => {
-                this.setState({ isLoading: false });
-                toast(strings.GENERIC_ERROR, { type: 'error' });
-            });
-    };
+                this.setState({ isLoading: false })
+                toast(strings.GENERIC_ERROR, { type: 'error' })
+            })
+    }
 
     handleActionsClick = (event) => {
-        this.setState({ openActions: true, anchorEl: event.currentTarget });
-    };
+        this.setState({ openActions: true, anchorEl: event.currentTarget })
+    }
 
     handleActionsClose = () => {
-        this.setState({ openActions: false, anchorEl: null });
-    };
+        this.setState({ openActions: false, anchorEl: null })
+    }
 
     handleReport = () => {
-        this.setState({ openReportDialog: true });
-        this.handleActionsClose();
-    };
+        this.setState({ openReportDialog: true })
+        this.handleActionsClose()
+    }
 
     handleReportMessageChange = (event) => {
-        this.setState({ reportMessage: event.target.value });
-    };
+        this.setState({ reportMessage: event.target.value })
+    }
 
     handleCancelReport = () => {
-        this.setState({ openReportDialog: false, reportMessage: '' });
-    };
+        this.setState({ openReportDialog: false, reportMessage: '' })
+    }
 
     handleConfirmReport = () => {
-        const { loggedUser, user, reportMessage } = this.state;
+        const { loggedUser, user, reportMessage } = this.state
         const data = {
             user: loggedUser._id,
             reportedUser: user._id,
             message: reportMessage
-        };
+        }
 
         reportUser(data)
             .then(status => {
                 if (status === 200) {
-                    this.setState({ openReportDialog: false, reportMessage: '' });
-                    toast(strings.REPORT_SUCCESS, { type: 'info' });
+                    this.setState({ openReportDialog: false, reportMessage: '' })
+                    toast(strings.REPORT_SUCCESS, { type: 'info' })
                 } else {
                     toast(strings.GENERIC_ERROR, { type: 'error' })
                 }
             })
-            .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }));
-    };
+            .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }))
+    }
 
     handleBlock = () => {
-        this.setState({ openBlockDialog: true });
-        this.handleActionsClose();
-    };
+        this.setState({ openBlockDialog: true })
+        this.handleActionsClose()
+    }
 
     handleCancelBlock = () => {
-        this.setState({ openBlockDialog: false });
-    };
+        this.setState({ openBlockDialog: false })
+    }
 
     handleConfirmBlock = () => {
-        const { user, loggedUser, isBlocked } = this.state;
+        const { user, loggedUser, isBlocked } = this.state
 
         if (isBlocked) {
             unblockUser(loggedUser._id, user._id)
                 .then(status => {
                     if (status === 200) {
                         this.setState({ openBlockDialog: false }, () => {
-                            this.setState({ isBlocked: false });
-                        });
-                        toast(strings.UNBLOCK_SUCCESS, { type: 'info' });
+                            this.setState({ isBlocked: false })
+                        })
+                        toast(strings.UNBLOCK_SUCCESS, { type: 'info' })
                     } else {
                         toast(strings.GENERIC_ERROR, { type: 'error' })
                     }
                 })
-                .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }));
+                .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }))
         } else {
             blockUser(loggedUser._id, user._id)
                 .then(status => {
                     if (status === 200) {
                         this.setState({ openBlockDialog: false }, () => {
-                            this.setState({ isBlocked: true });
-                        });
-                        toast(strings.BLOCK_SUCCESS, { type: 'info' });
+                            this.setState({ isBlocked: true })
+                        })
+                        toast(strings.BLOCK_SUCCESS, { type: 'info' })
                     } else {
                         toast(strings.GENERIC_ERROR, { type: 'error' })
                     }
                 })
-                .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }));
+                .catch(() => toast(strings.GENERIC_ERROR, { type: 'error' }))
         }
-    };
+    }
 
     handleMembers = event => {
-        this.setState({ isLoading: true });
-        const conferenceId = event.currentTarget.getAttribute('data-id');
-        this.setState({ openMembersDialog: true, conferenceId });
-    };
+        this.setState({ isLoading: true })
+        const conferenceId = event.currentTarget.getAttribute('data-id')
+        this.setState({ openMembersDialog: true, conferenceId })
+    }
 
     handleCloseMembers = event => {
-        this.setState({ openMembersDialog: false });
-    };
+        this.setState({ openMembersDialog: false })
+    }
 
     handleMembersFetched = event => {
-        this.setState({ isLoading: false });
-    };
+        this.setState({ isLoading: false })
+    }
 
     handleMembersError = () => {
-        this.setState({ isLoading: false });
-        toast(strings.GENERIC_ERROR, { type: 'error' });
-    };
+        this.setState({ isLoading: false })
+        toast(strings.GENERIC_ERROR, { type: 'error' })
+    }
 
     infiniteScroll = () => {
-        const { loggedUser, userNotFound, error } = this.state;
-        const rtl = loggedUser.language === 'ar';
+        const { loggedUser, userNotFound, error } = this.state
+        const rtl = loggedUser.language === 'ar'
         if (!userNotFound && !error) {
             if (isMobile()) {
-                const div = document.querySelector(`.profile-container${rtl ? '-rtl' : ''}`);
+                const div = document.querySelector(`.profile-container${rtl ? '-rtl' : ''}`)
 
                 if (div) {
-                    const profileHeader = document.querySelector(`.profile-header${rtl ? '-rtl' : ''}`);
-                    const profileHeaderHeight = profileHeader.clientHeight;
-                    const profileHeaderOffset = 100;
+                    const profileHeader = document.querySelector(`.profile-header${rtl ? '-rtl' : ''}`)
+                    const profileHeaderHeight = profileHeader.clientHeight
+                    const profileHeaderOffset = 100
                     div.onscroll = (event) => {
                         if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop + (profileHeaderHeight + profileHeaderOffset))) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                             this.setState({ page: this.state.page + 1 }, () => {
-                                this.fetchConferences();
-                            });
+                                this.fetchConferences()
+                            })
                         }
-                    };
+                    }
                 }
             } else {
-                const div = document.querySelector(`.profile-timeline${rtl ? '-rtl' : ''}`);
+                const div = document.querySelector(`.profile-timeline${rtl ? '-rtl' : ''}`)
                 if (div) {
                     div.onscroll = (event) => {
                         if (this.state.fetch && !this.state.isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                             this.setState({ page: this.state.page + 1 }, () => {
-                                this.fetchConferences();
-                            });
+                                this.fetchConferences()
+                            })
                         }
-                    };
+                    }
                 }
             }
 
         }
-    };
+    }
 
     componentDidMount() {
-        let language = getQueryLanguage();
+        let language = getQueryLanguage()
 
         if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
+            language = getLanguage()
         }
-        strings.setLanguage(language);
-        this.setState({ language, isLoading: true });
+        strings.setLanguage(language)
+        this.setState({ language, isLoading: true })
 
-        const currentUser = getCurrentUser();
+        const currentUser = getCurrentUser()
         if (currentUser) {
             validateAccessToken().then(status => {
-                const isTokenValidated = status === 200;
+                const isTokenValidated = status === 200
 
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
                         if (user.blacklisted) {
-                            signout();
-                            return;
+                            signout()
+                            return
                         }
 
-                        moment.locale(language);
-                        let userId = getUserId();
+                        moment.locale(language)
+                        let userId = getUserId()
                         if (userId === '') {
-                            userId = user._id;
+                            userId = user._id
                         }
                         if (Helper.isObjectId(userId)) {
                             if (userId !== user._id) {
@@ -739,94 +739,94 @@ class Profile extends Component {
                                 checkBlockedUser(userId, user._id)
                                     .then(userStatus => {
                                         if (userStatus === 200) {
-                                            this.setState({ loggedUser: user, unauthorized: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
+                                            this.setState({ loggedUser: user, unauthorized: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated })
                                         } else if (userStatus === 204) {
                                             getUserById(userId)
                                                 .then(_user => {
                                                     if (_user) {
 
                                                         if (_user.blacklisted) {
-                                                            this.setState({ loggedUser: user, user: null, unauthorized: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
-                                                            return;
+                                                            this.setState({ loggedUser: user, user: null, unauthorized: true, verified: user.verified, isAuthenticating: false, isTokenValidated })
+                                                            return
                                                         }
 
                                                         getConnection(user._id, _user._id)
                                                             .then(conn => {
 
                                                                 const loadPage = () => {
-                                                                    let isPrivate = false;
+                                                                    let isPrivate = false
                                                                     if (conn && !conn.isPending) {
-                                                                        isPrivate = true;
+                                                                        isPrivate = true
                                                                     }
-                                                                    this.setState({ loggedUser: user, user: _user, isPrivate, verified: user.verified, isAuthenticating: false, isTokenValidated });
+                                                                    this.setState({ loggedUser: user, user: _user, isPrivate, verified: user.verified, isAuthenticating: false, isTokenValidated })
 
-                                                                    this.fetchConferences();
-                                                                    this.infiniteScroll();
-                                                                };
+                                                                    this.fetchConferences()
+                                                                    this.infiniteScroll()
+                                                                }
 
                                                                 if (conn) {
-                                                                    this.setState({ isConnected: !conn.isPending, isConnectionPending: conn.isPending, isApprover: conn.isApprover, connectedAt: conn.connectedAt });
+                                                                    this.setState({ isConnected: !conn.isPending, isConnectionPending: conn.isPending, isApprover: conn.isApprover, connectedAt: conn.connectedAt })
 
                                                                     checkBlockedUser(user._id, userId)
                                                                         .then(userStatus => {
-                                                                            this.setState({ isBlocked: userStatus === 200 });
-                                                                            loadPage();
-                                                                        });
+                                                                            this.setState({ isBlocked: userStatus === 200 })
+                                                                            loadPage()
+                                                                        })
                                                                 } else {
-                                                                    loadPage();
+                                                                    loadPage()
                                                                 }
                                                             })
                                                             .catch(err => {
-                                                                toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                            });
+                                                                toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                            })
 
                                                     } else {
-                                                        this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
+                                                        this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated })
                                                     }
                                                 })
                                                 .catch(err => {
-                                                    this.setState({ loggedUser: user, user: null, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
-                                                });
+                                                    this.setState({ loggedUser: user, user: null, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated })
+                                                })
                                         } else {
-                                            this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
+                                            this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated })
                                         }
                                     })
                                     .catch(err => {
-                                        this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated });
-                                    });
+                                        this.setState({ loggedUser: user, error: true, isLoading: false, verified: user.verified, isAuthenticating: false, isTokenValidated })
+                                    })
 
                             } else {
-                                this.setState({ loggedUser: user, user, isPrivate: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
-                                this.fetchConferences();
-                                this.infiniteScroll();
+                                this.setState({ loggedUser: user, user, isPrivate: true, verified: user.verified, isAuthenticating: false, isTokenValidated })
+                                this.fetchConferences()
+                                this.infiniteScroll()
                             }
                         } else {
-                            this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated });
+                            this.setState({ loggedUser: user, user: null, userNotFound: true, verified: user.verified, isAuthenticating: false, isTokenValidated })
                         }
                     } else {
-                        signout();
+                        signout()
                     }
                 }).catch(err => {
-                    signout();
-                });
+                    signout()
+                })
             }).catch(err => {
-                signout();
-            });
+                signout()
+            })
         } else {
-            signout();
+            signout()
         }
     }
 
     render() {
-        const { isAuthenticating } = this.state;
+        const { isAuthenticating } = this.state
         if (!isAuthenticating) {
-            const { isTokenValidated } = this.state;
+            const { isTokenValidated } = this.state
             if (isTokenValidated) {
                 const { verified, language, loggedUser, user, userNotFound, isConnected, isConnectionPending, isApprover
                     , connectedAt, openDisconnectDialog, openDeclineDialog, notificationCount, openMessageForm,
                     conferences, isLoading, openDeleteDialog, anchorEl, openActions, error, unauthorized,
-                    openReportDialog, reportMessage, openBlockDialog, isBlocked, openMembersDialog, conferenceId, isLoadingAvatar } = this.state;
-                const rtl = language === 'ar';
+                    openReportDialog, reportMessage, openBlockDialog, isBlocked, openMembersDialog, conferenceId, isLoadingAvatar } = this.state
+                const rtl = language === 'ar'
                 const styles = {
                     infoIcon: {
                         width: 32,
@@ -834,13 +834,13 @@ class Profile extends Component {
                         marginRight: 5,
                         marginLeft: 5
                     }
-                };
+                }
                 const iconStyles = {
                     float: rtl ? 'right' : 'left',
                     height: 14,
                     marginTop: -1,
                     color: '#595959'
-                };
+                }
                 return (
                     <div>
                         <Header user={loggedUser} notificationCount={notificationCount} />
@@ -1167,15 +1167,15 @@ class Profile extends Component {
                             </div>)
                         }
                     </div >
-                );
+                )
             } else {
-                signout();
-                return null;
+                signout()
+                return null
             }
         } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />)
         }
     }
 }
 
-export default Profile;
+export default Profile

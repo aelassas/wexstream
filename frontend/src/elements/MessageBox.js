@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/material/styles';
-import { strings } from '../config/app.config';
-import { getLanguage } from '../services/UserService';
-import { TextField } from "@mui/material";
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
+import React, { useState, useEffect } from 'react'
+import { makeStyles } from '@mui/material/styles'
+import { strings } from '../config/app.config'
+import { getLanguage } from '../services/UserService'
+import { TextField } from "@mui/material"
+import TextareaAutosize from '@mui/material/TextareaAutosize'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import CloseIcon from '@mui/icons-material/Close'
+import Slide from '@mui/material/Slide'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -20,42 +20,42 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-}));
+}))
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+    return <Slide direction="up" ref={ref} {...props} />
+})
 
 export const MessageBox = (props) => {
-    const classes = useStyles();
-    const [isSignedIn, setIsSignedIn] = useState(false);
+    const classes = useStyles()
+    const [isSignedIn, setIsSignedIn] = useState(false)
 
     const handleClose = (e) => {
         if (props.onClose) {
-            props.onClose(e);
+            props.onClose(e)
         }
-    };
+    }
 
     const handleFromClick = (event) => {
-        const id = event.currentTarget.getAttribute('data-id');
-        window.location.href = `/profile?u=${id}`;
-    };
+        const id = event.currentTarget.getAttribute('data-id')
+        window.location.href = `/profile?u=${id}`
+    }
 
     const handleFromMouseDown = (event) => {
         if (event.button === 1) {
-            const id = event.currentTarget.getAttribute('data-id');
-            window.open(`/profile?u=${id}`, '_blank').focus();
+            const id = event.currentTarget.getAttribute('data-id')
+            window.open(`/profile?u=${id}`, '_blank').focus()
         }
     }
 
     useEffect(() => {
-        const language = getLanguage();
-        strings.setLanguage(language);
+        const language = getLanguage()
+        strings.setLanguage(language)
 
         if (props.user) {
-            setIsSignedIn(true);
+            setIsSignedIn(true)
         }
-    }, [props.user]);
+    }, [props.user])
 
     return (
         isSignedIn && props.message
@@ -106,5 +106,5 @@ export const MessageBox = (props) => {
             </div>
             :
             null
-    );
-};
+    )
+}

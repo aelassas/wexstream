@@ -1,63 +1,63 @@
-import React, { useState } from 'react';
-import { strings } from '../config/app.config';
-import { getLanguage } from '../services/UserService';
+import React, { useState } from 'react'
+import { strings } from '../config/app.config'
+import { getLanguage } from '../services/UserService'
 import {
     notify, getNotifications, getNotificationCounter, deleteNotification, approve, decline,
     markAsRead, markAsUnread, markAllAsRead, deleteNotifications
-} from '../services/NotificationService';
-import { getConnectionById } from '../services/ConnectionService';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Info from '@mui/icons-material/Info';
-import Backdrop from '../elements/SimpleBackdrop';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ReadIcon from '@mui/icons-material/Drafts';
-import UnreadIcon from '@mui/icons-material/Email';
-import { IconButton } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
-import Tooltip from '@mui/material/Tooltip';
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/ar';
+} from '../services/NotificationService'
+import { getConnectionById } from '../services/ConnectionService'
+import Button from '@mui/material/Button'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import Avatar from '@mui/material/Avatar'
+import Info from '@mui/icons-material/Info'
+import Backdrop from '../elements/SimpleBackdrop'
+import DeleteIcon from '@mui/icons-material/Delete'
+import ReadIcon from '@mui/icons-material/Drafts'
+import UnreadIcon from '@mui/icons-material/Email'
+import { IconButton } from '@mui/material'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Typography from '@mui/material/Typography'
+import Link from '@mui/material/Link'
+import Tooltip from '@mui/material/Tooltip'
+import moment from 'moment'
+import 'moment/locale/fr'
+import 'moment/locale/ar'
 import {
     Dialog,
     DialogTitle,
     DialogContent,
     DialogActions
-} from '@mui/material';
+} from '@mui/material'
 import {
     ThumbUp,
     ThumbDown
-} from '@mui/icons-material';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
-import Master from '../elements/Master';
-import * as Helper from '../common/Helper';
+} from '@mui/icons-material'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import Master from '../elements/Master'
+import * as Helper from '../common/Helper'
 
 const Notifications = () => {
-    const [user, setUser] = useState();
-    const [notifications, setNotifications] = useState([]);
-    const [notificationCount, setNotificationCount] = useState();
-    const [loading, setLoading] = useState(false);
-    const [openDeclineDialog, setOpenDeclineDialog] = useState(false);
-    const [declineTarget, setDeclineTarget] = useState(null);
-    const [page, setPage] = useState(1);
-    const [fetch, setFetch] = useState(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(null);
+    const [user, setUser] = useState()
+    const [notifications, setNotifications] = useState([])
+    const [notificationCount, setNotificationCount] = useState()
+    const [loading, setLoading] = useState(false)
+    const [openDeclineDialog, setOpenDeclineDialog] = useState(false)
+    const [declineTarget, setDeclineTarget] = useState(null)
+    const [page, setPage] = useState(1)
+    const [fetch, setFetch] = useState(false)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(null)
 
     const findIndex = (notificationId) => (
         notifications.findIndex(n => n._id === notificationId)
-    );
+    )
 
     const handleApprove = (e) => {
-        const notificationId = e.currentTarget.getAttribute('data-id');
-        const connId = e.currentTarget.getAttribute('data-conn-id');
+        const notificationId = e.currentTarget.getAttribute('data-id')
+        const connId = e.currentTarget.getAttribute('data-conn-id')
 
         approve(notificationId)
             .then(status => {
@@ -72,63 +72,63 @@ const Notifications = () => {
                                     isLink: true,
                                     senderUser: user._id,
                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                };
+                                }
                                 notify(notification)
                                     .then(notificationStatus => {
                                         if (notificationStatus === 200) {
                                             getNotificationCounter(user._id)
                                                 .then(notificationCounter => {
-                                                    const _notifications = [...notifications];
-                                                    const index = findIndex(notificationId);
-                                                    const notification = { ..._notifications[index] };
-                                                    notification.isRead = true;
-                                                    notification.isConnected = true;
-                                                    notification.isDeclined = false;
-                                                    _notifications[index] = notification;
+                                                    const _notifications = [...notifications]
+                                                    const index = findIndex(notificationId)
+                                                    const notification = { ..._notifications[index] }
+                                                    notification.isRead = true
+                                                    notification.isConnected = true
+                                                    notification.isDeclined = false
+                                                    _notifications[index] = notification
 
-                                                    setNotifications(_notifications);
-                                                    setNotificationCount(notificationCounter.count);
-                                                    Helper.info(strings.CONNECTION_APPROVE);
+                                                    setNotifications(_notifications)
+                                                    setNotificationCount(notificationCounter.count)
+                                                    Helper.info(strings.CONNECTION_APPROVE)
                                                 })
                                                 .catch(err => {
-                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
-                                                });
+                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR, err)
+                                                })
                                         } else {
-                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                                            Helper.error(strings.CONNECTION_APPROVE_ERROR)
                                         }
                                     })
                                     .catch(err => {
-                                        Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
-                                    });
+                                        Helper.error(strings.CONNECTION_APPROVE_ERROR, err)
+                                    })
                             }
                             else {
-                                Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                                Helper.error(strings.CONNECTION_APPROVE_ERROR)
                             }
                         })
                         .catch(err => {
-                            Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
-                        });
+                            Helper.error(strings.CONNECTION_APPROVE_ERROR, err)
+                        })
                 } else {
-                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                    Helper.error(strings.CONNECTION_APPROVE_ERROR)
                 }
             })
             .catch(err => {
-                Helper.error(strings.CONNECTION_APPROVE_ERROR, err);
-            });
-    };
+                Helper.error(strings.CONNECTION_APPROVE_ERROR, err)
+            })
+    }
 
     const handleCancelDecline = (e) => {
-        setOpenDeclineDialog(false);
-    };
+        setOpenDeclineDialog(false)
+    }
 
     const handleDecline = (e) => {
-        setDeclineTarget(e.currentTarget);
-        setOpenDeclineDialog(true);
-    };
+        setDeclineTarget(e.currentTarget)
+        setOpenDeclineDialog(true)
+    }
 
     const handleConfirmDecline = (e) => {
-        const notificationId = declineTarget.getAttribute('data-id');
-        const connId = declineTarget.getAttribute('data-conn-id');
+        const notificationId = declineTarget.getAttribute('data-id')
+        const connId = declineTarget.getAttribute('data-conn-id')
 
         getConnectionById(connId)
             .then(conn => {
@@ -143,221 +143,221 @@ const Notifications = () => {
                                     isLink: true,
                                     senderUser: user._id,
                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                };
+                                }
                                 notify(notification)
                                     .then(notificationStatus => {
                                         if (notificationStatus === 200) {
-                                            const _notifications = [...notifications];
-                                            const index = findIndex(notificationId);
-                                            const notification = { ..._notifications[index] };
-                                            notification.isRead = true;
-                                            notification.isConnected = false;
-                                            notification.isDeclined = true;
-                                            _notifications[index] = notification;
+                                            const _notifications = [...notifications]
+                                            const index = findIndex(notificationId)
+                                            const notification = { ..._notifications[index] }
+                                            notification.isRead = true
+                                            notification.isConnected = false
+                                            notification.isDeclined = true
+                                            _notifications[index] = notification
 
-                                            setNotifications(_notifications);
-                                            setOpenDeclineDialog(false);
+                                            setNotifications(_notifications)
+                                            setOpenDeclineDialog(false)
 
                                             getNotificationCounter(user._id)
                                                 .then(notificationCounter => {
-                                                    setNotificationCount(notificationCounter.count);
-                                                    Helper.info(strings.CONNECTION_DECLINE);
+                                                    setNotificationCount(notificationCounter.count)
+                                                    Helper.info(strings.CONNECTION_DECLINE)
                                                 })
                                                 .catch(err => {
-                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
-                                                });
+                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR, err)
+                                                })
                                         }
                                         else {
-                                            Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                                            Helper.error(strings.CONNECTION_DECLINE_ERROR)
                                         }
                                     })
                                     .catch(err => {
-                                        Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
-                                    });
+                                        Helper.error(strings.CONNECTION_DECLINE_ERROR, err)
+                                    })
                             } else {
-                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                                Helper.error(strings.CONNECTION_DECLINE_ERROR)
                             }
                         })
                         .catch(err => {
-                            Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
-                        });
+                            Helper.error(strings.CONNECTION_DECLINE_ERROR, err)
+                        })
 
                 } else {
-                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                    Helper.error(strings.CONNECTION_DECLINE_ERROR)
                 }
             })
             .catch(err => {
-                Helper.error(strings.CONNECTION_DECLINE_ERROR, err);
-            });
-    };
+                Helper.error(strings.CONNECTION_DECLINE_ERROR, err)
+            })
+    }
 
     const handleMarkAsRead = (e) => {
-        const notificationId = e.currentTarget.getAttribute('data-id');
+        const notificationId = e.currentTarget.getAttribute('data-id')
 
         markAsRead(notificationId)
             .then(status => {
                 if (status === 200) {
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const _notifications = [...notifications];
-                            const index = findIndex(notificationId);
-                            const notification = { ..._notifications[index] };
-                            notification.isRead = true;
-                            _notifications[index] = notification;
-                            setNotifications(_notifications);
-                            setNotificationCount(notificationCounter.count);
+                            const _notifications = [...notifications]
+                            const index = findIndex(notificationId)
+                            const notification = { ..._notifications[index] }
+                            notification.isRead = true
+                            _notifications[index] = notification
+                            setNotifications(_notifications)
+                            setNotificationCount(notificationCounter.count)
                         })
                         .catch(err => {
-                            Helper.error(null, err);
-                        });
+                            Helper.error(null, err)
+                        })
                 } else {
-                    Helper.error();
+                    Helper.error()
                 }
             })
             .catch(err => {
-                Helper.error(null, err);
-            });
-    };
+                Helper.error(null, err)
+            })
+    }
 
     const handleMarkAsUnread = (e) => {
-        const notificationId = e.currentTarget.getAttribute('data-id');
+        const notificationId = e.currentTarget.getAttribute('data-id')
 
         markAsUnread(notificationId)
             .then(status => {
                 if (status === 200) {
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const _notifications = [...notifications];
-                            const index = findIndex(notificationId);
-                            const notification = { ..._notifications[index] };
-                            notification.isRead = false;
-                            _notifications[index] = notification;
-                            setNotifications(_notifications);
-                            setNotificationCount(notificationCounter.count);
+                            const _notifications = [...notifications]
+                            const index = findIndex(notificationId)
+                            const notification = { ..._notifications[index] }
+                            notification.isRead = false
+                            _notifications[index] = notification
+                            setNotifications(_notifications)
+                            setNotificationCount(notificationCounter.count)
                         })
                         .catch(err => {
-                            Helper.error(null, err);
-                        });
+                            Helper.error(null, err)
+                        })
                 } else {
-                    Helper.error();
+                    Helper.error()
                 }
             })
             .catch(err => {
-                Helper.error(null, err);
-            });
-    };
+                Helper.error(null, err)
+            })
+    }
 
     const handleDeleteNotification = (e) => {
-        const notificationId = e.currentTarget.getAttribute('data-id');
+        const notificationId = e.currentTarget.getAttribute('data-id')
 
         deleteNotification(notificationId)
             .then(status => {
                 if (status === 200) {
                     getNotificationCounter(user._id)
                         .then(notificationCounter => {
-                            const _notifications = [...notifications];
-                            const index = findIndex(notificationId);
-                            _notifications.splice(index, 1);
-                            setNotifications(_notifications);
-                            setNotificationCount(notificationCounter.count);
-                            Helper.info(strings.NOTIFICATION_DELETE);
+                            const _notifications = [...notifications]
+                            const index = findIndex(notificationId)
+                            _notifications.splice(index, 1)
+                            setNotifications(_notifications)
+                            setNotificationCount(notificationCounter.count)
+                            Helper.info(strings.NOTIFICATION_DELETE)
                         })
                         .catch(err => {
-                            Helper.error(strings.NOTIFICATION_DELETE_ERROR, err);
-                        });
+                            Helper.error(strings.NOTIFICATION_DELETE_ERROR, err)
+                        })
                 } else {
-                    Helper.error(strings.NOTIFICATION_DELETE_ERROR);
+                    Helper.error(strings.NOTIFICATION_DELETE_ERROR)
                 }
             })
             .catch(err => {
-                Helper.error(strings.NOTIFICATION_DELETE_ERROR, err);
-            });
+                Helper.error(strings.NOTIFICATION_DELETE_ERROR, err)
+            })
 
-    };
+    }
 
     const handleDeleteAllNotifications = () => {
-        setOpenDeleteDialog(true);
-    };
+        setOpenDeleteDialog(true)
+    }
 
     const handleCancelDelete = () => {
-        setOpenDeleteDialog(false);
-    };
+        setOpenDeleteDialog(false)
+    }
 
     const handleConfirmDelete = () => {
         deleteNotifications(user._id).then(status => {
             if (status === 200) {
-                setNotifications([]);
-                setNotificationCount(0);
-                setOpenDeleteDialog(false);
+                setNotifications([])
+                setNotificationCount(0)
+                setOpenDeleteDialog(false)
             } else {
-                setOpenDeleteDialog(false);
-                Helper.error();
+                setOpenDeleteDialog(false)
+                Helper.error()
             }
-        });
-    };
+        })
+    }
 
     const handleMarkAllAsRead = () => {
         markAllAsRead(user._id).then(status => {
             if (status === 200) {
-                const _notifications = [...notifications];
+                const _notifications = [...notifications]
 
-                for (let i = 0; i < _notifications.length; i++) {
-                    const notification = _notifications[i];
+                for (let i = 0 i < _notifications.length i++) {
+                    const notification = _notifications[i]
                     if (!notification.isRead) {
-                        notification.isRead = true;
+                        notification.isRead = true
                     }
                 }
 
-                setNotifications(_notifications);
-                setNotificationCount(0);
+                setNotifications(_notifications)
+                setNotificationCount(0)
             } else {
-                Helper.error();
+                Helper.error()
             }
-        });
-    };
+        })
+    }
 
     const fetchNotifications = (page) => {
-        setLoading(true);
+        setLoading(true)
 
         getNotifications(user._id, page)
             .then(data => {
-                const _notifications = [...notifications, ...data];
-                setNotifications(_notifications);
-                setFetch(data.length > 0);
-                setLoading(false);
+                const _notifications = [...notifications, ...data]
+                setNotifications(_notifications)
+                setFetch(data.length > 0)
+                setLoading(false)
             })
             .catch(err => {
-                setLoading(false);
-                Helper.error(null, err);
-            });
-    };
+                setLoading(false)
+                Helper.error(null, err)
+            })
+    }
 
     const onLoad = (user) => {
-        const language = getLanguage();
-        moment.locale(language);
-        setUser(user);
+        const language = getLanguage()
+        moment.locale(language)
+        setUser(user)
 
-        fetchNotifications(page);
+        fetchNotifications(page)
 
         getNotificationCounter(user._id)
             .then(notificationCounter => {
-                setNotificationCount(notificationCounter.count);
+                setNotificationCount(notificationCounter.count)
             })
             .catch(err => {
-                Helper.error(null, err);
-            });
+                Helper.error(null, err)
+            })
 
-        const ul = document.querySelector('.notifications-list');
+        const ul = document.querySelector('.notifications-list')
         if (ul) {
             ul.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                    const _page = page + 1;
-                    setPage(_page);
-                    fetchNotifications(_page);
+                    const _page = page + 1
+                    setPage(_page)
+                    fetchNotifications(_page)
                 }
-            };
+            }
         }
-    };
+    }
 
     return (
         <Master onLoad={onLoad} notificationCount={notificationCount} strict>
@@ -570,7 +570,7 @@ const Notifications = () => {
                 </Dialog>
             </div>
         </Master>
-    );
+    )
 }
 
-export default Notifications;
+export default Notifications

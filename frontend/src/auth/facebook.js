@@ -1,7 +1,7 @@
 export const loadFacebookSdk = (onload) => {
-    const script = document.createElement('script');
-    script.src = 'https://connect.facebook.net/en_US/all.js';
-    script.setAttribute('defer', 'defer');
+    const script = document.createElement('script')
+    script.src = 'https://connect.facebook.net/en_US/all.js'
+    script.setAttribute('defer', 'defer')
     script.onload = () => {
         const params = {
             appId: process.env.REACT_APP_WS_FACEBOOK_APP_ID,
@@ -9,16 +9,16 @@ export const loadFacebookSdk = (onload) => {
             status: true,
             cookie: true,
             version: 'v11.0'
-        };
-        window.FB.init(params);
+        }
+        window.FB.init(params)
         window.FB.getLoginStatus(response => {
             if (onload) {
-                onload(response);
+                onload(response)
             }
-        });
-    };
-    document.body.appendChild(script);
-};
+        })
+    }
+    document.body.appendChild(script)
+}
 
 export const facebookLogin = (callback) => {
     window.FB.getLoginStatus((response) => {
@@ -33,23 +33,23 @@ export const facebookLogin = (callback) => {
                 }
 
                 if (callback) {
-                    callback(data);
+                    callback(data)
                 }
-            });
-        };
+            })
+        }
 
         if (response && response.status === 'connected') {
-            facebookAuth();
-            return;
+            facebookAuth()
+            return
         }
 
         window.FB.login((response) => {
             if (response && response.authResponse) {
-                facebookAuth();
+                facebookAuth()
             }
-        }, { scope: 'email,public_profile' });
-    });
-};
+        }, { scope: 'email,public_profile' })
+    })
+}
 
 export const facebookLogout = (callback) => {
 
@@ -57,21 +57,21 @@ export const facebookLogout = (callback) => {
         if (response && response.status === 'connected') {
             window.FB.logout(() => {
                 if (callback) {
-                    callback();
+                    callback()
                 }
-            });
+            })
         } else {
-            callback();
+            callback()
         }
-    };
+    }
 
     if (window.FB) {
         window.FB.getLoginStatus(response => {
-            logout(response);
-        });
+            logout(response)
+        })
     } else {
         loadFacebookSdk((response) => {
-            logout(response);
-        });
+            logout(response)
+        })
     }
-};
+}

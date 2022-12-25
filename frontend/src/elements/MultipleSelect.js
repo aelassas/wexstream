@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { makeStyles } from "@mui/material/styles";
-import TextField from "@mui/material/TextField";
+import React, { useState, useEffect } from 'react'
+import Autocomplete from "@material-ui/lab/Autocomplete"
+import { makeStyles } from "@mui/material/styles"
+import TextField from "@mui/material/TextField"
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
             marginTop: theme.spacing(3)
         }
     }
-}));
+}))
 
 export default function MultipleSelect({
     label,
@@ -26,12 +26,12 @@ export default function MultipleSelect({
     onClear,
     loading
 }) {
-    const classes = useStyles();
-    const [values, setValues] = useState([]);
+    const classes = useStyles()
+    const [values, setValues] = useState([])
 
     useEffect(() => {
-        setValues(selectedUsers);
-    }, [selectedUsers]);
+        setValues(selectedUsers)
+    }, [selectedUsers])
 
     return (
         <div className={classes.root}>
@@ -42,10 +42,10 @@ export default function MultipleSelect({
                 getOptionLabel={(option) => option.fullName}
                 getOptionSelected={(option, value) => option._id === value._id}
                 onChange={(event, values) => {
-                    setValues(values);
-                    callbackFromMultipleSelect(values, userKey, reference);
+                    setValues(values)
+                    callbackFromMultipleSelect(values, userKey, reference)
                     if (values.length === 0 && onClear) {
-                        onClear();
+                        onClear()
                     }
                 }}
                 clearOnBlur={false}
@@ -65,5 +65,5 @@ export default function MultipleSelect({
                 onInputChange={onInputChange || null}
             />
         </div>
-    );
+    )
 }

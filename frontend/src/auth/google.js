@@ -1,65 +1,65 @@
 export const loadGoogleSdk = (onload) => {
-    const script = document.createElement('script');
-    script.src = 'https://apis.google.com/js/platform.js';
-    script.setAttribute('defer', 'defer');
+    const script = document.createElement('script')
+    script.src = 'https://apis.google.com/js/platform.js'
+    script.setAttribute('defer', 'defer')
     script.onload = () => {
         window.gapi.load("auth2", async () => {
             await window.gapi.auth2.init({
                 client_id: process.env.REACT_APP_WS_GOOGLE_CLIENT_ID
-            });
+            })
             if (onload) {
-                onload();
+                onload()
             }
-        });
-    };
-    document.body.appendChild(script);
-};
+        })
+    }
+    document.body.appendChild(script)
+}
 
 export const googleLogin = (onSuccess, onFailure) => {
-    const auth2 = window.gapi.auth2.getAuthInstance();
+    const auth2 = window.gapi.auth2.getAuthInstance()
 
     auth2.signIn()
         .then((res) => {
             if (onSuccess) {
-                const basicProfile = res.getBasicProfile();
+                const basicProfile = res.getBasicProfile()
                 const data = {
                     googleId: basicProfile.getId(),
                     email: basicProfile.getEmail(),
                     fullName: basicProfile.getGivenName() + ' ' + basicProfile.getFamilyName(),
                     avatar: basicProfile.getImageUrl()
-                };
-                onSuccess(data);
+                }
+                onSuccess(data)
             }
         }, err => {
             if (onFailure) {
-                onFailure(err);
+                onFailure(err)
             }
-        });
+        })
 
-};
+}
 
 export const googleLogout = (callback) => {
     const logout = () => {
-        const auth2 = window.gapi.auth2.getAuthInstance();
+        const auth2 = window.gapi.auth2.getAuthInstance()
 
         if (auth2.isSignedIn.get()) {
             auth2.signOut()
                 .then(() => {
-                    auth2.disconnect();
+                    auth2.disconnect()
                     if (callback) {
-                        callback();
+                        callback()
                     }
-                });
+                })
         } else {
             if (callback) {
-                callback();
+                callback()
             }
-        };
+        }
     }
 
     if (window.gapi) {
-        logout();
+        logout()
     } else {
-        loadGoogleSdk(logout);
+        loadGoogleSdk(logout)
     }
-};
+}

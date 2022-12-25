@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { strings } from '../config/app.config';
-import { getLanguage } from '../services/UserService';
-import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService';
-import { getConnections, getConnectionIds, deleteConnection } from '../services/ConnectionService';
-import { MessageForm } from '../elements/MessageForm';
-import { Avatar } from '../elements/Avatar';
-import Backdrop from '../elements/SimpleBackdrop';
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/ar';
+import React, { useState } from 'react'
+import { strings } from '../config/app.config'
+import { getLanguage } from '../services/UserService'
+import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
+import { getConnections, getConnectionIds, deleteConnection } from '../services/ConnectionService'
+import { MessageForm } from '../elements/MessageForm'
+import { Avatar } from '../elements/Avatar'
+import Backdrop from '../elements/SimpleBackdrop'
+import moment from 'moment'
+import 'moment/locale/fr'
+import 'moment/locale/ar'
 import {
     Button,
     List,
@@ -25,7 +25,7 @@ import {
     DialogActions,
     Tooltip,
     IconButton
-} from '@mui/material';
+} from '@mui/material'
 import {
     Mail,
     LinkOff,
@@ -33,48 +33,48 @@ import {
     ThumbDown,
     Cancel,
     Link as LinkIcon
-} from '@mui/icons-material';
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
-import Master from '../elements/Master';
-import * as Helper from '../common/Helper';
+} from '@mui/icons-material'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import Master from '../elements/Master'
+import * as Helper from '../common/Helper'
 
 const Connections = () => {
-    const [user, setUser] = useState();
-    const [connections, setConnections] = useState([]);
-    const [notificationCount, setNotificationCount] = useState();
-    const [openMessageForm, setOpenMessageForm] = useState(false);
-    const [to, setTo] = useState();
-    const [loading, setLoading] = useState(false);
-    const [openDeclineDialog, setOpenDeclineDialog] = useState(false);
-    const [declineTarget, setDeclineTarget] = useState();
-    const [openDisconnectDialog, setOpenDisconnectDialog] = useState(false);
-    const [disconnectTarget, setDisconnectTarget] = useState();
-    const [connected, setConnected] = useState(false);
-    const [page, setPage] = useState(1);
-    const [fetch, setFetch] = useState(false);
+    const [user, setUser] = useState()
+    const [connections, setConnections] = useState([])
+    const [notificationCount, setNotificationCount] = useState()
+    const [openMessageForm, setOpenMessageForm] = useState(false)
+    const [to, setTo] = useState()
+    const [loading, setLoading] = useState(false)
+    const [openDeclineDialog, setOpenDeclineDialog] = useState(false)
+    const [declineTarget, setDeclineTarget] = useState()
+    const [openDisconnectDialog, setOpenDisconnectDialog] = useState(false)
+    const [disconnectTarget, setDisconnectTarget] = useState()
+    const [connected, setConnected] = useState(false)
+    const [page, setPage] = useState(1)
+    const [fetch, setFetch] = useState(false)
 
     findIndex = (userId) => (
         connections.findIndex(c => c.user._id === userId)
-    );
+    )
 
     const handleCancelDisconnect = (e) => {
-        setOpenDisconnectDialog(false);
-    };
+        setOpenDisconnectDialog(false)
+    }
 
     const handleConnect = (e) => {
-        setDisconnectTarget(e.currentTarget);
+        setDisconnectTarget(e.currentTarget)
 
-        const isApprover = e.currentTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = e.currentTarget.getAttribute('data-is-connection-pending') === 'true';
-        const connected = e.currentTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = e.currentTarget.getAttribute('data-id');
-        const _connections = [...connections]; // Make a shallow copy of connections
+        const isApprover = e.currentTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = e.currentTarget.getAttribute('data-is-connection-pending') === 'true'
+        const connected = e.currentTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = e.currentTarget.getAttribute('data-id')
+        const _connections = [...connections] // Make a shallow copy of connections
 
         if (isApprover && isConnectionPending && !connected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
 
@@ -89,78 +89,78 @@ const Connections = () => {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
 
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = findIndex(connectionId);
+                                                            const index = findIndex(connectionId)
                                                             // Make a shallow copy of the user to mutate
-                                                            const uconn = { ..._connections[index] };
+                                                            const uconn = { ..._connections[index] }
                                                             // Update user
-                                                            uconn.isPending = false;
+                                                            uconn.isPending = false
                                                             // Put it back into users array. N.B. we *are* mutating the array here, but that's why we made a copy first
-                                                            _connections[index] = uconn;
+                                                            _connections[index] = uconn
                                                             // Set the state to our new copy
-                                                            setConnections(_connections);
+                                                            setConnections(_connections)
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationCount(notificationCounter.count);
-                                                                    Helper.info(strings.CONNECTION_APPROVE);
+                                                                    setNotificationCount(notificationCounter.count)
+                                                                    Helper.info(strings.CONNECTION_APPROVE)
                                                                 })
                                                                 .catch(err => {
-                                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
-                                                                });
+                                                                    Helper.error(strings.CONNECTION_APPROVE_ERROR)
+                                                                })
                                                         } else {
-                                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                                                            Helper.error(strings.CONNECTION_APPROVE_ERROR)
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        Helper.error(strings.CONNECTION_APPROVE_ERROR);
-                                                    });
+                                                        Helper.error(strings.CONNECTION_APPROVE_ERROR)
+                                                    })
                                             }
                                         })
                                         .catch(err => {
-                                            Helper.error(strings.CONNECTION_APPROVE_ERROR);
-                                        });
+                                            Helper.error(strings.CONNECTION_APPROVE_ERROR)
+                                        })
                                 } else {
-                                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                                    Helper.error(strings.CONNECTION_APPROVE_ERROR)
                                 }
                             })
                             .catch(err => {
-                                Helper.error(strings.CONNECTION_APPROVE_ERROR);
-                            });
+                                Helper.error(strings.CONNECTION_APPROVE_ERROR)
+                            })
                     } else {
-                        Helper.error(strings.CONNECTION_APPROVE_ERROR);
+                        Helper.error(strings.CONNECTION_APPROVE_ERROR)
                     }
                 })
                 .catch(err => {
-                    Helper.error(strings.CONNECTION_APPROVE_ERROR);
-                });
+                    Helper.error(strings.CONNECTION_APPROVE_ERROR)
+                })
         } else if (isApprover && (isConnectionPending || connected)) {
-            setConnected(connected);
-            setOpenDisconnectDialog(true);
+            setConnected(connected)
+            setOpenDisconnectDialog(true)
         } else {
             if (isConnectionPending || connected) {
-                setConnected(connected);
-                setOpenDisconnectDialog(true);
+                setConnected(connected)
+                setOpenDisconnectDialog(true)
             }
         }
-    };
+    }
 
     const handleConfirmDisconnect = (e) => {
-        const isApprover = disconnectTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true';
-        const connected = disconnectTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = disconnectTarget.getAttribute('data-id');
-        const connections = [...connections]; // Make a shallow copy of connections
+        const isApprover = disconnectTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true'
+        const connected = disconnectTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = disconnectTarget.getAttribute('data-id')
+        const connections = [...connections] // Make a shallow copy of connections
 
         if (isApprover && (isConnectionPending || connected)) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
 
@@ -175,35 +175,35 @@ const Connections = () => {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = findIndex(connectionId);
-                                                            connections.splice(index, 1);
-                                                            setConnections(connections);
-                                                            setOpenDisconnectDialog(false);
+                                                            const index = findIndex(connectionId)
+                                                            connections.splice(index, 1)
+                                                            setConnections(connections)
+                                                            setOpenDisconnectDialog(false)
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationCount(notificationCounter.count);
-                                                                    Helper.info(strings.CONNECTION_DELETED);
+                                                                    setNotificationCount(notificationCounter.count)
+                                                                    Helper.info(strings.CONNECTION_DELETED)
                                                                 })
                                                                 .catch(err => {
-                                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                                                });
+                                                                    Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                                                })
                                                         } else {
-                                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                                            Helper.error(strings.CONNECTION_DELETE_ERROR)
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                                    });
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                                    })
                                             }
                                         })
                                         .catch(err => {
-                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                        });
+                                            Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                        })
                                 } else { // Disconnect
                                     deleteConnection(user._id, connectionId)
                                         .then(status => {
@@ -215,46 +215,46 @@ const Connections = () => {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = findIndex(connectionId);
-                                                            connections.splice(index, 1);
-                                                            setConnections(connections);
-                                                            setOpenDisconnectDialog(false);
-                                                            Helper.info(strings.CONNECTION_DELETED);
+                                                            const index = findIndex(connectionId)
+                                                            connections.splice(index, 1)
+                                                            setConnections(connections)
+                                                            setOpenDisconnectDialog(false)
+                                                            Helper.info(strings.CONNECTION_DELETED)
                                                         }
                                                         else {
-                                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                                            Helper.error(strings.CONNECTION_DELETE_ERROR)
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                                    });
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                                    })
                                             }
                                             else {
-                                                Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                                Helper.error(strings.CONNECTION_DELETE_ERROR)
                                             }
-                                        });
+                                        })
                                 }
                             })
                             .catch(err => {
-                                Helper.error(strings.CONNECTION_DELETE_ERROR);
-                            });
+                                Helper.error(strings.CONNECTION_DELETE_ERROR)
+                            })
                     } else {
-                        Helper.error(strings.CONNECTION_DELETE_ERROR);
+                        Helper.error(strings.CONNECTION_DELETE_ERROR)
                     }
                 })
                 .catch(err => {
-                    Helper.error(strings.CONNECTION_DELETE_ERROR);
-                });
+                    Helper.error(strings.CONNECTION_DELETE_ERROR)
+                })
         } else {
             if (isConnectionPending || connected) {
                 getConnectionIds(user._id, connectionId)
                     .then(connectionIds => {
                         if (connectionIds) {
-                            const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                            const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
 
                             getNotification(connectionId, _senderConnectionId, _approverConnectionId)
                                 .then(notification => {
@@ -262,17 +262,17 @@ const Connections = () => {
                                         deleteNotification(notification._id)
                                             .then(status => {
                                                 if (status !== 200) {
-                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                                    Helper.error(strings.CONNECTION_DELETE_ERROR)
                                                 }
                                             })
                                             .catch(err => {
-                                                Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                            });
+                                                Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                            })
                                     }
                                 })
                                 .catch(err => {
-                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                });
+                                    Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                })
 
                             if (connected) { // Disconnect
                                 deleteConnection(user._id, connectionId)
@@ -285,80 +285,80 @@ const Connections = () => {
                                                 isLink: true,
                                                 senderUser: user._id,
                                                 link: `${window.location.origin}/profile?u=${user._id}`
-                                            };
+                                            }
                                             notify(notification)
                                                 .then(notificationStatus => {
                                                     if (notificationStatus === 200) {
-                                                        const index = findIndex(connectionId);
-                                                        connections.splice(index, 1);
-                                                        setConnections(connections);
-                                                        setOpenDisconnectDialog(false);
-                                                        Helper.info(strings.CONNECTION_DELETED);
+                                                        const index = findIndex(connectionId)
+                                                        connections.splice(index, 1)
+                                                        setConnections(connections)
+                                                        setOpenDisconnectDialog(false)
+                                                        Helper.info(strings.CONNECTION_DELETED)
                                                     }
                                                     else {
-                                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                                        Helper.error(strings.CONNECTION_DELETE_ERROR)
                                                     }
                                                 })
                                                 .catch(err => {
-                                                    Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                                });
+                                                    Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                                })
                                         }
                                         else {
-                                            Helper.error(strings.CONNECTION_DELETE_ERROR);
+                                            Helper.error(strings.CONNECTION_DELETE_ERROR)
                                         }
                                     })
                                     .catch(err => {
-                                        Helper.error(strings.CONNECTION_DELETE_ERROR);
-                                    });
+                                        Helper.error(strings.CONNECTION_DELETE_ERROR)
+                                    })
                             } else { // Cancel request
                                 deleteConnection(user._id, connectionId)
                                     .then(status => {
                                         if (status === 200) {
-                                            const index = findIndex(connectionId);
-                                            connections.splice(index, 1);
-                                            setConnections(connections);
-                                            setOpenDisconnectDialog(false);
-                                            Helper.info(strings.CONNECTION_CANCELED);
+                                            const index = findIndex(connectionId)
+                                            connections.splice(index, 1)
+                                            setConnections(connections)
+                                            setOpenDisconnectDialog(false)
+                                            Helper.info(strings.CONNECTION_CANCELED)
                                         } else {
-                                            Helper.error();
+                                            Helper.error()
                                         }
                                     })
                                     .catch(err => {
-                                        Helper.error();
-                                    });
+                                        Helper.error()
+                                    })
                             }
                         } else {
-                            Helper.error(strings.CONNECTION_DELETE_ERROR);
+                            Helper.error(strings.CONNECTION_DELETE_ERROR)
                         }
                     })
                     .catch(err => {
-                        Helper.error(strings.CONNECTION_DELETE_ERROR);
-                    });
+                        Helper.error(strings.CONNECTION_DELETE_ERROR)
+                    })
             }
         }
-    };
+    }
 
     const handleCancelDecline = (e) => {
-        setOpenDeclineDialog(false);
-    };
+        setOpenDeclineDialog(false)
+    }
 
     const handleDecline = (e) => {
-        setDeclineTarget(e.currentTarget);
-        setOpenDeclineDialog(true);
-    };
+        setDeclineTarget(e.currentTarget)
+        setOpenDeclineDialog(true)
+    }
 
     const handleConfirmDecline = (e) => {
-        const isApprover = declineTarget.getAttribute('data-is-approver') === 'true';
-        const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true';
-        const connected = declineTarget.getAttribute('data-is-connected') === 'true';
-        const connectionId = declineTarget.getAttribute('data-id');
-        const connections = [...connections]; // Make a shallow copy of users
+        const isApprover = declineTarget.getAttribute('data-is-approver') === 'true'
+        const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true'
+        const connected = declineTarget.getAttribute('data-is-connected') === 'true'
+        const connectionId = declineTarget.getAttribute('data-id')
+        const connections = [...connections] // Make a shallow copy of users
 
         if (isApprover && isConnectionPending && !connected) {
             getConnectionIds(connectionId, user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
-                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId;
+                        const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
                         getNotification(user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) {
@@ -374,102 +374,102 @@ const Connections = () => {
                                                     isLink: true,
                                                     senderUser: user._id,
                                                     link: `${window.location.origin}/profile?u=${user._id}`
-                                                };
+                                                }
 
                                                 notify(notification)
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
-                                                            const index = findIndex(connectionId);
-                                                            connections.splice(index, 1);
-                                                            setConnections(connections);
-                                                            setOpenDeclineDialog(false);
+                                                            const index = findIndex(connectionId)
+                                                            connections.splice(index, 1)
+                                                            setConnections(connections)
+                                                            setOpenDeclineDialog(false)
 
                                                             getNotificationCounter(user._id)
                                                                 .then(notificationCounter => {
-                                                                    setNotificationCount(notificationCounter.count);
-                                                                    Helper.info(strings.CONNECTION_DECLINE);
+                                                                    setNotificationCount(notificationCounter.count)
+                                                                    Helper.info(strings.CONNECTION_DECLINE)
                                                                 })
                                                                 .catch(err => {
-                                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
-                                                                });
+                                                                    Helper.error(strings.CONNECTION_DECLINE_ERROR)
+                                                                })
                                                         }
                                                     })
                                                     .catch(err => {
-                                                        Helper.error(strings.CONNECTION_DECLINE_ERROR);
-                                                    });
+                                                        Helper.error(strings.CONNECTION_DECLINE_ERROR)
+                                                    })
                                             } else {
-                                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                                                Helper.error(strings.CONNECTION_DECLINE_ERROR)
                                             }
                                         })
                                         .catch(err => {
-                                            Helper.error(strings.CONNECTION_DECLINE_ERROR);
-                                        });
+                                            Helper.error(strings.CONNECTION_DECLINE_ERROR)
+                                        })
                                 } else {
-                                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                                    Helper.error(strings.CONNECTION_DECLINE_ERROR)
                                 }
                             })
                             .catch(err => {
-                                Helper.error(strings.CONNECTION_DECLINE_ERROR);
-                            });
+                                Helper.error(strings.CONNECTION_DECLINE_ERROR)
+                            })
                     } else {
-                        Helper.error(strings.CONNECTION_DECLINE_ERROR);
+                        Helper.error(strings.CONNECTION_DECLINE_ERROR)
                     }
                 })
                 .catch(err => {
-                    Helper.error(strings.CONNECTION_DECLINE_ERROR);
-                });
+                    Helper.error(strings.CONNECTION_DECLINE_ERROR)
+                })
         } else {
-            Helper.error(strings.CONNECTION_DECLINE_ERROR);
+            Helper.error(strings.CONNECTION_DECLINE_ERROR)
         }
-    };
+    }
 
     const handleSendMessage = (e) => {
-        const to = e.currentTarget.getAttribute('data-id');
-        setTo(to);
-        setOpenMessageForm(true);
-    };
+        const to = e.currentTarget.getAttribute('data-id')
+        setTo(to)
+        setOpenMessageForm(true)
+    }
 
     const handleMessageFormClose = (e) => {
-        setOpenMessageForm(false);
-    };
+        setOpenMessageForm(false)
+    }
 
     const handleAvatarClick = (e) => {
-        const userId = e.currentTarget.getAttribute('data-id');
-        window.location = '/profile?u=' + userId;
-    };
+        const userId = e.currentTarget.getAttribute('data-id')
+        window.location = '/profile?u=' + userId
+    }
 
     const fetchConnections = (page) => {
-        setLoading(true);
+        setLoading(true)
 
         getConnections(user._id, page)
             .then(data => {
-                const _connections = [...connections, ...data];
-                setConnections(_connections);
-                setFetch(data.length > 0);
-                setLoading(false);
+                const _connections = [...connections, ...data]
+                setConnections(_connections)
+                setFetch(data.length > 0)
+                setLoading(false)
             })
             .catch(err => {
-                Helper.error();
-            });
-    };
+                Helper.error()
+            })
+    }
 
     const onLoad = (user) => {
-        const language = getLanguage();
-        moment.locale(language);
-        setUser(user);
-        fetchConnections(1);
+        const language = getLanguage()
+        moment.locale(language)
+        setUser(user)
+        fetchConnections(1)
 
-        const div = document.querySelector('.content');
+        const div = document.querySelector('.content')
         if (div) {
             div.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                    const _page = page + 1;
-                    setPage(_page);
-                    fetchConnections(_page);
+                    const _page = page + 1
+                    setPage(_page)
+                    fetchConnections(_page)
                 }
-            };
+            }
         }
-    };
+    }
 
     return (
         <Master onLoad={onLoad} notificationCount={notificationCount} strict>
@@ -687,7 +687,7 @@ const Connections = () => {
             </div>
             {loading && <Backdrop text={strings.LOADING} />}
         </Master>
-    );
-};
+    )
+}
 
-export default Connections;
+export default Connections

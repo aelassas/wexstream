@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config';
-import { strings } from '../config/app.config';
+import React, { useEffect, useState } from 'react'
+import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config'
+import { strings } from '../config/app.config'
 import {
   Card,
   CardContent,
@@ -14,32 +14,32 @@ import {
   IconButton,
   Paper,
   Button
-} from '@mui/material';
+} from '@mui/material'
 import {
   Videocam,
   Security,
   VerifiedUser,
   Close
-} from '@mui/icons-material';
-import Error from '../elements/Error';
-import Header from '../elements/Header';
-import * as UserService from '../services/UserService';
-import * as MessageService from '../services/MessageService';
-import * as ConferenceService from '../services/ConferenceService';
-import { loadFacebookSdk, facebookLogin } from '../auth/facebook';
-import { loadGoogleSdk, googleLogin } from '../auth/google';
+} from '@mui/icons-material'
+import Error from '../elements/Error'
+import Header from '../elements/Header'
+import * as UserService from '../services/UserService'
+import * as MessageService from '../services/MessageService'
+import * as ConferenceService from '../services/ConferenceService'
+import { loadFacebookSdk, facebookLogin } from '../auth/facebook'
+import { loadGoogleSdk, googleLogin } from '../auth/google'
 
 const SignIn = () => {
-  const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [blacklisted, setBlacklisted] = useState(false);
-  const [openEmailAuthDialog, setOpenEmailAuthDialog] = useState(false);
-  const [emailAuthError, setEmailAuthError] = useState(false);
-  const [isGoogleSdkLoaded, setIsGoogleSdkLoaded] = useState(false);
-  const [isFacebookSdkLoaded, setIsFacebookSdkLoaded] = useState(false);
+  const [language, setLanguage] = useState(DEFAULT_LANGUAGE)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const [blacklisted, setBlacklisted] = useState(false)
+  const [openEmailAuthDialog, setOpenEmailAuthDialog] = useState(false)
+  const [emailAuthError, setEmailAuthError] = useState(false)
+  const [isGoogleSdkLoaded, setIsGoogleSdkLoaded] = useState(false)
+  const [isFacebookSdkLoaded, setIsFacebookSdkLoaded] = useState(false)
 
   const handleGoogleAuth = (event, _data) => {
     const auth = (data) => {
@@ -47,60 +47,60 @@ const SignIn = () => {
         .then(res => {
           if (res.status === 200) {
             if (res.data.blacklisted) {
-              UserService.signout(false);
-              setError(false);
-              setBlacklisted(true);
+              UserService.signout(false)
+              setError(false)
+              setBlacklisted(true)
             } else {
-              const conferenceId = ConferenceService.getConferenceId();
-              const messageId = MessageService.getMessageId();
-              const userId = UserService.getUserId();
+              const conferenceId = ConferenceService.getConferenceId()
+              const messageId = MessageService.getMessageId()
+              const userId = UserService.getUserId()
 
-              setError(false);
+              setError(false)
 
               if (conferenceId !== '') {
-                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`;
+                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
               } else if (messageId !== '') {
-                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`;
+                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
               } else if (userId !== '') {
-                window.location.href = `/profile?u=${encodeURIComponent(userId)}`;
+                window.location.href = `/profile?u=${encodeURIComponent(userId)}`
               } else {
-                window.location = '/home' + window.location.search;
+                window.location = '/home' + window.location.search
               }
             }
           } else {
-            setError(true);
-            setBlacklisted(false);
+            setError(true)
+            setBlacklisted(false)
           }
         })
         .catch(() => {
-          setError(true);
-          setBlacklisted(false);
-        });
-    };
+          setError(true)
+          setBlacklisted(false)
+        })
+    }
 
     if (event) {
       googleLogin((data) => {
-        data.language = UserService.getLanguage();
-        auth(data);
+        data.language = UserService.getLanguage()
+        auth(data)
       }, (err) => {
         if (err.error === 'popup_closed_by_user') {
-          return;
+          return
         }
 
-        setError(true);
-        setBlacklisted(false);
-      });
+        setError(true)
+        setBlacklisted(false)
+      })
     } else {
-      const data = _data;
-      data.language = UserService.getLanguage();
-      auth(data);
+      const data = _data
+      data.language = UserService.getLanguage()
+      auth(data)
     }
-  };
+  }
 
   const handleGoogleAuthFailure = () => {
-    setError(true);
-    setBlacklisted(false);
-  };
+    setError(true)
+    setBlacklisted(false)
+  }
 
   const handleFacebookAuth = (event, _data) => {
     const auth = (data) => {
@@ -108,159 +108,159 @@ const SignIn = () => {
         .then(res => {
           if (res.status === 200) {
             if (res.data.blacklisted) {
-              UserService.signout(false);
-              setError(false);
-              setBlacklisted(true);
+              UserService.signout(false)
+              setError(false)
+              setBlacklisted(true)
             } else {
-              const conferenceId = ConferenceService.getConferenceId();
-              const messageId = MessageService.getMessageId();
-              const userId = UserService.getUserId();
+              const conferenceId = ConferenceService.getConferenceId()
+              const messageId = MessageService.getMessageId()
+              const userId = UserService.getUserId()
 
-              setError(false);
+              setError(false)
 
               if (conferenceId !== '') {
-                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`;
+                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
               } else if (messageId !== '') {
-                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`;
+                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
               } else if (userId !== '') {
-                window.location.href = `/profile?u=${encodeURIComponent(userId)}`;
+                window.location.href = `/profile?u=${encodeURIComponent(userId)}`
               } else {
-                window.location = '/home' + window.location.search;
+                window.location = '/home' + window.location.search
               }
             }
           } else {
-            setError(true);
-            setBlacklisted(false);
+            setError(true)
+            setBlacklisted(false)
           }
         })
         .catch(() => {
-          setError(true);
-          setBlacklisted(false);
-        });
-    };
+          setError(true)
+          setBlacklisted(false)
+        })
+    }
 
     if (event) {
       facebookLogin((data) => {
-        data.language = UserService.getLanguage();
-        auth(data);
-      });
+        data.language = UserService.getLanguage()
+        auth(data)
+      })
     } else {
-      const data = _data;
-      data.language = UserService.getLanguage();
-      auth(data);
+      const data = _data
+      data.language = UserService.getLanguage()
+      auth(data)
     }
-  };
+  }
 
   const handleFacebookAuthFailure = () => {
-    setError(true);
-    setBlacklisted(false);
-  };
+    setError(true)
+    setBlacklisted(false)
+  }
 
   const handleEmailAuth = () => {
-    setOpenEmailAuthDialog(true);
-  };
+    setOpenEmailAuthDialog(true)
+  }
 
   const handleEmailAuthClose = () => {
-    setOpenEmailAuthDialog(false);
+    setOpenEmailAuthDialog(false)
   }
 
   const handleOnChangeEmail = (e) => {
-    setEmail(e.target.value);
-  };
+    setEmail(e.target.value)
+  }
 
   const handleOnChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
+    setPassword(e.target.value)
+  }
 
   const handleOnPasswordKeyDown = (e) => {
     if (e.key === 'Enter') {
-      handleSubmit(e);
+      handleSubmit(e)
     }
-  };
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (window.android && window.android.setAuthType) {
-      window.android.setAuthType('email');
+      window.android.setAuthType('email')
     }
 
-    const data = { email, password };
+    const data = { email, password }
 
     UserService.signin(data)
       .then(res => {
         if (res.status === 200) {
           if (res.data.blacklisted) {
-            UserService.signout(false);
-            setEmailAuthError(false);
-            setBlacklisted(true);
+            UserService.signout(false)
+            setEmailAuthError(false)
+            setBlacklisted(true)
           } else {
-            const conferenceId = ConferenceService.getConferenceId();
-            const messageId = MessageService.getMessageId();
-            const userId = UserService.getUserId();
+            const conferenceId = ConferenceService.getConferenceId()
+            const messageId = MessageService.getMessageId()
+            const userId = UserService.getUserId()
 
-            setEmailAuthError(false);
+            setEmailAuthError(false)
 
             if (conferenceId !== '') {
-              window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`;
+              window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
             } else if (messageId !== '') {
-              window.location.href = `/messages?m=${encodeURIComponent(messageId)}`;
+              window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
             } else if (userId !== '') {
-              window.location.href = `/profile?u=${encodeURIComponent(userId)}`;
+              window.location.href = `/profile?u=${encodeURIComponent(userId)}`
             } else {
-              window.location = '/home' + window.location.search;
+              window.location = '/home' + window.location.search
             }
           }
         } else {
-          setEmailAuthError(true);
-          setBlacklisted(false);
+          setEmailAuthError(true)
+          setBlacklisted(false)
         }
       })
       .catch(() => {
-        setEmailAuthError(true);
-        setBlacklisted(false);
-      });
-  };
+        setEmailAuthError(true)
+        setBlacklisted(false)
+      })
+  }
 
   useEffect(() => {
     loadGoogleSdk(() => {
-      setIsGoogleSdkLoaded(true);
-    });
+      setIsGoogleSdkLoaded(true)
+    })
 
     loadFacebookSdk(() => {
-      setIsFacebookSdkLoaded(true);
-    });
+      setIsFacebookSdkLoaded(true)
+    })
 
-    const queryLanguage = UserService.getQueryLanguage();
+    const queryLanguage = UserService.getQueryLanguage()
 
     if (LANGUAGES.includes(queryLanguage)) {
-      strings.setLanguage(queryLanguage);
-      setLanguage(queryLanguage);
+      strings.setLanguage(queryLanguage)
+      setLanguage(queryLanguage)
     } else {
-      const language = UserService.getLanguage();
-      strings.setLanguage(language);
-      setLanguage(language);
+      const language = UserService.getLanguage()
+      strings.setLanguage(language)
+      setLanguage(language)
     }
 
     if (window.android) {
       window.androidGoogleAuthSuccess = (data) => {
-        handleGoogleAuth(null, JSON.parse(data));
+        handleGoogleAuth(null, JSON.parse(data))
       }
 
       window.androidGoogleAuthFailure = () => {
-        handleGoogleAuthFailure();
-      };
+        handleGoogleAuthFailure()
+      }
 
       window.androidFacebookAuthSuccess = (data) => {
-        handleFacebookAuth(null, JSON.parse(data));
+        handleFacebookAuth(null, JSON.parse(data))
       }
 
       window.androidFacebookAuthFailure = () => {
-        handleFacebookAuthFailure();
-      };
+        handleFacebookAuthFailure()
+      }
     }
 
-    const currentUser = UserService.getCurrentUser();
+    const currentUser = UserService.getCurrentUser()
     if (currentUser) {
       UserService.validateAccessToken()
         .then(status => {
@@ -268,25 +268,25 @@ const SignIn = () => {
             UserService.getUser(currentUser.id)
               .then(user => {
                 if (user) {
-                  window.location.href = '/home' + window.location.search;
+                  window.location.href = '/home' + window.location.search
                 } else {
-                  UserService.signout();
+                  UserService.signout()
                 }
               })
               .catch(() => {
-                UserService.signout();
-              });
+                UserService.signout()
+              })
           }
         })
         .catch(() => {
-          UserService.signout();
-        });
+          UserService.signout()
+        })
     } else {
-      setVisible(true);
+      setVisible(true)
     }
-  }, []);
+  }, [])
 
-  const authBtnStyle = { width: language === 'fr' ? 240 : 190 };
+  const authBtnStyle = { width: language === 'fr' ? 240 : 190 }
 
   return (
     <div>
@@ -326,9 +326,9 @@ const SignIn = () => {
                 onClick={
                   (event) => {
                     if (window.android && window.android.googleSignin) {
-                      window.android.googleSignin();
+                      window.android.googleSignin()
                     } else {
-                      handleGoogleAuth(event);
+                      handleGoogleAuth(event)
                     }
                   }
                 }
@@ -344,9 +344,9 @@ const SignIn = () => {
                 onClick={
                   (event) => {
                     if (window.android && window.android.facebookSignin) {
-                      window.android.facebookSignin();
+                      window.android.facebookSignin()
                     } else {
-                      handleFacebookAuth(event);
+                      handleFacebookAuth(event)
                     }
                   }
                 }
@@ -439,7 +439,7 @@ const SignIn = () => {
         </Dialog>
       </div>
     </div >
-  );
+  )
 }
 
-export default SignIn;
+export default SignIn

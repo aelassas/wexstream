@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
     Typography,
     Card,
@@ -14,44 +14,44 @@ import {
     ListItem,
     ListItemAvatar,
     ListItemText,
-} from '@mui/material';
-import { Avatar } from './Avatar';
-import { getMembers } from '../services/ConferenceService';
-import { strings } from '../config/app.config';
+} from '@mui/material'
+import { Avatar } from './Avatar'
+import { getMembers } from '../services/ConferenceService'
+import { strings } from '../config/app.config'
 
 export const Members = (props) => {
-    const [members, setMembers] = useState([]);
-    const [openDialog, setOpenDialog] = useState(false);
-    const [rtl, setRtl] = useState(false);
+    const [members, setMembers] = useState([])
+    const [openDialog, setOpenDialog] = useState(false)
+    const [rtl, setRtl] = useState(false)
 
     const handlCloseMembers = () => {
         if (props.onClose) {
-            props.onClose();
+            props.onClose()
         }
-    };
+    }
 
     useEffect(() => {
-        setRtl(props.loggedUser.language === 'ar');
+        setRtl(props.loggedUser.language === 'ar')
 
         if (props.open) {
             getMembers(props.conferenceId)
                 .then(members => {
-                    setMembers(members);
-                    setOpenDialog(true);
+                    setMembers(members)
+                    setOpenDialog(true)
                     if (props.onFetch) {
-                        props.onFetch.call(this, members);
+                        props.onFetch.call(this, members)
                     }
                 })
                 .catch(err => {
                     if (props.onError) {
-                        props.onError.call(this, err);
+                        props.onError.call(this, err)
                     }
-                });
+                })
         } else {
-            setOpenDialog(false);
-            setMembers([]);
+            setOpenDialog(false)
+            setMembers([])
         }
-    }, [props.loggedUser, props.conferenceId, props.open, props.onFetch, props.onError]);
+    }, [props.loggedUser, props.conferenceId, props.open, props.onFetch, props.onError])
 
     return (
         <Dialog
@@ -94,5 +94,5 @@ export const Members = (props) => {
                 <Button onClick={handlCloseMembers} color="default">{strings.CLOSE}</Button>
             </DialogActions>
         </Dialog>
-    );
-};
+    )
+}

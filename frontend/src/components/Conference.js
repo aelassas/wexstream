@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import Header from './Header';
-import { strings } from '../config/app.config';
-import { JITSI_API, JITSI_HOST, LANGUAGES } from '../config/env.config';
-import { getUser, validateAccessToken, resendLink, getCurrentUser, signout, getUsername, getQueryLanguage } from '../services/UserService';
-import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService';
-import { getConnection } from '../services/ConnectionService';
-import { createTimelineEntries } from '../services/TimelineService';
-import { toast } from 'react-toastify';
+import React, { Component } from 'react'
+import Header from './Header'
+import { strings } from '../config/app.config'
+import { JITSI_API, JITSI_HOST, LANGUAGES } from '../config/env.config'
+import { getUser, validateAccessToken, resendLink, getCurrentUser, signout, getUsername, getQueryLanguage } from '../services/UserService'
+import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService'
+import { getConnection } from '../services/ConnectionService'
+import { createTimelineEntries } from '../services/TimelineService'
+import { toast } from 'react-toastify'
 import {
     IconButton,
     Button,
@@ -14,7 +14,7 @@ import {
     Card,
     CardContent,
     Typography
-} from '@mui/material';
+} from '@mui/material'
 import {
     Share,
     FileCopyOutlined,
@@ -23,7 +23,7 @@ import {
     FullscreenExit,
     VolumeOff,
     VolumeUp
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 import {
     EmailShareButton,
     EmailIcon,
@@ -33,20 +33,19 @@ import {
     TwitterIcon,
     WhatsappShareButton,
     WhatsappIcon
-} from "react-share";
-import Backdrop from '../elements/SimpleBackdrop';
-import { getLanguage } from '../services/UserService';
-import * as Helper from '../common/Helper';
-import { isMobile } from '../config/env.config';
+} from "react-share"
+import Backdrop from '../elements/SimpleBackdrop'
+import { getLanguage } from '../services/UserService'
+import * as Helper from '../common/Helper'
+import { isMobile } from '../config/env.config'
 
+class Conference extends Component {
 
-class Conf extends Component {
-
-    domain = JITSI_HOST;
-    api = {};
+    domain = JITSI_HOST
+    api = {}
 
     constructor(props) {
-        super(props);
+        super(props)
         this.state = {
             user: null,
             conference: null,
@@ -75,9 +74,9 @@ class Conf extends Component {
     }
 
     startConference = (token) => {
-        const { user, conference } = this.state;
-        localStorage.removeItem('jitsiLocalStorage');
-        localStorage.setItem('jitsiLocalStorage', JSON.stringify({ language: user.language }));
+        const { user, conference } = this.state
+        localStorage.removeItem('jitsiLocalStorage')
+        localStorage.setItem('jitsiLocalStorage', JSON.stringify({ language: user.language }))
 
         const options = {
             roomName: this.state.conference._id,
@@ -99,7 +98,7 @@ class Conf extends Component {
             },
             jwt: token
         }
-        this.api = new window.JitsiMeetExternalAPI(this.domain, options);
+        this.api = new window.JitsiMeetExternalAPI(this.domain, options)
 
         this.api.addEventListeners({
             readyToClose: this.handleClose,
@@ -111,62 +110,62 @@ class Conf extends Component {
             eventRoleChanged: this.handleParticipantRoleChanged,
             audioMuteStatusChanged: this.handleMuteStatus,
             videoMuteStatusChanged: this.handleVideoStatus
-        });
+        })
 
         window.onbeforeunload = (e) => {
-            localStorage.removeItem('jitsiLocalStorage');
-            this.setState({ exit: true });
-        };
+            localStorage.removeItem('jitsiLocalStorage')
+            this.setState({ exit: true })
+        }
 
         if (conference.isLive && conference.speaker._id === user._id) {
-            createTimelineEntries(user._id, conference._id, true);
+            createTimelineEntries(user._id, conference._id, true)
         }
-    };
+    }
 
     updateConf = (data, onSuccess) => {
-        const { conference } = this.state;
+        const { conference } = this.state
         updateConference(conference._id, data)
             .then(status => {
                 if (status === 200) {
                     if (data.isLive !== undefined) {
-                        conference.isLive = data.isLive;
+                        conference.isLive = data.isLive
                     }
                     if (data.broadcastedAt !== undefined) {
-                        conference.broadcastedAt = data.broadcastedAt;
+                        conference.broadcastedAt = data.broadcastedAt
                     }
                     if (data.finishedAt !== undefined) {
-                        conference.broadcastedAt = data.finishedAt;
+                        conference.broadcastedAt = data.finishedAt
                     }
-                    this.setState({ conference });
+                    this.setState({ conference })
                     if (onSuccess) {
-                        onSuccess();
+                        onSuccess()
                     }
                 }
                 else {
-                    this.setState({ error: true, isLoading: false });
+                    this.setState({ error: true, isLoading: false })
                 }
             })
             .catch(err => {
                 if (err.message && !err.message.toLowerCase().includes('aborted')) {
-                    this.setState({ error: true, isLoading: false });
+                    this.setState({ error: true, isLoading: false })
                 }
-            });
-    };
+            })
+    }
 
     close = () => {
-        const { user } = this.state;
+        const { user } = this.state
 
-        this.setState({ isLeaving: true });
-        localStorage.removeItem('jitsiLocalStorage');
+        this.setState({ isLeaving: true })
+        localStorage.removeItem('jitsiLocalStorage')
 
-        // const conference = await getConference(this.state.conference._id);
+        // const conference = await getConference(this.state.conference._id)
         // if (conference.isLive && (conference.speaker._id === user._id)) {
-        //     await this.updateConf({ isLive: false, finishedAt: Date.now() });
+        //     await this.updateConf({ isLive: false, finishedAt: Date.now() })
         //     closeConference(user._id, conference._id).then(() => {
-        //         window.location = '/home';
-        //     });
+        //         window.location = '/home'
+        //     })
         // } else {
-        //     window.location = '/home';
+        //     window.location = '/home'
         // }
 
         getConference(this.state.conference._id)
@@ -174,255 +173,255 @@ class Conf extends Component {
                 if (conference.isLive && (conference.speaker._id === user._id)) {
                     this.updateConf({ isLive: false, finishedAt: Date.now() }, () => {
                         closeConference(user._id, conference._id).then(() => {
-                            window.location = '/home';
-                        });
+                            window.location = '/home'
+                        })
                     })
                 } else {
-                    window.location = '/home';
+                    window.location = '/home'
                 }
-            });
+            })
     }
 
     handleClose = (event) => {
-        this.close();
-    };
+        this.close()
+    }
 
     addConfMember = () => {
-        const { user, conference } = this.state;
+        const { user, conference } = this.state
 
         if (conference.speaker._id !== user._id) {
             addMember(conference._id, user._id)
                 .then(status => {
                     if (status !== 200) {
-                        toast(strings.GENERIC_ERROR, { type: 'error' });
+                        toast(strings.GENERIC_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                });
+                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                })
         }
     }
 
     handleVideoConferenceJoined = (event) => {
-        const { user, conference } = this.state;
-        const participants = this.api.getParticipantsInfo();
+        const { user, conference } = this.state
+        const participants = this.api.getParticipantsInfo()
 
         if (conference.speaker._id === user._id) {
-            this.api.executeCommand('toggleLobby', true);
-            this.setState({ showButtons: true });
+            this.api.executeCommand('toggleLobby', true)
+            this.setState({ showButtons: true })
         } else if (conference.speaker._id !== user._id && participants.length === 1) {
-            this.api.dispose();
-            this.setState({ unAuthorized: true });
+            this.api.dispose()
+            this.setState({ unAuthorized: true })
             if (window.android && window.android.fullscreen) {
-                window.android.fullscreen();
-                this.setState({ fullscreen: false });
+                window.android.fullscreen()
+                this.setState({ fullscreen: false })
             }
         } else {
-            this.addConfMember();
-            this.setState({ showButtons: true });
+            this.addConfMember()
+            this.setState({ showButtons: true })
         }
 
-        this.setState({ isLoading: false });
-    };
+        this.setState({ isLoading: false })
+    }
 
     handleVideoConferenceLeft = (event) => {
-        const { user, conference, conferenceLeftCalledFirstTime, exit } = this.state;
+        const { user, conference, conferenceLeftCalledFirstTime, exit } = this.state
 
         if (conference.speaker._id === user._id && !exit && conferenceLeftCalledFirstTime) {
-            this.close();
+            this.close()
         } else if (!conferenceLeftCalledFirstTime) {
-            this.setState({ conferenceLeftCalledFirstTime: true });
+            this.setState({ conferenceLeftCalledFirstTime: true })
         } else if (conferenceLeftCalledFirstTime) {
-            window.location = '/home';
+            window.location = '/home'
         }
-    };
+    }
 
     handleParticipantRoleChanged = (event) => {
 
         if (event.role === 'moderator') {
-            this.api.executeCommand('toggleLobby', true);
+            this.api.executeCommand('toggleLobby', true)
         }
-    };
+    }
 
     handleParticipantLeft = (event) => {
-    };
+    }
 
     handleParticipantJoined = (event) => {
-        this.addConfMember();
-    };
+        this.addConfMember()
+    }
 
     handleParticipantKickedOut = (event) => {
-    };
+    }
 
     handleMuteStatus = (event) => {
-        this.setState({ isLoading: false });
-    };
+        this.setState({ isLoading: false })
+    }
 
     handleVideoStatus = (event) => {
-        this.setState({ isLoading: false });
-    };
+        this.setState({ isLoading: false })
+    }
 
     handleResend = (e) => {
-        e.preventDefault();
-        const data = { email: this.state.email };
+        e.preventDefault()
+        const data = { email: this.state.email }
 
         resendLink(data)
             .then(status => {
                 if (status === 200) {
-                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' });
+                    toast(strings.VALIDATION_EMAIL_SENT, { type: 'info' })
                 } else {
-                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
+                    toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
                 }
             })
             .catch(err => {
-                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' });
-            });
-    };
+                toast(strings.VALIDATION_EMAIL_ERROR, { type: 'error' })
+            })
+    }
 
     handleCopyClick = (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         if (window.android && window.android.copyToClipboard) {
-            window.android.copyToClipboard(this.state.conferenceUrl);
+            window.android.copyToClipboard(this.state.conferenceUrl)
         } else {
-            navigator.clipboard.writeText(this.state.conferenceUrl);
+            navigator.clipboard.writeText(this.state.conferenceUrl)
         }
 
-        toast(strings.CONFERENCE_URL_COPIED, { type: 'info' });
-    };
+        toast(strings.CONFERENCE_URL_COPIED, { type: 'info' })
+    }
 
     requestFullscreen = () => {
         if (document.body.requestFullscreen) {
-            document.body.requestFullscreen();
+            document.body.requestFullscreen()
         } else if (document.body.mozRequestFullscreen) {
-            document.body.mozRequestFullscreen();
+            document.body.mozRequestFullscreen()
         } else if (document.body.webkitRequestFullscreen) {
-            document.body.webkitRequestFullscreen();
+            document.body.webkitRequestFullscreen()
         }
-    };
+    }
 
     exitFullscreen = () => {
         if (document.exitFullscreen) {
-            document.exitFullscreen();
+            document.exitFullscreen()
         } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
+            document.mozCancelFullScreen()
         } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
+            document.webkitExitFullscreen()
         }
     }
 
     handleFullscreenClick = (event) => {
-        event.preventDefault();
+        event.preventDefault()
 
         if (window.android && window.android.fullscreen) {
-            const fullscreen = JSON.parse(window.android.fullscreen());
-            this.setState({ fullscreen });
+            const fullscreen = JSON.parse(window.android.fullscreen())
+            this.setState({ fullscreen })
         } else if (isMobile()) {
-            const { fullscreen } = this.state;
+            const { fullscreen } = this.state
 
             if (fullscreen) {
                 this.setState({ fullscreen: false }, () => {
-                    this.exitFullscreen();
-                });
+                    this.exitFullscreen()
+                })
             } else {
                 this.setState({ fullscreen: true }, () => {
-                    this.requestFullscreen();
-                });
+                    this.requestFullscreen()
+                })
             }
         }
-    };
+    }
 
     handleMuteClick = (event) => {
-        event.preventDefault();
+        event.preventDefault()
 
         if (window.android && window.android.mute) {
-            const mute = JSON.parse(window.android.mute());
-            this.setState({ mute });
+            const mute = JSON.parse(window.android.mute())
+            this.setState({ mute })
         }
-    };
+    }
 
     handleShareClick = () => {
         if (window.android && window.android.share) {
-            const subject = strings.SUBJECT + this.state.conference.title;
-            const body = subject + ' ' + this.state.conferenceUrl;
-            window.android.share(subject, body);
+            const subject = strings.SUBJECT + this.state.conference.title
+            const body = subject + ' ' + this.state.conferenceUrl
+            window.android.share(subject, body)
         } else {
-            this.setState({ open: !this.state.open });
+            this.setState({ open: !this.state.open })
         }
-    };
+    }
 
     componentDidMount() {
-        let language = getQueryLanguage();
+        let language = getQueryLanguage()
 
         if (!LANGUAGES.includes(language)) {
-            language = getLanguage();
+            language = getLanguage()
         }
-        strings.setLanguage(language);
-        this.setState({ isLoading: true });
+        strings.setLanguage(language)
+        this.setState({ isLoading: true })
 
         if (window.android) {
-            this.setState({ fullscreen: true });
+            this.setState({ fullscreen: true })
         }
 
         if (isMobile()) {
             window.exitFullscreen = () => {
-                this.setState({ fullscreen: false });
-            };
+                this.setState({ fullscreen: false })
+            }
         }
 
-        const currentUser = getCurrentUser();
+        const currentUser = getCurrentUser()
         if (currentUser) {
             validateAccessToken().then(status => {
                 getUser(currentUser.id).then(user => {
                     if (user) {
 
                         if (user.blacklisted) {
-                            signout();
-                            return;
+                            signout()
+                            return
                         }
 
-                        this.setState({ user, email: user.email, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 });
+                        this.setState({ user, email: user.email, verified: user.verified, isAuthenticating: false, isTokenValidated: status === 200 })
                         if (user.verified) {
-                            const conferenceId = getConferenceId();
+                            const conferenceId = getConferenceId()
                             if (conferenceId !== '') {
                                 if (Helper.isObjectId(conferenceId)) {
                                     getConference(conferenceId)
                                         .then(conference => {
-                                            let authorized;
+                                            let authorized
                                             if (conference) {
                                                 if (!conference.isLive && conference.finishedAt) {
-                                                    this.setState({ closed: true, isLoading: false, fullscreen: false });
+                                                    this.setState({ closed: true, isLoading: false, fullscreen: false })
                                                     if (window.android && window.android.closeConference) {
-                                                        window.android.closeConference();
+                                                        window.android.closeConference()
                                                     }
-                                                    return;
+                                                    return
                                                 }
 
                                                 // if (user._id === conference.speaker._id) {
-                                                //     authorized = true;
+                                                //     authorized = true
                                                 // } else if (conference.isPrivate === false) {
-                                                //     authorized = true;
+                                                //     authorized = true
                                                 // } else {
-                                                //     let connection = null;
+                                                //     let connection = null
                                                 //     try {
-                                                //         connection = await getConnection(conference.speaker._id, user._id);
+                                                //         connection = await getConnection(conference.speaker._id, user._id)
                                                 //     } catch (err) {
-                                                //         toast(strings.GENERIC_ERROR, { type: 'error' });
+                                                //         toast(strings.GENERIC_ERROR, { type: 'error' })
                                                 //     }
-                                                //     authorized = (connection && connection.isPending === false);
+                                                //     authorized = (connection && connection.isPending === false)
                                                 // }
 
                                                 let startConf = () => {
-                                                    this.setState({ conference });
+                                                    this.setState({ conference })
 
-                                                    const script = document.createElement('script');
-                                                    script.src = JITSI_API;
-                                                    script.id = 'external-api';
-                                                    script.setAttribute('defer', 'defer');
-                                                    document.body.appendChild(script);
+                                                    const script = document.createElement('script')
+                                                    script.src = JITSI_API
+                                                    script.id = 'external-api'
+                                                    script.setAttribute('defer', 'defer')
+                                                    document.body.appendChild(script)
 
                                                     // External API is loaded
-                                                    const externalApi = document.getElementById('external-api');
+                                                    const externalApi = document.getElementById('external-api')
 
                                                     externalApi.addEventListener('load', () => {
                                                         if (window.JitsiMeetExternalAPI) {
@@ -432,91 +431,91 @@ class Conf extends Component {
                                                                         userName: getUsername(),
                                                                         conferenceUrl: window.location.href
                                                                     }, () => {
-                                                                        this.startConference(currentUser.accessToken);
-                                                                    });
-                                                                });
+                                                                        this.startConference(currentUser.accessToken)
+                                                                    })
+                                                                })
                                                             } else {
                                                                 this.setState({
                                                                     userName: getUsername(),
                                                                     conferenceUrl: window.location.href
                                                                 }, () => {
-                                                                    this.startConference(currentUser.accessToken);
-                                                                });
+                                                                    this.startConference(currentUser.accessToken)
+                                                                })
                                                             }
                                                         } else {
-                                                            this.setState({ isLoading: false, externalApiError: true });
+                                                            this.setState({ isLoading: false, externalApiError: true })
                                                         }
-                                                    });
+                                                    })
 
                                                     externalApi.addEventListener('error', () => {
-                                                        this.setState({ isLoading: false, externalApiError: true });
+                                                        this.setState({ isLoading: false, externalApiError: true })
                                                     })
-                                                };
+                                                }
 
                                                 if (user._id === conference.speaker._id) {
-                                                    startConf();
+                                                    startConf()
                                                 } else if (conference.isPrivate === false) {
-                                                    startConf();
+                                                    startConf()
                                                 } else {
                                                     getConnection(conference.speaker._id, user._id)
                                                         .then(connection => {
                                                             console.log(connection)
-                                                            authorized = (connection && connection.isPending === false);
+                                                            authorized = (connection && connection.isPending === false)
 
                                                             if (authorized) {
-                                                                startConf();
+                                                                startConf()
                                                             } else {
-                                                                this.setState({ unAuthorized: true, isLoading: false });
+                                                                this.setState({ unAuthorized: true, isLoading: false })
                                                             }
                                                         })
                                                         .catch(err => {
-                                                            toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                        });
+                                                            toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                        })
                                                 }
 
                                             } else {
-                                                this.setState({ notFound: true, isLoading: false });
+                                                this.setState({ notFound: true, isLoading: false })
                                             }
                                         })
                                         .catch(err => {
-                                            this.setState({ error: true, isLoading: false });
-                                        });
+                                            this.setState({ error: true, isLoading: false })
+                                        })
                                 } else {
-                                    this.setState({ notFound: true, isLoading: false });
+                                    this.setState({ notFound: true, isLoading: false })
                                 }
                             } else {
-                                window.location = '/home' + window.location.search;
+                                window.location = '/home' + window.location.search
                             }
                         } else {
-                            this.setState({ isLoading: false });
+                            this.setState({ isLoading: false })
                         }
                     }
                     else {
-                        signout();
+                        signout()
                     }
                 }).catch(err => {
-                    signout();
-                });
+                    signout()
+                })
             }).catch(err => {
-                signout();
-            });
+                signout()
+            })
         } else {
-            signout();
+            signout()
         }
     }
 
     render() {
-        const { isAuthenticating } = this.state;
+        const { isAuthenticating } = this.state
         if (!isAuthenticating) {
-            const { isTokenValidated, verified } = this.state;
+            const { isTokenValidated, verified } = this.state
             if (isTokenValidated) {
                 const { conference, conferenceUrl, user, open, error, notFound, unAuthorized,
-                    isLoading, closed, isLeaving, externalApiError, fullscreen, mute, showButtons } = this.state;
-                const subject = strings.SUBJECT + (conference ? conference.title : '');
-                const body = subject;
-                const separator = ': ';
-                const url = conferenceUrl;
-                const size = 42, round = true;
+                    isLoading, closed, isLeaving, externalApiError, fullscreen, mute, showButtons } = this.state
+                const subject = strings.SUBJECT + (conference ? conference.title : '')
+                const body = subject
+                const separator = ': '
+                const url = conferenceUrl
+                const size = 42, round = true
                 return (
                     <div>
                         <Header hidden={fullscreen} user={user} hideLiveButton={!error && !notFound && !unAuthorized && !closed && !externalApiError} />
@@ -673,15 +672,15 @@ class Conf extends Component {
                             {isLeaving && <Backdrop text={strings.LEAVING} />}
                         </div>
                     </div>
-                );
+                )
             } else {
-                signout();
-                return null;
+                signout()
+                return null
             }
         } else {
-            return (<Backdrop text={strings.AUTHENTICATING} />);
+            return (<Backdrop text={strings.AUTHENTICATING} />)
         }
     }
 }
 
-export default Conf;
+export default Conference

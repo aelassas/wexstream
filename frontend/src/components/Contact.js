@@ -1,6 +1,6 @@
-import React from 'react';
-import { strings } from '../config/app.config';
-import Master from '../elements/Master.js';
+import React from 'react'
+import { strings } from '../config/app.config'
+import Master from '../elements/Master.js'
 
 
 const Contact = () => (
@@ -15,6 +15,6 @@ const Contact = () => (
             </div>
         </div>
     </Master>
-);
+)
 
-export default Contact;
+export default Contact

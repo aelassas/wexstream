@@ -1,6 +1,6 @@
-import React from 'react';
-import Master from '../elements/Master';
-import { strings } from '../config/app.config';
+import React from 'react'
+import Master from '../elements/Master'
+import { strings } from '../config/app.config'
 
 const About = () => (
     <Master>
@@ -53,6 +53,6 @@ const About = () => (
             </div>
         </div>
     </Master>
-);
+)
 
-export default About;
+export default About

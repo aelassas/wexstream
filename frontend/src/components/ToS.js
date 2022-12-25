@@ -1,6 +1,6 @@
-import React from 'react';
-import { strings } from '../config/app.config';
-import Master from '../elements/Master.js';
+import React from 'react'
+import { strings } from '../config/app.config'
+import Master from '../elements/Master.js'
 
 const ToS = () => (
     <Master>
@@ -79,6 +79,6 @@ const ToS = () => (
             </div>
         </div>
     </Master>
-);
+)
 
-export default ToS;
+export default ToS

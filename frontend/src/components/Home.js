@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { strings } from '../config/app.config';
-import * as UserService from '../services/UserService';
-import * as TimelineService from '../services/TimelineService';
+import React, { useState } from 'react'
+import { strings } from '../config/app.config'
+import * as UserService from '../services/UserService'
+import * as TimelineService from '../services/TimelineService'
 import {
     Card,
     CardContent,
@@ -17,129 +17,129 @@ import {
     Tooltip,
     Typography,
     Link
-} from '@mui/material';
+} from '@mui/material'
 import {
     Videocam,
     Clear,
     Lock,
     Public,
     People
-} from '@mui/icons-material';
-import moment from 'moment';
-import 'moment/locale/fr';
-import 'moment/locale/ar';
-import { Avatar } from '../elements/Avatar';
-import { PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config';
-import { Members } from '../elements/Members';
-import Master from '../elements/Master';
-import * as Helper from '../common/Helper';
+} from '@mui/icons-material'
+import moment from 'moment'
+import 'moment/locale/fr'
+import 'moment/locale/ar'
+import { Avatar } from '../elements/Avatar'
+import { PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import { Members } from '../elements/Members'
+import Master from '../elements/Master'
+import * as Helper from '../common/Helper'
 
 const Home = () => {
-    const [user, setUser] = useState();
-    const [entries, setEntries] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-    const [currentTarget, setCurrentTarget] = useState();
-    const [page, setPage] = useState(1);
-    const [fetch, setFetch] = useState(false);
-    const [openMembersDialog, setOpenMembersDialog] = useState(false);
-    const [conferenceId, setConferenceId] = useState('');
+    const [user, setUser] = useState()
+    const [entries, setEntries] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
+    const [currentTarget, setCurrentTarget] = useState()
+    const [page, setPage] = useState(1)
+    const [fetch, setFetch] = useState(false)
+    const [openMembersDialog, setOpenMembersDialog] = useState(false)
+    const [conferenceId, setConferenceId] = useState('')
 
     const handleDelete = (event) => {
-        event.preventDefault();
-        setCurrentTarget(event.currentTarget);
-        setOpenDeleteDialog(true);
-    };
+        event.preventDefault()
+        setCurrentTarget(event.currentTarget)
+        setOpenDeleteDialog(true)
+    }
 
     const handleCancelDelete = (event) => {
-        event.preventDefault();
-        setOpenDeleteDialog(false);
-    };
+        event.preventDefault()
+        setOpenDeleteDialog(false)
+    }
 
-    const findIndex = (entryId) => entries.findIndex(e => e._id === entryId);
+    const findIndex = (entryId) => entries.findIndex(e => e._id === entryId)
 
     const handleConfirmDelete = (event) => {
-        event.preventDefault();
-        const entryId = currentTarget.getAttribute('data-id');
+        event.preventDefault()
+        const entryId = currentTarget.getAttribute('data-id')
 
         TimelineService.deleteSubscriberEntry(entryId)
             .then(status => {
                 if (status === 200) {
-                    const index = findIndex(entryId);
-                    const entries = [...entries];
-                    entries.splice(index, 1);
-                    setEntries(entries);
-                    setOpenDeleteDialog(false);
+                    const index = findIndex(entryId)
+                    const entries = [...entries]
+                    entries.splice(index, 1)
+                    setEntries(entries)
+                    setOpenDeleteDialog(false)
                 } else {
-                    Helper.error();
-                    setOpenDeleteDialog(false);
+                    Helper.error()
+                    setOpenDeleteDialog(false)
                 }
             })
             .catch(err => {
-                Helper.error();
-                setOpenDeleteDialog(false);
-            });
-    };
+                Helper.error()
+                setOpenDeleteDialog(false)
+            })
+    }
 
     const fetchEntries = (page) => {
-        setLoading(true);
+        setLoading(true)
 
         TimelineService.getEntries(user._id, page)
             .then(data => {
                 const entries = [...entries, ...data]
-                setEntries(entries);
-                setFetch(data.length > 0);
-                setLoading(false);
+                setEntries(entries)
+                setFetch(data.length > 0)
+                setLoading(false)
             })
             .catch(() => {
-                Helper.error();
-            });
-    };
+                Helper.error()
+            })
+    }
 
     const handleMembers = (event) => {
-        const conferenceId = event.currentTarget.getAttribute('data-id');
-        setLoading(true);
-        setConferenceId(conferenceId);
-        setOpenMembersDialog(true);
-    };
+        const conferenceId = event.currentTarget.getAttribute('data-id')
+        setLoading(true)
+        setConferenceId(conferenceId)
+        setOpenMembersDialog(true)
+    }
 
     const handleCloseMembers = () => {
-        setOpenMembersDialog(false);
-    };
+        setOpenMembersDialog(false)
+    }
 
     const handleMembersFetched = () => {
-        setLoading(false);
-    };
+        setLoading(false)
+    }
 
     const handleMembersError = () => {
-        setLoading(false);
-        Helper.error();
-    };
+        setLoading(false)
+        Helper.error()
+    }
 
     const onLoad = (user) => {
-        const language = UserService.getLanguage();
-        moment.locale(language);
+        const language = UserService.getLanguage()
+        moment.locale(language)
 
-        setUser(user);
+        setUser(user)
 
-        const div = document.querySelector('.home-timeline');
+        const div = document.querySelector('.home-timeline')
         if (div) {
             div.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
-                    const _page = page + 1;
-                    setPage(_page);
-                    fetchEntries(_page);
+                    const _page = page + 1
+                    setPage(_page)
+                    fetchEntries(_page)
                 }
-            };
+            }
         }
-    };
+    }
 
     const iconStyles = {
         float: 'left',
         height: 14,
         marginTop: -1,
         color: '#595959'
-    };
+    }
 
     return (
         <Master onLoad={onLoad} strict>
@@ -261,7 +261,7 @@ const Home = () => {
             </div>
         </Master>
 
-    );
-};
+    )
+}
 
-export default Home;
+export default Home

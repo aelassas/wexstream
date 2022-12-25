@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter } from 'next/router';
-import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env.config';
-import { strings } from '../config/app.config';
-import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService';
-import { getNotificationCounter } from '../services/NotificationService';
-import { getMessageCounter } from '../services/MessageService';
-import { alpha, makeStyles } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import LanguageIcon from '@mui/icons-material/Language';
-import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import HomeIcon from '@mui/icons-material/Home';
-import AboutIcon from '@mui/icons-material/InfoTwoTone';
-import TosIcon from '@mui/icons-material/DescriptionTwoTone';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SignoutIcon from '@mui/icons-material/ExitToApp';
-import NetworkIcon from '@mui/icons-material/WifiTethering';
-import Videocam from '@mui/icons-material/Videocam';
-import ConnectionsIcon from '@mui/icons-material/SettingsInputAntenna';
-import { toast } from 'react-toastify';
-import { Avatar } from './Avatar';
-import { createConference } from '../services/ConferenceService';
-import Backdrop from './SimpleBackdrop';
+import React, { useState, useEffect } from 'react'
+import { withRouter } from 'next/router'
+import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env.config'
+import { strings } from '../config/app.config'
+import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService'
+import { getNotificationCounter } from '../services/NotificationService'
+import { getMessageCounter } from '../services/MessageService'
+import { alpha, makeStyles } from '@mui/material/styles'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import InputBase from '@mui/material/InputBase'
+import Badge from '@mui/material/Badge'
+import MenuItem from '@mui/material/MenuItem'
+import Menu from '@mui/material/Menu'
+import MenuIcon from '@mui/icons-material/Menu'
+import SearchIcon from '@mui/icons-material/Search'
+import MailIcon from '@mui/icons-material/Mail'
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import MoreIcon from '@mui/icons-material/MoreVert'
+import LanguageIcon from '@mui/icons-material/Language'
+import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import ListItemText from '@mui/material/ListItemText'
+import HomeIcon from '@mui/icons-material/Home'
+import AboutIcon from '@mui/icons-material/InfoTwoTone'
+import TosIcon from '@mui/icons-material/DescriptionTwoTone'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SignoutIcon from '@mui/icons-material/ExitToApp'
+import NetworkIcon from '@mui/icons-material/WifiTethering'
+import Videocam from '@mui/icons-material/Videocam'
+import ConnectionsIcon from '@mui/icons-material/SettingsInputAntenna'
+import { toast } from 'react-toastify'
+import { Avatar } from './Avatar'
+import { createConference } from '../services/ConferenceService'
+import Backdrop from './SimpleBackdrop'
 import {
     Dialog,
     DialogTitle,
@@ -49,40 +49,40 @@ import {
     FormControlLabel,
     Switch,
     Typography
-} from '@mui/material';
+} from '@mui/material'
 
 const ListItemLink = (props) => (
     <ListItem button component="a" {...props} />
-);
+)
 
 export default withRouter(function Header(props) {
 
-    const [currentLanguage, setCurrentLanguage] = useState(null);
-    const [lang, setLang] = useState(DEFAULT_LANGUAGE);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [langAnchorEl, setLangAnchorEl] = useState(null);
-    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-    const [sideAnchorEl, setSideAnchorEl] = useState(null);
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [notificationCount, setNotificationCount] = useState(0);
-    const [messageCount, setMessageCount] = useState(0);
-    const [init, setInit] = useState(false);
-    const [openLiveDialog, setOpenLiveDialog] = useState(false);
-    const [titleError, setTitleError] = useState(false);
-    const [isTitleEmpty, setIsTitleEmpty] = useState(false);
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [isPrivate, setIsPrivate] = useState(true);
-    const [isPreparing, setIsPreparing] = useState(false);
-    const [isLiveButtonVisible, setIsLiveButtonVisible] = useState(true);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [currentLanguage, setCurrentLanguage] = useState(null)
+    const [lang, setLang] = useState(DEFAULT_LANGUAGE)
+    const [anchorEl, setAnchorEl] = useState(null)
+    const [langAnchorEl, setLangAnchorEl] = useState(null)
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null)
+    const [sideAnchorEl, setSideAnchorEl] = useState(null)
+    const [isSignedIn, setIsSignedIn] = useState(false)
+    const [searchKeyword, setSearchKeyword] = useState('')
+    const [notificationCount, setNotificationCount] = useState(0)
+    const [messageCount, setMessageCount] = useState(0)
+    const [init, setInit] = useState(false)
+    const [openLiveDialog, setOpenLiveDialog] = useState(false)
+    const [titleError, setTitleError] = useState(false)
+    const [isTitleEmpty, setIsTitleEmpty] = useState(false)
+    const [title, setTitle] = useState('')
+    const [description, setDescription] = useState('')
+    const [isPrivate, setIsPrivate] = useState(true)
+    const [isPreparing, setIsPreparing] = useState(false)
+    const [isLiveButtonVisible, setIsLiveButtonVisible] = useState(true)
+    const [isLoading, setIsLoading] = useState(true)
+    const [isLoaded, setIsLoaded] = useState(false)
 
-    const isMenuOpen = Boolean(anchorEl);
-    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-    const isLangMenuOpen = Boolean(langAnchorEl);
-    const isSideMenuOpen = Boolean(sideAnchorEl);
+    const isMenuOpen = Boolean(anchorEl)
+    const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+    const isLangMenuOpen = Boolean(langAnchorEl)
+    const isSideMenuOpen = Boolean(sideAnchorEl)
 
     const useStyles = makeStyles((theme) => ({
         list: {
@@ -161,216 +161,216 @@ export default withRouter(function Header(props) {
                 display: 'none',
             },
         }
-    }));
+    }))
 
-    const classes = useStyles();
+    const classes = useStyles()
 
     const handleAccountMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+        setAnchorEl(event.currentTarget)
+    }
 
     const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
-    };
+        setMobileMoreAnchorEl(null)
+    }
 
     const handleLangMenuOpen = (event) => {
-        setLangAnchorEl(event.currentTarget);
-    };
+        setLangAnchorEl(event.currentTarget)
+    }
 
     const refreshPage = () => {
-        let params = new URLSearchParams(window.location.search);
+        let params = new URLSearchParams(window.location.search)
 
         if (params.has('l')) {
-            params.delete('l');
-            window.location.href = window.location.href.split('?')[0] + ([...params].length > 0 ? ('?' + params) : '');
+            params.delete('l')
+            window.location.href = window.location.href.split('?')[0] + ([...params].length > 0 ? ('?' + params) : '')
         } else {
-            window.location.reload();
+            window.location.reload()
         }
-    };
+    }
 
     const handleLangMenuClose = async (event) => {
-        setLangAnchorEl(null);
-        setIsLiveButtonVisible(false);
-        const { code } = event.currentTarget.dataset;
+        setLangAnchorEl(null)
+        setIsLiveButtonVisible(false)
+        const { code } = event.currentTarget.dataset
         if (code) {
-            setLang(code);
-            const currentLang = getLanguage();
+            setLang(code)
+            const currentLang = getLanguage()
             if (isSignedIn) {
                 // Update user language
                 const data = {
                     id: props.user._id,
                     language: code
-                };
-                const status = await updateLanguage(data);
+                }
+                const status = await updateLanguage(data)
                 if (status === 200) {
-                    setLanguage(code);
+                    setLanguage(code)
                     if (code && code !== currentLang) {
                         // Refresh page
-                        refreshPage();
+                        refreshPage()
                     }
                 } else {
-                    setIsLiveButtonVisible(true);
-                    toast(strings.CHANGE_LANGUAGE_ERROR, { type: 'error' });
+                    setIsLiveButtonVisible(true)
+                    toast(strings.CHANGE_LANGUAGE_ERROR, { type: 'error' })
                 }
             } else {
-                setLanguage(code);
+                setLanguage(code)
                 if (code && code !== currentLang) {
                     // Refresh page
-                    refreshPage();
+                    refreshPage()
                 }
             }
         } else {
-            setIsLiveButtonVisible(true);
+            setIsLiveButtonVisible(true)
         }
-    };
+    }
 
     const getLang = (lang) => {
         switch (lang) {
             case 'en':
-                return strings.LANGUAGE_EN;
+                return strings.LANGUAGE_EN
             case 'fr':
-                return strings.LANGUAGE_FR;
+                return strings.LANGUAGE_FR
             default:
-                return strings.LANGUAGE_EN;
+                return strings.LANGUAGE_EN
         }
-    };
+    }
 
     const handleMenuClose = () => {
-        setAnchorEl(null);
-        handleMobileMenuClose();
-    };
+        setAnchorEl(null)
+        handleMobileMenuClose()
+    }
 
     const handleOnProfileClick = () => {
-        window.location.href = '/profile';
-    };
+        window.location.href = '/profile'
+    }
 
     const handleOnSettingsClick = () => {
-        window.location.href = '/settings';
-    };
+        window.location.href = '/settings'
+    }
 
     const handleSignout = () => {
-        signout();
-    };
+        signout()
+    }
 
     const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget);
-    };
+        setMobileMoreAnchorEl(event.currentTarget)
+    }
 
     const handleSideMenuOpen = (event) => {
-        setSideAnchorEl(event.currentTarget);
-    };
+        setSideAnchorEl(event.currentTarget)
+    }
 
     const handleSideMenuClose = () => {
-        setSideAnchorEl(null);
-    };
+        setSideAnchorEl(null)
+    }
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            window.location.href = '/search?s=' + encodeURIComponent(e.currentTarget.value);
+            window.location.href = '/search?s=' + encodeURIComponent(e.currentTarget.value)
         } else {
-            setSearchKeyword(e.target.value);
+            setSearchKeyword(e.target.value)
         }
-    };
+    }
 
     const handleSearchChange = (e) => {
-        setSearchKeyword(e.target.value);
-    };
+        setSearchKeyword(e.target.value)
+    }
 
     const handleMessagesClick = (e) => {
-        window.location.href = '/messages';
-    };
+        window.location.href = '/messages'
+    }
 
     const handleNotificationsClick = (e) => {
-        window.location.href = '/notifications';
-    };
+        window.location.href = '/notifications'
+    }
 
     const handleClickLive = (e) => {
-        setOpenLiveDialog(true);
-    };
+        setOpenLiveDialog(true)
+    }
 
     const handleOnTitleBlur = (e) => {
-        e.preventDefault();
-        setTitleError(e.target.value.length < 3);
-        setIsTitleEmpty(e.target.value.length === 0);
-    };
+        e.preventDefault()
+        setTitleError(e.target.value.length < 3)
+        setIsTitleEmpty(e.target.value.length === 0)
+    }
 
     const handleOnTitleChange = (e) => {
-        e.preventDefault();
-        setTitle(e.target.value);
-    };
+        e.preventDefault()
+        setTitle(e.target.value)
+    }
 
     const handleOnDescriptionChange = (e) => {
-        e.preventDefault();
-        setDescription(e.target.value);
-    };
+        e.preventDefault()
+        setDescription(e.target.value)
+    }
 
     const handlePrivateLiveChange = (e) => {
-        setIsPrivate(e.target.checked);
-    };
+        setIsPrivate(e.target.checked)
+    }
 
     const handleCancelLive = (e) => {
-        e.preventDefault();
-        setOpenLiveDialog(false);
-    };
+        e.preventDefault()
+        setOpenLiveDialog(false)
+    }
 
     const handleStartLive = (e) => {
-        e.preventDefault();
-        setOpenLiveDialog(false);
-        setIsPreparing(true);
+        e.preventDefault()
+        setOpenLiveDialog(false)
+        setIsPreparing(true)
 
         const conference = {
             title,
             description,
             isPrivate,
             speaker: props.user._id
-        };
+        }
 
         createConference(conference)
             .then(res => {
                 if (res.status === 200) {
-                    window.location = `/conference?c=${res.data._id}`;
+                    window.location = `/conference?c=${res.data._id}`
                 } else {
-                    this.setState({ isPreparing: false });
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    this.setState({ isPreparing: false })
+                    toast(strings.GENERIC_ERROR, { type: 'error' })
                 }
             })
             .catch(err => {
-                this.setState({ isLoading: false });
+                this.setState({ isLoading: false })
                 toast(strings.GENERIC_ERROR, { type: 'error' })
-            });
-    };
+            })
+    }
 
     useEffect(() => {
         if (!props.hidden) {
-            setIsLoading(true);
+            setIsLoading(true)
 
-            let countUpdated = false;
+            let countUpdated = false
             if (init && (props.messageCount !== undefined)) {
-                setMessageCount(props.messageCount);
-                countUpdated = true;
+                setMessageCount(props.messageCount)
+                countUpdated = true
             }
 
             if (init && (props.notificationCount !== undefined)) {
-                setNotificationCount(props.notificationCount);
-                countUpdated = true;
+                setNotificationCount(props.notificationCount)
+                countUpdated = true
             }
 
             if (countUpdated) {
-                setIsLoading(false);
-                return;
+                setIsLoading(false)
+                return
             }
 
-            const queryLanguage = getQueryLanguage();
+            const queryLanguage = getQueryLanguage()
 
             if (LANGUAGES.includes(queryLanguage)) {
-                setLang(queryLanguage);
+                setLang(queryLanguage)
                 setCurrentLanguage(queryLanguage)
-                strings.setLanguage(queryLanguage);
+                strings.setLanguage(queryLanguage)
             } else {
-                const language = getLanguage();
-                setLang(language);
+                const language = getLanguage()
+                setLang(language)
                 setCurrentLanguage(language)
-                strings.setLanguage(language);
+                strings.setLanguage(language)
             }
 
             if (!init && props.user) {
@@ -378,26 +378,26 @@ export default withRouter(function Header(props) {
                     .then(notificationCounter => {
                         getMessageCounter(props.user._id)
                             .then(messageCounter => {
-                                setIsSignedIn(true);
-                                setSearchKeyword(getSearchKeyword());
-                                setNotificationCount(notificationCounter.count);
-                                setMessageCount(messageCounter.count);
-                                setIsLoading(false);
-                                setIsLoaded(true);
-                                setInit(true);
-                            });
-                    });
+                                setIsSignedIn(true)
+                                setSearchKeyword(getSearchKeyword())
+                                setNotificationCount(notificationCounter.count)
+                                setMessageCount(messageCounter.count)
+                                setIsLoading(false)
+                                setIsLoaded(true)
+                                setInit(true)
+                            })
+                    })
             } else {
-                const currentUser = getCurrentUser();
+                const currentUser = getCurrentUser()
                 if (!currentUser || init) {
-                    setIsLoading(false);
+                    setIsLoading(false)
                 }
             }
 
         }
-    }, [props, init, currentLanguage]);
+    }, [props, init, currentLanguage])
 
-    const menuId = 'primary-search-account-menu';
+    const menuId = 'primary-search-account-menu'
     const renderMenu = (
         <Menu
             anchorEl={anchorEl}
@@ -420,9 +420,9 @@ export default withRouter(function Header(props) {
                 <Typography>{strings.SIGN_OUT}</Typography>
             </MenuItem>
         </Menu>
-    );
+    )
 
-    const mobileMenuId = 'primary-search-account-menu-mobile';
+    const mobileMenuId = 'primary-search-account-menu-mobile'
     const renderMobileMenu = (
         <Menu
             anchorEl={mobileMoreAnchorEl}
@@ -463,9 +463,9 @@ export default withRouter(function Header(props) {
                 <Typography>{strings.SIGN_OUT}</Typography>
             </MenuItem>
         </Menu>
-    );
+    )
 
-    const languageMenuId = 'primary-search-language-menu';
+    const languageMenuId = 'primary-search-language-menu'
     const renderLanguageMenu = (
         <Menu
             anchorEl={langAnchorEl}
@@ -480,7 +480,7 @@ export default withRouter(function Header(props) {
             <MenuItem onClick={handleLangMenuClose} data-code="fr">Français</MenuItem>
             <MenuItem onClick={handleLangMenuClose} data-code="ar">العربية</MenuItem>
         </Menu>
-    );
+    )
 
     return (
         <div className={classes.grow} style={props.hidden ? { display: 'none' } : null} >
@@ -683,5 +683,5 @@ export default withRouter(function Header(props) {
             {renderMenu}
             {renderLanguageMenu}
         </div >
-    );
-});
+    )
+})

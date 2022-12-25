@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { strings } from '../config/app.config';
+import React, { useState } from 'react'
+import { strings } from '../config/app.config'
 import {
     updateEmailNotifications,
     updatePrivateMessages,
     updateUser,
     deleteUser,
     signout
-} from '../services/UserService';
+} from '../services/UserService'
 import {
     Button,
     FormControl,
@@ -22,134 +22,134 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-} from '@mui/material';
-import Backdrop from '../elements/SimpleBackdrop';
-import { Avatar } from '../elements/Avatar';
-import validator from 'validator';
-import Master from '../elements/Master';
-import * as Helper from '../common/Helper';
+} from '@mui/material'
+import Backdrop from '../elements/SimpleBackdrop'
+import { Avatar } from '../elements/Avatar'
+import validator from 'validator'
+import Master from '../elements/Master'
+import * as Helper from '../common/Helper'
 
 const Settings = () => {
-    const [user, setUser] = useState();
-    const [fullName, setFullName] = useState('');
-    const [bio, setBio] = useState('');
-    const [location, setLoaction] = useState('');
-    const [website, setWebsite] = useState('');
-    const [websiteError, setWebsiteError] = useState(false);
-    const [enableEmailNotifications, setEnableEmailNotifications] = useState();
-    const [enablePrivateMessages, setEnablePrivateMessages] = useState();
-    const [openDialog, setOpenDialog] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [deleting, setDeleting] = useState(false);
+    const [user, setUser] = useState()
+    const [fullName, setFullName] = useState('')
+    const [bio, setBio] = useState('')
+    const [location, setLoaction] = useState('')
+    const [website, setWebsite] = useState('')
+    const [websiteError, setWebsiteError] = useState(false)
+    const [enableEmailNotifications, setEnableEmailNotifications] = useState()
+    const [enablePrivateMessages, setEnablePrivateMessages] = useState()
+    const [openDialog, setOpenDialog] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [deleting, setDeleting] = useState(false)
 
     const handleOnChangeFullName = (e) => {
-        setFullName(e.target.value);
-    };
+        setFullName(e.target.value)
+    }
 
     const handleOnChangeBio = (e) => {
-        setBio(e.target.value);
-    };
+        setBio(e.target.value)
+    }
 
     const handleOnChangeLocation = (e) => {
-        setLoaction(e.target.value);
-    };
+        setLoaction(e.target.value)
+    }
 
     const handleOnChangeWebsite = (e) => {
-        setWebsite(e.target.value);
-    };
+        setWebsite(e.target.value)
+    }
 
     const handleOnBlurWebsite = (e) => {
-        const websiteError = e.target.value !== '' && !validator.isURL(e.target.value, { require_tld: true, require_protocol: false });
-        setWebsiteError(websiteError);
-    };
+        const websiteError = e.target.value !== '' && !validator.isURL(e.target.value, { require_tld: true, require_protocol: false })
+        setWebsiteError(websiteError)
+    }
 
     const _openDialog = () => {
-        setOpenDialog(true);
-    };
+        setOpenDialog(true)
+    }
 
     const _closeDialog = () => {
-        setOpenDialog(false);
-    };
+        setOpenDialog(false)
+    }
 
     const deleteAccount = (e) => {
-        e.preventDefault();
-        _openDialog();
-    };
+        e.preventDefault()
+        _openDialog()
+    }
 
     const handleCancelDelete = (e) => {
-        _closeDialog();
-    };
+        _closeDialog()
+    }
 
     const handleDelete = () => {
-        _closeDialog();
-        setDeleting(true);
+        _closeDialog()
+        setDeleting(true)
 
         deleteUser(state.user._id)
             .then(status => {
                 if (status === 200) {
-                    signout();
+                    signout()
                 } else {
-                    setDeleting(false);
-                    Helper.error(strings.DELETE_ACCOUNT_ERROR);
+                    setDeleting(false)
+                    Helper.error(strings.DELETE_ACCOUNT_ERROR)
                 }
             })
             .catch((err) => {
-                setDeleting(false);
-                Helper.error(strings.DELETE_ACCOUNT_ERROR, err);
-            });
-    };
+                setDeleting(false)
+                Helper.error(strings.DELETE_ACCOUNT_ERROR, err)
+            })
+    }
 
     const handleEmailNotificationsChange = (e) => {
-        setEnableEmailNotifications(e.target.checked);
-        user.enableEmailNotifications = e.target.checked;
+        setEnableEmailNotifications(e.target.checked)
+        user.enableEmailNotifications = e.target.checked
 
         updateEmailNotifications(user)
             .then(status => {
                 if (status === 200) {
-                    setUser(user);
-                    Helper.info(strings.SETTING_UPDATED);
+                    setUser(user)
+                    Helper.info(strings.SETTING_UPDATED)
                 } else {
-                    setEnableEmailNotifications(!e.target.checked);
-                    Helper.error();
+                    setEnableEmailNotifications(!e.target.checked)
+                    Helper.error()
                 }
             })
             .catch((err) => {
-                setEnableEmailNotifications(!e.target.checked);
-                Helper.error(null, err);
-            });
-    };
+                setEnableEmailNotifications(!e.target.checked)
+                Helper.error(null, err)
+            })
+    }
 
     const handlePrivateMessagesChange = (e) => {
-        setEnablePrivateMessages(e.target.checked);
-        user.enablePrivateMessages = e.target.checked;
+        setEnablePrivateMessages(e.target.checked)
+        user.enablePrivateMessages = e.target.checked
 
         updatePrivateMessages(user)
             .then(status => {
                 if (status === 200) {
-                    setUser(user);
-                    Helper.info(strings.SETTING_UPDATED);
+                    setUser(user)
+                    Helper.info(strings.SETTING_UPDATED)
                 } else {
-                    setEnablePrivateMessages(!e.target.checked);
-                    Helper.error();
+                    setEnablePrivateMessages(!e.target.checked)
+                    Helper.error()
                 }
             })
             .catch((err) => {
-                setEnablePrivateMessages(!e.target.checked);
-                Helper.error(null, err);
-            });
-    };
+                setEnablePrivateMessages(!e.target.checked)
+                Helper.error(null, err)
+            })
+    }
 
     const onBeforeUpload = () => {
-        setLoading(true);
-    };
+        setLoading(true)
+    }
 
     const onAvatarChange = (user) => {
-        setLoading(false);
-        setUser(Helper.clone(user));
-    };
+        setLoading(false)
+        setUser(Helper.clone(user))
+    }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         const data = {
             email: user.email,
@@ -157,30 +157,30 @@ const Settings = () => {
             bio,
             location,
             website
-        };
+        }
 
         updateUser(data)
             .then(status => {
                 if (status === 200) {
-                    Helper.info(strings.USER_UPDATE);
+                    Helper.info(strings.USER_UPDATE)
                 } else {
-                    Helper.error(strings.USER_UPDATE_ERROR);
+                    Helper.error(strings.USER_UPDATE_ERROR)
                 }
             })
             .catch((err) => {
-                Helper.error(strings.USER_UPDATE_ERROR, err);
-            });
-    };
+                Helper.error(strings.USER_UPDATE_ERROR, err)
+            })
+    }
 
     const onLoad = (user) => {
-        setUser(user);
-        setFullName(user.fullName);
-        setBio(user.bio || '');
-        setLoaction(user.location || '');
-        setWebsite(user.website || '');
-        setEnableEmailNotifications(user.enableEmailNotifications);
-        setEnablePrivateMessages(user.enablePrivateMessages);
-    };
+        setUser(user)
+        setFullName(user.fullName)
+        setBio(user.bio || '')
+        setLoaction(user.location || '')
+        setWebsite(user.website || '')
+        setEnableEmailNotifications(user.enableEmailNotifications)
+        setEnablePrivateMessages(user.enablePrivateMessages)
+    }
 
     return (
         <Master user={user} onLoad={onLoad} strict>
@@ -332,7 +332,7 @@ const Settings = () => {
                 </div>
             }
         </Master>
-    );
+    )
 }
 
-export default Settings;
+export default Settings

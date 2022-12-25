@@ -1,6 +1,6 @@
-import LocalizedStrings from 'react-localization';
-import * as Env from '../config/env.config';
-import * as UserService from '../services/UserService';
+import LocalizedStrings from 'react-localization'
+import * as Env from '../config/env.config'
+import * as UserService from '../services/UserService'
 
 export const strings = new LocalizedStrings({
 	en: {
@@ -107,9 +107,9 @@ export const strings = new LocalizedStrings({
 		TOS_SUBSCRIBING_4: 'In the event that the user provides false, inaccurate, outdated or incomplete data, we will be entitled to suspend or close his account and to refuse him, in the future, access to all or part of the services.',
 		TOS_SERVICES_TITLE: 'SERVICES',
 		TOS_SERVICES_1: 'Once registered, the user can benefit from the following services:',
-		TOS_SERVICES_2: 'Easy networking between platform members;',
-		TOS_SERVICES_3: 'Provision of video conferencing tools;',
-		TOS_SERVICES_4: 'Provision of communication tools between platform members;',
+		TOS_SERVICES_2: 'Easy networking between platform members',
+		TOS_SERVICES_3: 'Provision of video conferencing tools',
+		TOS_SERVICES_4: 'Provision of communication tools between platform members',
 		TOS_SERVICES_5: 'The platform works as follows:',
 		TOS_SERVICES_6: 'The user creates a network by connecting with others.',
 		TOS_SERVICES_7: 'The user broadcasts private or public conferences.',
@@ -337,9 +337,9 @@ export const strings = new LocalizedStrings({
 		TOS_SUBSCRIBING_4: "Dans l'hypothèse où l'utilisateur fournirait des données fausses, inexactes, périmées ou incomplètes, nous serons en droit de suspendre ou de procéder à la fermeture de son compte et de lui refuser, à l'avenir, l'accès à tout ou partie des services.",
 		TOS_SERVICES_TITLE: 'SERVICES',
 		TOS_SERVICES_1: "Une fois inscrit, l'utilisateur peut bénéficier des services suivants:",
-		TOS_SERVICES_2: 'Une mise en relation facilitée entre les membres de la plateforme ;',
-		TOS_SERVICES_3: "Une mise à disposition d'outils de visioconférence ;",
-		TOS_SERVICES_4: "Une mise à disposition d'outils de communication entre les membres de la plateforme ;",
+		TOS_SERVICES_2: 'Une mise en relation facilitée entre les membres de la plateforme ',
+		TOS_SERVICES_3: "Une mise à disposition d'outils de visioconférence ",
+		TOS_SERVICES_4: "Une mise à disposition d'outils de communication entre les membres de la plateforme ",
 		TOS_SERVICES_5: 'Fonctionnement de la plateforme :',
 		TOS_SERVICES_6: "L'utilisateur crée un réseau en se connectant avec d'autres utilisateurs.",
 		TOS_SERVICES_7: "L'utilisateur crée des conférences privées ou publiques.",
@@ -463,12 +463,12 @@ export const strings = new LocalizedStrings({
 		SIGN_IN_WITH_FACEBOOK: 'Se connecter avec Facebook',
 		DELETE_ALL_NOTIFICATIONS: 'Êtes vous sûr de vouloir supprimer toutes les notifications?'
 	}
-});
+})
 
-let language = UserService.getQueryLanguage();
+let language = UserService.getQueryLanguage()
 
 if (language === '' || !Env.LANGUAGES.includes(language)) {
-    language = UserService.getLanguage();
+    language = UserService.getLanguage()
 }
 
-strings.setLanguage(language);
+strings.setLanguage(language)

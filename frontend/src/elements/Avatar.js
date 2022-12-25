@@ -1,34 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { strings } from '../config/app.config';
-import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService';
-import Button from '@mui/material/Button';
-import { toast } from 'react-toastify';
-import MaterialAvatar from '@mui/material/Avatar';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import Badge from '@mui/material/Badge';
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import DeleteIcon from '@mui/icons-material/BrokenImageTwoTone';
-import Box from '@mui/material/Box';
-import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
-import { CDN } from '../config/env.config';
+import React, { useState, useEffect } from 'react'
+import { strings } from '../config/app.config'
+import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService'
+import Button from '@mui/material/Button'
+import { toast } from 'react-toastify'
+import MaterialAvatar from '@mui/material/Avatar'
+import AccountCircle from '@mui/icons-material/AccountCircle'
+import Badge from '@mui/material/Badge'
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera'
+import DeleteIcon from '@mui/icons-material/BrokenImageTwoTone'
+import Box from '@mui/material/Box'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import { CDN } from '../config/env.config'
 
 export const Avatar = (props) => {
-    const [error, setError] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [user, setUser] = useState(null);
+    const [error, setError] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [user, setUser] = useState(null)
 
     const handleChange = (e) => {
 
         if (props.onBeforeUpload) {
-            props.onBeforeUpload();
+            props.onBeforeUpload()
         }
 
-        const { _id } = user;
-        const reader = new FileReader();
-        const file = e.target.files[0];
+        const { _id } = user
+        const reader = new FileReader()
+        const file = e.target.files[0]
 
         reader.onloadend = () => {
             updateAvatar(_id, file).then(
@@ -36,118 +36,118 @@ export const Avatar = (props) => {
                     if (status === 200) {
                         getUserById(_id).then(user => {
                             if (user) {
-                                setUser(user);
+                                setUser(user)
                                 if (props.onChange) {
-                                    const img = document.querySelector('.avatar > img');
+                                    const img = document.querySelector('.avatar > img')
                                     img.onload = () => {
-                                        props.onChange(user);
-                                    };
+                                        props.onChange(user)
+                                    }
                                 }
                             } else {
-                                toast(strings.GENERIC_ERROR, { type: 'error' });
+                                toast(strings.GENERIC_ERROR, { type: 'error' })
                                 if (props.onChange) {
-                                    props.onChange(user);
+                                    props.onChange(user)
                                 }
                             }
                         }).catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            toast(strings.GENERIC_ERROR, { type: 'error' })
                             if (props.onChange) {
-                                props.onChange(user);
+                                props.onChange(user)
                             }
-                        });
+                        })
                     } else {
-                        toast(strings.GENERIC_ERROR, { type: 'error' });
+                        toast(strings.GENERIC_ERROR, { type: 'error' })
                         if (props.onChange) {
-                            props.onChange(user);
+                            props.onChange(user)
                         }
                     }
                 }
             ).catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
+                toast(strings.GENERIC_ERROR, { type: 'error' })
                 if (props.onChange) {
-                    props.onChange(user);
+                    props.onChange(user)
                 }
-            });
-        };
+            })
+        }
 
-        reader.readAsDataURL(file);
-    };
+        reader.readAsDataURL(file)
+    }
 
     const handleUpload = (e) => {
-        const upload = document.getElementById('upload');
-        upload.value = '';
+        const upload = document.getElementById('upload')
+        upload.value = ''
         setTimeout(() => {
-            upload.click(e);
-        }, 0);
-    };
+            upload.click(e)
+        }, 0)
+    }
 
     const openDialog = () => {
-        setOpen(true);
-    };
+        setOpen(true)
+    }
 
     const handleDeleteAvatar = (e) => {
-        e.preventDefault();
-        openDialog();
-    };
+        e.preventDefault()
+        openDialog()
+    }
 
     const closeDialog = () => {
-        setOpen(false);
-    };
+        setOpen(false)
+    }
 
     const handleCancelDelete = (e) => {
-        closeDialog();
-    };
+        closeDialog()
+    }
 
     const handleDelete = (e) => {
-        const { _id } = user;
+        const { _id } = user
         deleteAvatar(_id)
             .then(status => {
                 if (status === 200) {
                     getUserById(_id).then(user => {
                         if (user) {
-                            setUser(user);
+                            setUser(user)
                             if (props.onChange) {
-                                props.onChange(user);
+                                props.onChange(user)
                             }
-                            closeDialog();
+                            closeDialog()
                         } else {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
+                            toast(strings.GENERIC_ERROR, { type: 'error' })
                         }
                     }).catch(err => {
-                        toast(strings.GENERIC_ERROR, { type: 'error' });
-                    });
+                        toast(strings.GENERIC_ERROR, { type: 'error' })
+                    })
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
+                    toast(strings.GENERIC_ERROR, { type: 'error' })
                 }
             }).catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' });
-            });
-    };
+                toast(strings.GENERIC_ERROR, { type: 'error' })
+            })
+    }
 
     const joinURL = (part1, part2) => {
         if (part1.charAt(part1.length - 1) === '/') {
-            part1 = part1.substr(0, part1.length - 1);
+            part1 = part1.substr(0, part1.length - 1)
         }
         if (part2.charAt(0) === '/') {
-            part2 = part2.substr(1);
+            part2 = part2.substr(1)
         }
-        return part1 + '/' + part2;
-    };
+        return part1 + '/' + part2
+    }
 
     useEffect(() => {
-        const language = getLanguage();
-        strings.setLanguage(language);
+        const language = getLanguage()
+        strings.setLanguage(language)
 
-        const currentUser = getCurrentUser();
+        const currentUser = getCurrentUser()
         if (currentUser) {
-            setUser(props.user);
+            setUser(props.user)
         } else {
-            setError(true);
+            setError(true)
         }
-    }, [props.user]);
+    }, [props.user])
 
 
-    const { loggedUser, size, readonly, className } = props;
+    const { loggedUser, size, readonly, className } = props
     return (
         !error && loggedUser && user
             ?
@@ -234,5 +234,5 @@ export const Avatar = (props) => {
             </div>
             :
             null
-    );
+    )
 }

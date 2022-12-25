@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/material/styles';
-import { strings } from '../config/app.config';
-import { getLanguage, searchUsers, getUserById } from '../services/UserService';
-import { TextField, Button } from "@mui/material";
-import MultipleSelect from "./MultipleSelect";
-import { toast } from 'react-toastify';
-import { sendMessage } from '../services/MessageService';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import CloseIcon from '@mui/icons-material/Close';
-import Slide from '@mui/material/Slide';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { PAGE_FETCH_OFFSET } from '../config/env.config';
+import React, { useState, useEffect } from 'react'
+import { makeStyles } from '@mui/material/styles'
+import { strings } from '../config/app.config'
+import { getLanguage, searchUsers, getUserById } from '../services/UserService'
+import { TextField, Button } from "@mui/material"
+import MultipleSelect from "./MultipleSelect"
+import { toast } from 'react-toastify'
+import { sendMessage } from '../services/MessageService'
+import Dialog from '@mui/material/Dialog'
+import DialogContent from '@mui/material/DialogContent'
+import CloseIcon from '@mui/icons-material/Close'
+import Slide from '@mui/material/Slide'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import { PAGE_FETCH_OFFSET } from '../config/env.config'
 
 const useStyles = makeStyles((theme) => ({
     appBar: {
@@ -24,101 +24,101 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-}));
+}))
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+    return <Slide direction="up" ref={ref} {...props} />
+})
 
 export const MessageForm = (props) => {
-    const classes = useStyles();
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [users, setUsers] = useState([]);
-    const [to, setTo] = useState([]);
-    const [subject, setSubject] = useState('');
-    const [body, setBody] = useState('');
-    const [page, setPage] = useState(1);
-    const [fetch, setFetch] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [init, setInit] = useState(false);
-    const [keyword, setKeyword] = useState('');
+    const classes = useStyles()
+    const [isSignedIn, setIsSignedIn] = useState(false)
+    const [open, setOpen] = useState(false)
+    const [users, setUsers] = useState([])
+    const [to, setTo] = useState([])
+    const [subject, setSubject] = useState('')
+    const [body, setBody] = useState('')
+    const [page, setPage] = useState(1)
+    const [fetch, setFetch] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [init, setInit] = useState(false)
+    const [keyword, setKeyword] = useState('')
 
     const handleSubject = (event) => {
-        setSubject(event.target.value);
-    };
+        setSubject(event.target.value)
+    }
 
     const handleBody = (event) => {
-        setBody(event.target.value);
-    };
+        setBody(event.target.value)
+    }
 
     const handleTo = (to, key, reference) => {
-        setTo(to);
-        setKeyword('');
-    };
+        setTo(to)
+        setKeyword('')
+    }
 
     const handleNewMessage = () => {
-        setOpen(true);
-    };
+        setOpen(true)
+    }
 
     const handleClose = (e) => {
-        setTo([]);
-        setOpen(false);
+        setTo([])
+        setOpen(false)
         if (props.onClose) {
-            props.onClose(e);
+            props.onClose(e)
         }
-    };
+    }
 
     const handleSend = (event) => {
-        event.preventDefault();
+        event.preventDefault()
 
         const data = {
             from: props.user,
             to: to,
             subject: subject,
             body: body
-        };
+        }
 
         if (to.length > 0) {
             sendMessage(data)
                 .then(status => {
                     if (status === 200) {
-                        toast(strings.MESSAGE_SENT, { type: 'info' });
-                        handleClose(event);
+                        toast(strings.MESSAGE_SENT, { type: 'info' })
+                        handleClose(event)
                     } else {
-                        toast(strings.GENERIC_ERROR, { type: 'error' });
+                        toast(strings.GENERIC_ERROR, { type: 'error' })
                     }
                 })
                 .catch(err => {
-                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                });
+                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                })
         } else {
-            toast(strings.GENERIC_ERROR, { type: 'error' });
+            toast(strings.GENERIC_ERROR, { type: 'error' })
         }
-    };
+    }
 
     useEffect(() => {
         if (!init) {
-            const language = getLanguage();
-            strings.setLanguage(language);
+            const language = getLanguage()
+            strings.setLanguage(language)
 
             if (props.user) {
-                setIsSignedIn(true);
+                setIsSignedIn(true)
 
                 if (props.to) {
                     getUserById(props.to)
                         .then(to => {
                             if (to) {
-                                setTo([to]);
+                                setTo([to])
                             }
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' });
-                        });
+                            toast(strings.GENERIC_ERROR, { type: 'error' })
+                        })
                 }
             }
         }
-    }, [props.user, props.open, props.to, keyword, page, init]);
+    }, [props.user, props.open, props.to, keyword, page, init])
 
     return (
         isSignedIn
@@ -152,84 +152,84 @@ export const MessageForm = (props) => {
                                 required
                                 ListboxProps={{
                                     onScroll: (event) => {
-                                        const listboxNode = event.currentTarget;
+                                        const listboxNode = event.currentTarget
                                         if (fetch && !isLoading && (listboxNode.scrollTop + listboxNode.clientHeight >= (listboxNode.scrollHeight - PAGE_FETCH_OFFSET))) {
-                                            const p = page + 1;
-                                            setIsLoading(true);
+                                            const p = page + 1
+                                            setIsLoading(true)
                                             searchUsers(props.user._id, keyword, true, p)
                                                 .then(data => {
-                                                    const _users = [...users, ...data];
-                                                    setUsers(_users);
-                                                    setIsLoading(false);
-                                                    setFetch(data.length > 0);
-                                                    setPage(p);
+                                                    const _users = [...users, ...data]
+                                                    setUsers(_users)
+                                                    setIsLoading(false)
+                                                    setFetch(data.length > 0)
+                                                    setPage(p)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                });
+                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                })
                                         }
                                     }
                                 }}
                                 onFocus={
                                     (event) => {
                                         if (!init) {
-                                            setUsers([]);
-                                            const p = 1;
-                                            setIsLoading(true);
+                                            setUsers([])
+                                            const p = 1
+                                            setIsLoading(true)
                                             searchUsers(props.user._id, keyword, true, p)
                                                 .then(users => {
-                                                    setUsers(users);
-                                                    setIsLoading(false);
-                                                    setFetch(users.length > 0);
-                                                    setPage(p);
-                                                    setInit(true);
+                                                    setUsers(users)
+                                                    setIsLoading(false)
+                                                    setFetch(users.length > 0)
+                                                    setPage(p)
+                                                    setInit(true)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                });
+                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                })
                                         }
                                     }
                                 }
                                 onInputChange={
                                     (event) => {
-                                        const value = (event && event.target ? event.target.value : null) || '';
+                                        const value = (event && event.target ? event.target.value : null) || ''
 
                                         if (value !== keyword) {
-                                            setUsers([]);
-                                            setKeyword(value);
+                                            setUsers([])
+                                            setKeyword(value)
 
-                                            const p = 1;
-                                            setIsLoading(true);
+                                            const p = 1
+                                            setIsLoading(true)
                                             searchUsers(props.user._id, value, true, p)
                                                 .then(users => {
-                                                    setUsers(users);
-                                                    setIsLoading(false);
-                                                    setFetch(users.length > 0);
-                                                    setPage(p);
+                                                    setUsers(users)
+                                                    setIsLoading(false)
+                                                    setFetch(users.length > 0)
+                                                    setPage(p)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' });
-                                                });
+                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                })
                                         }
                                     }
                                 }
                                 onClear={
                                     (event) => {
-                                        setUsers([]);
+                                        setUsers([])
 
-                                        const p = 1;
-                                        setIsLoading(true);
-                                        setKeyword('');
+                                        const p = 1
+                                        setIsLoading(true)
+                                        setKeyword('')
                                         searchUsers(props.user._id, '', true, p)
                                             .then(users => {
-                                                setUsers(users);
-                                                setIsLoading(false);
-                                                setFetch(users.length > 0);
-                                                setPage(p);
+                                                setUsers(users)
+                                                setIsLoading(false)
+                                                setFetch(users.length > 0)
+                                                setPage(p)
                                             })
                                             .catch(err => {
-                                                toast(strings.GENERIC_ERROR, { type: 'error' });
-                                            });
+                                                toast(strings.GENERIC_ERROR, { type: 'error' })
+                                            })
                                     }
                                 }
                             />
@@ -275,5 +275,5 @@ export const MessageForm = (props) => {
             </div>
             :
             null
-    );
-};
+    )
+}

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { strings } from '../config/app.config';
-import * as UserService from '../services/UserService';
-import * as Helper from '../common/Helper';
-import Backdrop from '../elements/SimpleBackdrop';
-import Error from '../elements/Error';
+import React, { useEffect, useState } from 'react'
+import { strings } from '../config/app.config'
+import * as UserService from '../services/UserService'
+import * as Helper from '../common/Helper'
+import Backdrop from '../elements/SimpleBackdrop'
+import Error from '../elements/Error'
 import {
     Input,
     InputLabel,
@@ -13,101 +13,101 @@ import {
     Paper,
     Checkbox,
     Link
-} from '@mui/material';
+} from '@mui/material'
 
 const SignUp = () => {
-    const [fullName, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [tosChecked, setTosChecked] = useState(false);
-    const [error, setError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
-    const [passwordsDontMatch, setPasswordsDontMatch] = useState(false);
-    const [emailError, setEmailError] = useState(false);
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [fullName, setFullName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+    const [tosChecked, setTosChecked] = useState(false)
+    const [error, setError] = useState(false)
+    const [passwordError, setPasswordError] = useState(false)
+    const [passwordsDontMatch, setPasswordsDontMatch] = useState(false)
+    const [emailError, setEmailError] = useState(false)
+    const [visible, setVisible] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     const handleOnChangeFullName = (e) => {
-        setFullName(e.target.value);
-    };
+        setFullName(e.target.value)
+    }
 
     const handleOnChangeEmail = (e) => {
-        setEmail(e.target.value);
-    };
+        setEmail(e.target.value)
+    }
 
     const handleOnChangePassword = (e) => {
-        setPassword(e.target.value);
-    };
+        setPassword(e.target.value)
+    }
 
     const handleOnChangeConfirmPassword = (e) => {
-        setConfirmPassword(e.target.value);
-    };
+        setConfirmPassword(e.target.value)
+    }
 
     const handleOnBlur = (e) => {
-        setEmail(e.target.value);
+        setEmail(e.target.value)
 
         const data = {
             email: email
-        };
+        }
 
         UserService.validateEmail(data)
             .then(status => {
                 if (status === 204) {
-                    setEmailError(true);
+                    setEmailError(true)
                 } else {
-                    setEmailError(false);
+                    setEmailError(false)
                 }
             }).catch(err => {
-                setEmailError(false);
-                Helper.error(null, err);
-            });
-    };
+                setEmailError(false)
+                Helper.error(null, err)
+            })
+    }
 
     const preventDefault = (e) => {
-        e.preventDefault();
+        e.preventDefault()
     }
 
     const handleTosChange = (e) => {
-        setTosChecked(e.target.checked);
-    };
+        setTosChecked(e.target.checked)
+    }
 
     const handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
 
         const emailData = {
             email: email
-        };
+        }
 
         UserService.validateEmail(emailData)
             .then(emailStatus => {
                 if (emailStatus === 204) {
-                    setEmailError(true);
+                    setEmailError(true)
                 } else {
-                    setEmailError(false);
+                    setEmailError(false)
 
                     if (password.length < 6) {
-                        setPasswordError(true);
-                        setPasswordsDontMatch(false);
-                        setError(false);
-                        return;
+                        setPasswordError(true)
+                        setPasswordsDontMatch(false)
+                        setError(false)
+                        return
                     }
 
                     if (password !== confirmPassword) {
-                        setPasswordError(false);
-                        setPasswordsDontMatch(true);
-                        setError(false);
-                        return;
+                        setPasswordError(false)
+                        setPasswordsDontMatch(true)
+                        setError(false)
+                        return
                     }
 
-                    setLoading(true);
+                    setLoading(true)
 
                     const data = {
                         email: email,
                         password: password,
                         fullName: fullName,
                         language: UserService.getLanguage()
-                    };
+                    }
 
                     UserService.signup(data)
                         .then(
@@ -119,67 +119,67 @@ const SignUp = () => {
                                     })
                                         .then(signInResult => {
                                             if (signInResult.status === 200) {
-                                                window.location = '/home' + window.location.search;
+                                                window.location = '/home' + window.location.search
                                             } else {
-                                                setError(true);
-                                                setPasswordError(false);
-                                                setPasswordsDontMatch(false);
-                                                setLoading(false);
+                                                setError(true)
+                                                setPasswordError(false)
+                                                setPasswordsDontMatch(false)
+                                                setLoading(false)
                                             }
                                         })
                                         .catch((err) => {
-                                            setError(true);
-                                            setPasswordError(false);
-                                            setPasswordsDontMatch(false);
-                                            setLoading(false);
-                                        });
+                                            setError(true)
+                                            setPasswordError(false)
+                                            setPasswordsDontMatch(false)
+                                            setLoading(false)
+                                        })
                                 } else
-                                    setError(true);
-                                setPasswordError(false);
-                                setPasswordsDontMatch(false);
-                                setLoading(false);
+                                    setError(true)
+                                setPasswordError(false)
+                                setPasswordsDontMatch(false)
+                                setLoading(false)
                             })
                         .catch((err) => {
-                            setError(true);
-                            setPasswordError(false);
-                            setPasswordsDontMatch(false);
-                            setLoading(false);
-                        });
+                            setError(true)
+                            setPasswordError(false)
+                            setPasswordsDontMatch(false)
+                            setLoading(false)
+                        })
                 }
 
             }).catch((err) => {
-                setEmailError(true);
+                setEmailError(true)
             })
-    };
+    }
 
     const onLoad = (user) => {
         if (user) {
-            window.location.href = '/home';
+            window.location.href = '/home'
         } else {
-            setVisible(true);
+            setVisible(true)
         }
-    };
+    }
 
     useEffect(() => {
-        const currentUser = UserService.getCurrentUser();
+        const currentUser = UserService.getCurrentUser()
         if (currentUser) {
             UserService.validateAccessToken().then(status => {
                 UserService.getUser(currentUser.id).then(user => {
                     if (user) {
-                        window.location.href = '/home';
+                        window.location.href = '/home'
                     } else {
-                        UserService.signout();
+                        UserService.signout()
                     }
                 }).catch(() => {
-                    UserService.signout();
-                });
+                    UserService.signout()
+                })
             }).catch(() => {
-                UserService.signout();
-            });
+                UserService.signout()
+            })
         } else {
-            setVisible(true);
+            setVisible(true)
         }
-    }, []);
+    }, [])
 
     return (
         <div>
@@ -296,7 +296,7 @@ const SignUp = () => {
             }
             {loading && <Backdrop text={strings.PLEASE_WAIT} />}
         </div>
-    );
-};
+    )
+}
 
-export default SignUp;
+export default SignUp
