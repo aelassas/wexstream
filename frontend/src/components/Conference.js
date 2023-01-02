@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { strings } from '../config/app.config'
-import { JITSI_API, JITSI_HOST } from '../config/env.config'
+import { JITSI_API, JITSI_HOST, isMobile } from '../config/env.config'
 import { getUsername } from '../services/UserService'
 import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService'
 import { getConnection } from '../services/ConnectionService'
@@ -33,7 +33,6 @@ import {
 } from "react-share"
 import Backdrop from '../elements/SimpleBackdrop'
 import * as Helper from '../common/Helper'
-import { isMobile } from '../config/env.config'
 import Master from '../elements/Master'
 
 let domain = JITSI_HOST
