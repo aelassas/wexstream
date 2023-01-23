@@ -26,7 +26,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-export const MessageBox = (props) => {
+const MessageBox = (props) => {
     const classes = useStyles()
     const [isSignedIn, setIsSignedIn] = useState(false)
 
@@ -108,3 +108,5 @@ export const MessageBox = (props) => {
             null
     )
 }
+
+export default MessageBox
