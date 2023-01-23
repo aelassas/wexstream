@@ -142,6 +142,7 @@ const Header = (props) => {
             // vertical padding + font size from searchIcon
             // paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
             paddingLeft: 6,
+            paddingRight: 1,
             transition: theme.transitions.create('width'),
             width: '100%',
             color: '#fff',
