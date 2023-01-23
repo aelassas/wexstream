@@ -17,7 +17,7 @@ import {
 } from '@mui/material'
 import Avatar from './Avatar'
 import { getMembers } from '../services/ConferenceService'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 
 const Members = (props) => {
     const [members, setMembers] = useState([])

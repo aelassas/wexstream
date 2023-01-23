@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as Helper from '../common/Helper'
 import Backdrop from '../elements/SimpleBackdrop'

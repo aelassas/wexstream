@@ -1,5 +1,5 @@
 import React from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import Master from '../elements/Master.js'
 
 

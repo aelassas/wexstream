@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import {
     notify, getNotifications, getNotificationCounter, deleteNotification, approve, decline,
@@ -36,7 +36,7 @@ import {
     ThumbUp,
     ThumbDown
 } from '@mui/icons-material'
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
 import Master from '../elements/Master'
 import * as Helper from '../common/Helper'
 

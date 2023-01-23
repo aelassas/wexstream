@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import {
     getUserId, getUserById, checkBlockedUser, reportUser, blockUser, unblockUser
 } from '../services/UserService'
@@ -48,7 +48,7 @@ import moment from 'moment'
 import 'moment/locale/fr'
 import 'moment/locale/ar'
 import MessageForm from '../elements/MessageForm'
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
 import Members from '../elements/Members'
 import * as Helper from '../common/Helper'
 import Master from '../elements/Master'
@@ -832,314 +832,316 @@ const Profile = () => {
 
     return (
         <Master notificationCount={notificationCount} onLoad={onLoad} strict>
-            <div className={`${isMobile() ? `profile-content` : ((rtl ? 'profile-rtl' : 'profile') + ' content')}`}>
-                {userNotFound ?
-                    <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
-                        <CardContent>
-                            <Typography color="textSecondary">{strings.USER_NOT_FOUND}</Typography>
-                        </CardContent>
-                    </Card>
-                    :
-                    (unauthorized ?
+            {user &&
+                <div className={`${isMobile() ? `profile-content` : ((rtl ? 'profile-rtl' : 'profile') + ' content')}`}>
+                    {userNotFound ?
                         <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
                             <CardContent>
-                                <Typography color="textSecondary">{strings.PROFILE_UNAUTHORIZED}</Typography>
+                                <Typography color="textSecondary">{strings.USER_NOT_FOUND}</Typography>
                             </CardContent>
-                        </Card> :
-                        (error ?
+                        </Card>
+                        :
+                        (unauthorized ?
                             <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
                                 <CardContent>
-                                    <Typography color="textSecondary">{strings.GENERIC_ERROR}</Typography>
+                                    <Typography color="textSecondary">{strings.PROFILE_UNAUTHORIZED}</Typography>
                                 </CardContent>
-                            </Card>
-                            :
-                            <div className={isMobile() ? `profile-container` : null}>
-                                <div className={rtl ? 'profile-header-rtl' : 'profile-header'}>
-                                    <Avatar loggedUser={loggedUser}
-                                        user={user}
-                                        size="large"
-                                        onBeforeUpload={onBeforeUpload}
-                                        onChange={onAvatarChange}
-                                        readonly={user._id !== loggedUser._id}
-                                        color="disabled"
-                                        className={rtl ? 'profile-avatar-rtl' : 'profile-avatar'} />
-                                    <Typography variant="h4" className="profile-name" style={{ textAlign: 'center', fontWeight: 600, marginTop: 15 }}>{user.fullName}</Typography>
-                                    {user.bio && user.bio !== '' && <Typography variant="h6" style={{ textAlign: 'center', fontWeight: 400, marginTop: 10, color: '#676767' }}>{user.bio}</Typography>}
-                                    {user._id !== loggedUser._id &&
-                                        <div className="profile-actions">
-                                            <Button
-                                                variant="contained"
-                                                color={isConnected ? "secondary" : (isConnectionPending && !isApprover ? "default" : "primary")}
-                                                size="small"
-                                                onClick={handleConnect}
-                                            >
-                                                {isConnected
-                                                    ? strings.DISCONNECT
-                                                    : (isConnectionPending
-                                                        ? (isApprover
-                                                            ? strings.APPROVE
-                                                            : strings.CANCEL)
-                                                        : strings.CONNECT)
-                                                }
-                                            </Button>
-                                            {(isConnectionPending && isApprover)
-                                                &&
+                            </Card> :
+                            (error ?
+                                <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
+                                    <CardContent>
+                                        <Typography color="textSecondary">{strings.GENERIC_ERROR}</Typography>
+                                    </CardContent>
+                                </Card>
+                                :
+                                <div className={isMobile() ? `profile-container` : null}>
+                                    <div className={rtl ? 'profile-header-rtl' : 'profile-header'}>
+                                        <Avatar loggedUser={loggedUser}
+                                            user={user}
+                                            size="large"
+                                            onBeforeUpload={onBeforeUpload}
+                                            onChange={onAvatarChange}
+                                            readonly={user._id !== loggedUser._id}
+                                            color="disabled"
+                                            className={rtl ? 'profile-avatar-rtl' : 'profile-avatar'} />
+                                        <Typography variant="h4" className="profile-name" style={{ textAlign: 'center', fontWeight: 600, marginTop: 15 }}>{user.fullName}</Typography>
+                                        {user.bio && user.bio !== '' && <Typography variant="h6" style={{ textAlign: 'center', fontWeight: 400, marginTop: 10, color: '#676767' }}>{user.bio}</Typography>}
+                                        {user._id !== loggedUser._id &&
+                                            <div className="profile-actions">
                                                 <Button
                                                     variant="contained"
-                                                    color="secondary"
+                                                    color={isConnected ? "secondary" : (isConnectionPending && !isApprover ? "default" : "primary")}
                                                     size="small"
-                                                    onClick={handleDecline}
+                                                    onClick={handleConnect}
                                                 >
-                                                    {strings.DECLINE}
-                                                </Button>
-                                            }
-                                            {(isConnected || user.enablePrivateMessages)
-                                                &&
-                                                <Button
-                                                    variant="contained"
-                                                    color="primary"
-                                                    size="small"
-                                                    onClick={handleSendMessage}
-                                                >
-                                                    {strings.SEND_MESSAGE}
-                                                </Button>
-                                            }
-                                            <IconButton
-                                                aria-label="more"
-                                                aria-haspopup="true"
-                                                onClick={handleActionsClick}
-                                                style={{
-                                                    background: '#dddddd',
-                                                    color: '#1c1e21',
-                                                    borderRadius: 4,
-                                                    marginRight: 5,
-                                                    marginLeft: 5,
-                                                    paddingTop: 4,
-                                                    paddingRight: 10,
-                                                    paddingBottom: 4,
-                                                    paddingLeft: 10
-                                                }}
-                                            >
-                                                <MoreHoriz />
-                                            </IconButton>
-                                            <Menu
-                                                anchorEl={anchorEl}
-                                                keepMounted
-                                                open={openActions}
-                                                onClose={handleActionsClose}
-                                            >
-                                                <MenuItem key="report" onClick={handleReport}>
-                                                    <Report style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} /> {strings.REPORT}
-                                                </MenuItem>
-                                                <MenuItem key="block" onClick={handleBlock}>
-                                                    {isBlocked ?
-                                                        <LockOpen style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} />
-                                                        :
-                                                        <Block style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} />
+                                                    {isConnected
+                                                        ? strings.DISCONNECT
+                                                        : (isConnectionPending
+                                                            ? (isApprover
+                                                                ? strings.APPROVE
+                                                                : strings.CANCEL)
+                                                            : strings.CONNECT)
                                                     }
-                                                    {isBlocked ? strings.UNBLOCK : strings.BLOCK}
-                                                </MenuItem>
-                                            </Menu>
-                                            {(isConnected || isConnectionPending)
-                                                &&
-                                                <Card variant="outlined" style={{ marginTop: 15 }}>
-                                                    <CardContent>
-                                                        {isConnected ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (isConnectionPending ? strings.CONNECTION_PENDING : null)}
-                                                    </CardContent>
-                                                </Card>
-                                            }
-                                            <Dialog
-                                                disableEscapeKeyDown
-                                                maxWidth="xs"
-                                                open={openDisconnectDialog}
-                                            >
-                                                <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                                <DialogContent>{isConnected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
-                                                    <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
-                                                </DialogActions>
-                                            </Dialog>
-                                            <Dialog
-                                                disableEscapeKeyDown
-                                                maxWidth="xs"
-                                                open={openDeclineDialog}
-                                            >
-                                                <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                                <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                                                    <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
-                                                </DialogActions>
-                                            </Dialog>
-                                            <Dialog
-                                                disableEscapeKeyDown
-                                                maxWidth="sm"
-                                                fullWidth
-                                                open={openReportDialog}
-                                            >
-                                                <DialogTitle style={{ textAlign: 'center' }}>{strings.REPORT}</DialogTitle>
-                                                <DialogContent>
-                                                    <FormControl fullWidth margin="dense">
-                                                        <InputLabel htmlFor="message">{strings.MESSAGE}</InputLabel>
-                                                        <Input
-                                                            id="title"
-                                                            type="text"
-                                                            name="title"
-                                                            autoComplete="off"
-                                                            onChange={handleReportMessageChange}
-                                                            multiline
-                                                            rows={10}
-                                                        />
-                                                    </FormControl>
-                                                </DialogContent>
-                                                <DialogActions className="buttons">
-                                                    <Button onClick={handleCancelReport} color="default" variant="contained">{strings.CANCEL}</Button>
-                                                    <Button onClick={handleConfirmReport} color="secondary" variant="contained" disabled={reportMessage.length === 0}>{strings.REPORT}</Button>
-                                                </DialogActions>
-                                            </Dialog>
-                                            <Dialog
-                                                disableEscapeKeyDown
-                                                maxWidth="xs"
-                                                open={openBlockDialog}
-                                            >
-                                                <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                                <DialogContent>{isBlocked ? strings.UNBLOCK_CONFIRM : strings.BLOCK_CONFIRM}</DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleCancelBlock} color="default">{strings.CANCEL}</Button>
-                                                    <Button onClick={handleConfirmBlock} color="secondary">{isBlocked ? strings.UNBLOCK : strings.BLOCK}</Button>
-                                                </DialogActions>
-                                            </Dialog>
-                                            <MessageForm user={loggedUser} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={user._id} />
+                                                </Button>
+                                                {(isConnectionPending && isApprover)
+                                                    &&
+                                                    <Button
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        size="small"
+                                                        onClick={handleDecline}
+                                                    >
+                                                        {strings.DECLINE}
+                                                    </Button>
+                                                }
+                                                {(isConnected || user.enablePrivateMessages)
+                                                    &&
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        size="small"
+                                                        onClick={handleSendMessage}
+                                                    >
+                                                        {strings.SEND_MESSAGE}
+                                                    </Button>
+                                                }
+                                                <IconButton
+                                                    aria-label="more"
+                                                    aria-haspopup="true"
+                                                    onClick={handleActionsClick}
+                                                    style={{
+                                                        background: '#dddddd',
+                                                        color: '#1c1e21',
+                                                        borderRadius: 4,
+                                                        marginRight: 5,
+                                                        marginLeft: 5,
+                                                        paddingTop: 4,
+                                                        paddingRight: 10,
+                                                        paddingBottom: 4,
+                                                        paddingLeft: 10
+                                                    }}
+                                                >
+                                                    <MoreHoriz />
+                                                </IconButton>
+                                                <Menu
+                                                    anchorEl={anchorEl}
+                                                    keepMounted
+                                                    open={openActions}
+                                                    onClose={handleActionsClose}
+                                                >
+                                                    <MenuItem key="report" onClick={handleReport}>
+                                                        <Report style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} /> {strings.REPORT}
+                                                    </MenuItem>
+                                                    <MenuItem key="block" onClick={handleBlock}>
+                                                        {isBlocked ?
+                                                            <LockOpen style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} />
+                                                            :
+                                                            <Block style={rtl ? { marginLeft: 10 } : { marginRight: 10 }} />
+                                                        }
+                                                        {isBlocked ? strings.UNBLOCK : strings.BLOCK}
+                                                    </MenuItem>
+                                                </Menu>
+                                                {(isConnected || isConnectionPending)
+                                                    &&
+                                                    <Card variant="outlined" style={{ marginTop: 15 }}>
+                                                        <CardContent>
+                                                            {isConnected ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (isConnectionPending ? strings.CONNECTION_PENDING : null)}
+                                                        </CardContent>
+                                                    </Card>
+                                                }
+                                                <Dialog
+                                                    disableEscapeKeyDown
+                                                    maxWidth="xs"
+                                                    open={openDisconnectDialog}
+                                                >
+                                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                                                    <DialogContent>{isConnected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                                <Dialog
+                                                    disableEscapeKeyDown
+                                                    maxWidth="xs"
+                                                    open={openDeclineDialog}
+                                                >
+                                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                                                    <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                                <Dialog
+                                                    disableEscapeKeyDown
+                                                    maxWidth="sm"
+                                                    fullWidth
+                                                    open={openReportDialog}
+                                                >
+                                                    <DialogTitle style={{ textAlign: 'center' }}>{strings.REPORT}</DialogTitle>
+                                                    <DialogContent>
+                                                        <FormControl fullWidth margin="dense">
+                                                            <InputLabel htmlFor="message">{strings.MESSAGE}</InputLabel>
+                                                            <Input
+                                                                id="title"
+                                                                type="text"
+                                                                name="title"
+                                                                autoComplete="off"
+                                                                onChange={handleReportMessageChange}
+                                                                multiline
+                                                                rows={10}
+                                                            />
+                                                        </FormControl>
+                                                    </DialogContent>
+                                                    <DialogActions className="buttons">
+                                                        <Button onClick={handleCancelReport} color="default" variant="contained">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmReport} color="secondary" variant="contained" disabled={reportMessage.length === 0}>{strings.REPORT}</Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                                <Dialog
+                                                    disableEscapeKeyDown
+                                                    maxWidth="xs"
+                                                    open={openBlockDialog}
+                                                >
+                                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                                                    <DialogContent>{isBlocked ? strings.UNBLOCK_CONFIRM : strings.BLOCK_CONFIRM}</DialogContent>
+                                                    <DialogActions>
+                                                        <Button onClick={handleCancelBlock} color="default">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmBlock} color="secondary">{isBlocked ? strings.UNBLOCK : strings.BLOCK}</Button>
+                                                    </DialogActions>
+                                                </Dialog>
+                                                <MessageForm user={loggedUser} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={user._id} />
+                                            </div>
+                                        }
+                                        <div className={rtl ? 'profile-info-rtl' : 'profile-info'}>
+                                            <Card variant="outlined" className="profile-info-card">
+                                                <CardContent>
+                                                    {user.location && user.location !== '' && <div className={`profile-info-ln`}><Typography><LocationOnOutlined style={styles.infoIcon} />{user.location}</Typography></div>}
+                                                    {user.website && user.website !== '' && <div className={`profile-info-ln`}><LinkOutlined style={styles.infoIcon} /><Link href={user.website.startsWith('http') ? user.website : ('https://' + user.website.replace(/^https?:\/\//, ''))}>{user.website.replace(/^https?:\/\//, '')}</Link></div>}
+                                                    <div className={`profile-info-ln`}><Typography><QueryBuilderOutlined style={styles.infoIcon} />{strings.JOINED_AT + ' ' + moment(user.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography> </div>
+                                                </CardContent>
+                                            </Card>
                                         </div>
-                                    }
-                                    <div className={rtl ? 'profile-info-rtl' : 'profile-info'}>
-                                        <Card variant="outlined" className="profile-info-card">
-                                            <CardContent>
-                                                {user.location && user.location !== '' && <div className={`profile-info-ln`}><Typography><LocationOnOutlined style={styles.infoIcon} />{user.location}</Typography></div>}
-                                                {user.website && user.website !== '' && <div className={`profile-info-ln`}><LinkOutlined style={styles.infoIcon} /><Link href={user.website.startsWith('http') ? user.website : ('https://' + user.website.replace(/^https?:\/\//, ''))}>{user.website.replace(/^https?:\/\//, '')}</Link></div>}
-                                                <div className={`profile-info-ln`}><Typography><QueryBuilderOutlined style={styles.infoIcon} />{strings.JOINED_AT + ' ' + moment(user.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography> </div>
-                                            </CardContent>
-                                        </Card>
                                     </div>
-                                </div>
-                                <div className={rtl ? 'profile-timeline-rtl' : 'profile-timeline'}>
-                                    {conferences.length === 0 && !isLoading ?
-                                        <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
-                                            <CardContent>
-                                                <Typography color="textSecondary">
-                                                    {strings.EMPTY_TIMELINE}
-                                                </Typography>
-                                            </CardContent>
-                                        </Card>
-                                        :
-                                        <List className={rtl ? 'conf-list-rtl' : 'conf-list'}>
-                                            {conferences.map((conference) =>
-                                            (
-                                                <ListItem key={conference._id} className="timeline-item">
-                                                    <ListItemText
-                                                        
-                                                        primary={
-                                                            <div style={{ marginBottom: 5 }}>
-                                                                <Videocam color={conference.isLive ? 'secondary' : 'disabled'} className={`timeline-avatar`} />
-                                                                <div className="profile-timeline-item-title">
-                                                                    <Link href={`/conference?c=${conference._id}`}>
-                                                                        <Typography style={{ fontWeight: 'bold', color: '#373737' }}>{conference.title}</Typography>
-                                                                    </Link>
-                                                                    <div style={{ display: 'inline-block' }}>
-                                                                        <Typography className={`timeline-item-sub-title-float`}>
-                                                                            {conference.broadcastedAt ? moment(conference.broadcastedAt).format(process.env.REACT_APP_WS_DATE_FORMAT) : moment(conference.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}
-                                                                        </Typography>
-                                                                        {conference.isPrivate ?
-                                                                            <Tooltip title={strings.PRIVATE}>
-                                                                                <Lock style={iconStyles} />
-                                                                            </Tooltip>
-                                                                            :
-                                                                            <Tooltip title={strings.PUBLIC}>
-                                                                                <Public style={iconStyles} />
-                                                                            </Tooltip>
-                                                                        }
-                                                                    </div>
-                                                                    {!conference.isLive && conference.broadcastedAt && conference.finishedAt &&
-                                                                        <div>
-                                                                            <Typography className="timeline-item-sub-title">
-                                                                                {moment(Math.abs(new Date(conference.finishedAt).getTime() - new Date(conference.broadcastedAt).getTime())).format('HH:mm:ss')}
-                                                                            </Typography>
-                                                                        </div>
-                                                                    }
+                                    <div className={rtl ? 'profile-timeline-rtl' : 'profile-timeline'}>
+                                        {conferences.length === 0 && !isLoading ?
+                                            <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
+                                                <CardContent>
+                                                    <Typography color="textSecondary">
+                                                        {strings.EMPTY_TIMELINE}
+                                                    </Typography>
+                                                </CardContent>
+                                            </Card>
+                                            :
+                                            <List className={rtl ? 'conf-list-rtl' : 'conf-list'}>
+                                                {conferences.map((conference) =>
+                                                (
+                                                    <ListItem key={conference._id} className="timeline-item">
+                                                        <ListItemText
 
-                                                                </div>
-                                                                {(!conference.isLive && conference.finishedAt && loggedUser._id === user._id) &&
-                                                                    <Tooltip title={strings.DELETE}>
+                                                            primary={
+                                                                <div style={{ marginBottom: 5 }}>
+                                                                    <Videocam color={conference.isLive ? 'secondary' : 'disabled'} className={`timeline-avatar`} />
+                                                                    <div className="profile-timeline-item-title">
+                                                                        <Link href={`/conference?c=${conference._id}`}>
+                                                                            <Typography style={{ fontWeight: 'bold', color: '#373737' }}>{conference.title}</Typography>
+                                                                        </Link>
+                                                                        <div style={{ display: 'inline-block' }}>
+                                                                            <Typography className={`timeline-item-sub-title-float`}>
+                                                                                {conference.broadcastedAt ? moment(conference.broadcastedAt).format(process.env.REACT_APP_WS_DATE_FORMAT) : moment(conference.createdAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}
+                                                                            </Typography>
+                                                                            {conference.isPrivate ?
+                                                                                <Tooltip title={strings.PRIVATE}>
+                                                                                    <Lock style={iconStyles} />
+                                                                                </Tooltip>
+                                                                                :
+                                                                                <Tooltip title={strings.PUBLIC}>
+                                                                                    <Public style={iconStyles} />
+                                                                                </Tooltip>
+                                                                            }
+                                                                        </div>
+                                                                        {!conference.isLive && conference.broadcastedAt && conference.finishedAt &&
+                                                                            <div>
+                                                                                <Typography className="timeline-item-sub-title">
+                                                                                    {moment(Math.abs(new Date(conference.finishedAt).getTime() - new Date(conference.broadcastedAt).getTime())).format('HH:mm:ss')}
+                                                                                </Typography>
+                                                                            </div>
+                                                                        }
+
+                                                                    </div>
+                                                                    {(!conference.isLive && conference.finishedAt && loggedUser._id === user._id) &&
+                                                                        <Tooltip title={strings.DELETE}>
+                                                                            <IconButton
+                                                                                variant="contained"
+                                                                                size="small"
+                                                                                data-id={conference._id}
+                                                                                style={{ color: '#595959', margin: 0, float: rtl ? 'left' : 'right' }}
+                                                                                onClick={handleDelete}
+                                                                            >
+                                                                                <Clear style={{ width: 16, height: 16 }} />
+                                                                            </IconButton>
+                                                                        </Tooltip>
+                                                                    }
+                                                                    <Tooltip title={strings.MEMBERS}>
                                                                         <IconButton
                                                                             variant="contained"
+                                                                            color="default"
                                                                             size="small"
                                                                             data-id={conference._id}
-                                                                            style={{ color: '#595959', margin: 0, float: rtl ? 'left' : 'right' }}
-                                                                            onClick={handleDelete}
+                                                                            style={{ margin: 0, float: rtl ? 'left' : 'right' }}
+                                                                            onClick={handleMembers}
                                                                         >
-                                                                            <Clear style={{ width: 16, height: 16 }} />
+                                                                            <People style={{ width: 16, height: 16 }} />
                                                                         </IconButton>
                                                                     </Tooltip>
-                                                                }
-                                                                <Tooltip title={strings.MEMBERS}>
-                                                                    <IconButton
-                                                                        variant="contained"
-                                                                        color="default"
-                                                                        size="small"
-                                                                        data-id={conference._id}
-                                                                        style={{ margin: 0, float: rtl ? 'left' : 'right' }}
-                                                                        onClick={handleMembers}
-                                                                    >
-                                                                        <People style={{ width: 16, height: 16 }} />
-                                                                    </IconButton>
-                                                                </Tooltip>
-                                                            </div>
-                                                        }
-                                                        secondary={
-                                                            <div className="timeline-secondary">
-                                                                {conference.isLive &&
-                                                                    <Typography style={{ marginTop: 10, fontWeight: 500, color: '#f50057' }}>
-                                                                        {strings.LIVE}
+                                                                </div>
+                                                            }
+                                                            secondary={
+                                                                <div className="timeline-secondary">
+                                                                    {conference.isLive &&
+                                                                        <Typography style={{ marginTop: 10, fontWeight: 500, color: '#f50057' }}>
+                                                                            {strings.LIVE}
+                                                                        </Typography>
+                                                                    }
+                                                                    <Typography style={{ marginTop: 5 }}>
+                                                                        {conference.description}
                                                                     </Typography>
-                                                                }
-                                                                <Typography style={{ marginTop: 5 }}>
-                                                                    {conference.description}
-                                                                </Typography>
-                                                            </div>}
-                                                    >
-                                                    </ListItemText>
-                                                </ListItem>
-                                            )
-                                            )}
-                                        </List>
-                                    }
+                                                                </div>}
+                                                        >
+                                                        </ListItemText>
+                                                    </ListItem>
+                                                )
+                                                )}
+                                            </List>
+                                        }
+                                    </div>
+                                    <Dialog
+                                        disableEscapeKeyDown
+                                        maxWidth="xs"
+                                        open={openDeleteDialog}
+                                    >
+                                        <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
+                                        <DialogContent>{strings.DELETE_CONFERENCE_CONFIRM}</DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
+                                            <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Members
+                                        open={openMembersDialog}
+                                        conferenceId={conferenceId}
+                                        loggedUser={loggedUser}
+                                        onClose={handleCloseMembers}
+                                        onFetch={handleMembersFetched}
+                                        onError={handleMembersError} />
+                                    {isLoading && <Backdrop text={strings.LOADING} />}
+                                    {isLoadingAvatar && <Backdrop text={strings.PLEASE_WAIT} />}
                                 </div>
-                                <Dialog
-                                    disableEscapeKeyDown
-                                    maxWidth="xs"
-                                    open={openDeleteDialog}
-                                >
-                                    <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
-                                    <DialogContent>{strings.DELETE_CONFERENCE_CONFIRM}</DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                                        <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
-                                    </DialogActions>
-                                </Dialog>
-                                <Members
-                                    open={openMembersDialog}
-                                    conferenceId={conferenceId}
-                                    loggedUser={loggedUser}
-                                    onClose={handleCloseMembers}
-                                    onFetch={handleMembersFetched}
-                                    onError={handleMembersError} />
-                                {isLoading && <Backdrop text={strings.LOADING} />}
-                                {isLoadingAvatar && <Backdrop text={strings.PLEASE_WAIT} />}
-                            </div>
-                        )
-                    )}
-            </div>
+                            )
+                        )}
+                </div>
+            }
         </Master>
     )
 }

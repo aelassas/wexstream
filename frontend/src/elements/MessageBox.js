@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import { TextField } from "@mui/material"
 import TextareaAutosize from '@mui/material/TextareaAutosize'

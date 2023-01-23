@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { authHeader } from './UserService'
-import { API_HOST, PAGE_SIZE } from '../config/env.config'
+import { API_HOST, PAGE_SIZE } from '../config/env'
 
 export const getConferenceId = () => {
     const params = new URLSearchParams(window.location.search)

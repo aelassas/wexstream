@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { API_HOST, DEFAULT_LANGUAGE, PAGE_SIZE } from '../config/env.config'
+import { API_HOST, DEFAULT_LANGUAGE, PAGE_SIZE } from '../config/env'
 import { googleLogout } from '../auth/google'
 import { facebookLogout } from '../auth/facebook'
 

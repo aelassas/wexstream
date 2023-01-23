@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import { getLanguage, searchUsers, getUserById } from '../services/UserService'
 import { TextField, Button } from "@mui/material"
 import MultipleSelect from "./MultipleSelect"
@@ -13,7 +13,7 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import { PAGE_FETCH_OFFSET } from '../config/env.config'
+import { PAGE_FETCH_OFFSET } from '../config/env'
 
 const classes = {
     appBar: {

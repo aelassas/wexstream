@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import { getUser, compare, resetPassword } from '../services/UserService'
 import {
     Paper,
@@ -189,18 +189,18 @@ const ResetPassword = () => {
                                 {(confirmPasswordError && strings.PASSWORDS_DONT_MATCH) || (passwordLengthError && strings.ERROR_IN_PASSWORD) || ''}
                             </FormHelperText>
                         </FormControl>
-                        <div className={user.language === 'ar' ? 'buttons-rtl' : 'buttons'}>
+                        <div className="buttons">
                             <Button
                                 type="submit"
                                 variant="contained"
-                                color="primary"
+                                color="info"
                                 size="small"
                             >
                                 {strings.RESET_PASSWORD}
                             </Button>
                             <Button
                                 variant="contained"
-                                color="default"
+                                color="inherit"
                                 size="small"
                                 href="/home"
                             >

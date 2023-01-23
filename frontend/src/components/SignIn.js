@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env.config'
-import { strings } from '../config/app.config'
+import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env'
+import { strings } from '../config/lang'
 import {
   Card,
   CardContent,

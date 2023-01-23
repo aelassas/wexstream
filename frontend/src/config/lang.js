@@ -1,5 +1,5 @@
 import LocalizedStrings from 'react-localization'
-import * as Env from '../config/env.config'
+import * as Env from '../config/env'
 import * as UserService from '../services/UserService'
 
 export const strings = new LocalizedStrings({

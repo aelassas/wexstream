@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService'
 import Button from '@mui/material/Button'
 import { toast } from 'react-toastify'
@@ -13,7 +13,7 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import { CDN } from '../config/env.config'
+import { CDN } from '../config/env'
 
 const Avatar = (props) => {
     const [error, setError] = useState(false)

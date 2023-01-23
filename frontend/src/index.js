@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from "react-dom/client"
 import App from './App'
-import * as Env from './config/env.config'
-import { strings as commonStrings } from './config/app.config'
+import * as Env from './config/env'
+import { strings as commonStrings } from './config/lang'
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import { ToastContainer, toast } from 'react-toastify'

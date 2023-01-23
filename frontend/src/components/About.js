@@ -1,6 +1,6 @@
 import React from 'react'
 import Master from '../elements/Master'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 
 const About = () => (
     <Master>

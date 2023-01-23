@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import {
     updateEmailNotifications,
     updatePrivateMessages,
@@ -263,7 +263,7 @@ const Settings = () => {
                                     <Button
                                         type="submit"
                                         variant="contained"
-                                        color="primary"
+                                        color="info"
                                         size="small"
                                         disabled={websiteError}
                                     >
@@ -272,7 +272,7 @@ const Settings = () => {
                                     {
                                         user.password && <Button
                                             variant="contained"
-                                            color="default"
+                                            color="info"
                                             size="small"
                                             href="/reset-password"
                                             className="reset-password-btn">
@@ -289,8 +289,8 @@ const Settings = () => {
                                 <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                                 <DialogContent>{strings.DELETE_ACCOUNT_CONFIRM}</DialogContent>
                                 <DialogActions>
-                                    <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                                    <Button onClick={handleDelete} color="secondary">{strings.DELETE_ACCOUNT}</Button>
+                                    <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                                    <Button onClick={handleDelete} color="error">{strings.DELETE_ACCOUNT}</Button>
                                 </DialogActions>
                             </Dialog>
                         </div>
@@ -320,7 +320,7 @@ const Settings = () => {
                                     <FormLabel className="dz-da-label">{strings.DZ_DELETE_ACCOUNT}</FormLabel>
                                     <Button
                                         variant="contained"
-                                        color="secondary"
+                                        color="error"
                                         size="small"
                                         onClick={deleteAccount}> {strings.DELETE_ACCOUNT}
                                     </Button>

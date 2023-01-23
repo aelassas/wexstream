@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 
 export const info = (message) => {
     toast(message, { type: 'info' })

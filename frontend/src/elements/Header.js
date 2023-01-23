@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env.config'
-import { strings } from '../config/app.config'
+import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env'
+import { strings } from '../config/lang'
 import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService'
 import { getNotificationCounter } from '../services/NotificationService'
 import { getMessageCounter } from '../services/MessageService'
@@ -21,7 +21,7 @@ import LanguageIcon from '@mui/icons-material/Language'
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import ListItemButton  from '@mui/material/ListItemButton'
+import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import HomeIcon from '@mui/icons-material/Home'
@@ -120,8 +120,8 @@ const Header = (props) => {
                 width: 'auto',
             },
             [theme.breakpoints.down('sm')]: {
-                marginLeft: -15,
-                marginRight: -15,
+                // marginLeft: -15,
+                // marginRight: -15,
                 width: 168,
             },
         }),
@@ -138,13 +138,15 @@ const Header = (props) => {
             color: 'inherit',
         },
         inputInput: theme => ({
-            padding: theme.spacing(1, 1, 1, 0),
+            // padding: theme.spacing(1, 1, 1, 0),
             // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+            // paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+            paddingLeft: 6,
             transition: theme.transitions.create('width'),
             width: '100%',
+            color: '#fff',
             [theme.breakpoints.up('md')]: {
-                width: '20ch',
+                width: '25ch',
             },
         }),
         sectionDesktop: theme => ({
@@ -155,7 +157,7 @@ const Header = (props) => {
         }),
         sectionMobile: theme => ({
             display: 'flex',
-            marginRight: -13,
+            // marginRight: -13,
             [theme.breakpoints.up('md')]: {
                 display: 'none',
             },
@@ -534,10 +536,7 @@ const Header = (props) => {
                             </Box>
                             <InputBase
                                 placeholder={strings.SEARCH_PLACEHOLDER}
-                                classes={{
-                                    root: classes.inputRoot,
-                                    input: classes.inputInput,
-                                }}
+                                sx={classes.inputInput}
                                 inputProps={{ 'aria-label': 'search' }}
                                 onKeyDown={handleSearch}
                                 onChange={handleSearchChange}
@@ -547,7 +546,7 @@ const Header = (props) => {
                     }
                     {(isSignedIn && !isMobile() && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.verified && !isLoading) && <Button
                         variant="contained"
-                        color="secondary"
+                        color="error"
                         startIcon={<Videocam />}
                         className={'live-btn'}
                         onClick={handleClickLive}
@@ -664,13 +663,13 @@ const Header = (props) => {
                         />
                     </FormControl>
                     <FormControlLabel
-                        control={<Switch checked={isPrivate} onChange={handlePrivateLiveChange} name="privateLive" color="secondary" />}
+                        control={<Switch checked={isPrivate} onChange={handlePrivateLiveChange} name="privateLive" color="info" />}
                         label={strings.PRIVATE_LIVE}
                     />
                 </DialogContent>
                 <DialogActions className="buttons">
-                    <Button onClick={handleCancelLive} variant="contained" color="default" size="small">{strings.CANCEL}</Button>
-                    <Button onClick={handleStartLive} variant="contained" color="primary" size="small" disabled={titleError || isTitleEmpty}>{strings.START}</Button>
+                    <Button onClick={handleCancelLive} variant="contained" color="inherit" size="small">{strings.CANCEL}</Button>
+                    <Button onClick={handleStartLive} variant="contained" color="info" size="small" disabled={titleError || isTitleEmpty}>{strings.START}</Button>
                 </DialogActions>
             </Dialog>
 

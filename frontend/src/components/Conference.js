@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
-import { JITSI_API, JITSI_HOST, isMobile } from '../config/env.config'
+import { strings } from '../config/lang'
+import { JITSI_API, JITSI_HOST, isMobile } from '../config/env'
 import { getUsername } from '../services/UserService'
 import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService'
 import { getConnection } from '../services/ConnectionService'
@@ -580,7 +580,6 @@ const Conference = () => {
             </div>
         </Master>
     )
-
 }
 
 export default Conference

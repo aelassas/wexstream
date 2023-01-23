@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from '@mui/material'
-import { strings as commonStrings } from '../config/app.config'
+import { strings as commonStrings } from '../config/lang'
 import Master from '../elements/Master'
 
 const NoMatch = (props) => {

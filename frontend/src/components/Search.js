@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { strings } from '../config/app.config'
+import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as ConnectionService from '../services/ConnectionService'
 import * as NotificationService from '../services/NotificationService'
@@ -33,7 +33,7 @@ import {
     Cancel,
     Link as LinkIcon
 } from '@mui/icons-material'
-import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
+import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
 import Master from '../elements/Master'
 import * as Helper from '../common/Helper'
 
