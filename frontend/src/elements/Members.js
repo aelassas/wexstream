@@ -15,7 +15,7 @@ import {
     ListItemAvatar,
     ListItemText,
 } from '@mui/material'
-import { Avatar } from './Avatar'
+import Avatar from './Avatar'
 import { getMembers } from '../services/ConferenceService'
 import { strings } from '../config/app.config'
 

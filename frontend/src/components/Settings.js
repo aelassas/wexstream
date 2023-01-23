@@ -24,7 +24,7 @@ import {
     DialogActions,
 } from '@mui/material'
 import Backdrop from '../elements/SimpleBackdrop'
-import { Avatar } from '../elements/Avatar'
+import Avatar from '../elements/Avatar'
 import validator from 'validator'
 import Master from '../elements/Master'
 import * as Helper from '../common/Helper'

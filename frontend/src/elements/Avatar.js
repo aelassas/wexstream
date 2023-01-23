@@ -15,7 +15,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import { CDN } from '../config/env.config'
 
-export const Avatar = (props) => {
+const Avatar = (props) => {
     const [error, setError] = useState(false)
     const [open, setOpen] = useState(false)
     const [user, setUser] = useState(null)
@@ -236,3 +236,5 @@ export const Avatar = (props) => {
             null
     )
 }
+
+export default Avatar

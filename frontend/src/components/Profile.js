@@ -8,7 +8,7 @@ import { notify, getNotification, getNotificationCounter, deleteNotification, ap
 import { getConferences, deleteConference } from '../services/ConferenceService'
 import { deleteSpeakerEntries } from '../services/TimelineService'
 import Backdrop from '../elements/SimpleBackdrop'
-import { Avatar } from '../elements/Avatar'
+import Avatar from '../elements/Avatar'
 import {
     Typography,
     Card,

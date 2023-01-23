@@ -5,7 +5,7 @@ import * as ConnectionService from '../services/ConnectionService'
 import * as NotificationService from '../services/NotificationService'
 import Backdrop from '../elements/SimpleBackdrop'
 import { MessageForm } from '../elements/MessageForm'
-import { Avatar } from '../elements/Avatar'
+import Avatar from '../elements/Avatar'
 import moment from 'moment'
 import 'moment/locale/fr'
 import {

@@ -34,7 +34,7 @@ import NetworkIcon from '@mui/icons-material/WifiTethering'
 import Videocam from '@mui/icons-material/Videocam'
 import ConnectionsIcon from '@mui/icons-material/SettingsInputAntenna'
 import { toast } from 'react-toastify'
-import { Avatar } from './Avatar'
+import Avatar from './Avatar'
 import { createConference } from '../services/ConferenceService'
 import Backdrop from './SimpleBackdrop'
 import {
