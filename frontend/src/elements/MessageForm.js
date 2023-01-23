@@ -30,7 +30,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-export const MessageForm = (props) => {
+const MessageForm = (props) => {
     const classes = useStyles()
     const [isSignedIn, setIsSignedIn] = useState(false)
     const [open, setOpen] = useState(false)
@@ -277,3 +277,5 @@ export const MessageForm = (props) => {
             null
     )
 }
+
+export default MessageForm

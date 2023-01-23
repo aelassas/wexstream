@@ -47,7 +47,7 @@ import {
 import moment from 'moment'
 import 'moment/locale/fr'
 import 'moment/locale/ar'
-import { MessageForm } from '../elements/MessageForm'
+import MessageForm from '../elements/MessageForm'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
 import { Members } from '../elements/Members'
 import * as Helper from '../common/Helper'
