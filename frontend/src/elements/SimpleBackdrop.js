@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function SimpleBackdrop(props) {
+const SimpleBackdrop = (props) => {
     const classes = useStyles()
 
     return (
@@ -23,3 +23,5 @@ export default function SimpleBackdrop(props) {
         </div>
     )
 }
+
+export default SimpleBackdrop
