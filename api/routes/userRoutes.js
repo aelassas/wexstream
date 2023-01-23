@@ -29,5 +29,6 @@ routes.route(routeNames.checkBlockedUser).get(authJwt.verifyToken, userControlle
 routes.route(routeNames.block).post(authJwt.verifyToken, userController.block)
 routes.route(routeNames.unblock).post(authJwt.verifyToken, userController.unblock)
 routes.route(routeNames.report).post(authJwt.verifyToken, userController.report)
+routes.route(routeNames.comparePassword).get(authJwt.verifyToken, userController.comparePassword)
 
 export default routes

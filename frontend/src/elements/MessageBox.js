@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@mui/material/styles'
 import { strings } from '../config/app.config'
 import { getLanguage } from '../services/UserService'
 import { TextField } from "@mui/material"
@@ -12,22 +11,21 @@ import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 
-const useStyles = makeStyles((theme) => ({
+const classes = {
     appBar: {
         position: 'relative',
     },
-    title: {
+    title: theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
-    },
-}))
+    })
+}
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
 const MessageBox = (props) => {
-    const classes = useStyles()
     const [isSignedIn, setIsSignedIn] = useState(false)
 
     const handleClose = (e) => {
@@ -62,7 +60,7 @@ const MessageBox = (props) => {
             ?
             <div>
                 <Dialog fullScreen open={props.open} onClose={handleClose} aria-labelledby="message-box-dialog" TransitionComponent={Transition}>
-                    <AppBar className={classes.appBar}>
+                    <AppBar sx={classes.appBar}>
                         <Toolbar>
                             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                 <CloseIcon />

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { API_HOST, DEFAULT_LANGUAGE, PAGE_SIZE } from '../config/env.config'
-import bcrypt from 'bcryptjs'
 import { googleLogout } from '../auth/google'
 import { facebookLogout } from '../auth/facebook'
 
@@ -14,16 +13,10 @@ export const authHeader = () => {
     }
 }
 
-export const signup = data => {
-    const password = data.password
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(password, salt)
-
-    data['password'] = hash
-
-    return axios.post(API_HOST + '/api/sign-up', data)
+export const signup = data => (
+    axios.post(API_HOST + '/api/sign-up', data)
         .then(res => res.status)
-}
+)
 
 export const validateEmail = data => (
     axios.post(API_HOST + '/api/validate-email', data)
@@ -253,18 +246,13 @@ export const updatePrivateMessages = (data) => (
         })
 )
 
-export const compare = (pass, hash) => (
-    bcrypt.compare(pass, hash)
-)
+export const compare = async (userId, password) => {
+    const data = { userId, password }
+    const { status } = await axios.get(API_HOST + '/api/compare-password', data, { headers: authHeader() })
+    return status === 200
+}
 
 export const resetPassword = async (data) => {
-    const salt = bcrypt.genSaltSync(10)
-
-    const newPassword = data.newPassword
-    const newPasswordHash = bcrypt.hashSync(newPassword, salt)
-
-    data["newPassword"] = newPasswordHash
-
     const { status } = await axios.post(API_HOST + '/api/reset-password', data, { headers: authHeader() })
     return status
 }

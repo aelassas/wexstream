@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { makeStyles } from '@mui/material/styles'
 import { strings } from '../config/app.config'
 import { getLanguage, searchUsers, getUserById } from '../services/UserService'
 import { TextField, Button } from "@mui/material"
@@ -16,22 +15,21 @@ import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { PAGE_FETCH_OFFSET } from '../config/env.config'
 
-const useStyles = makeStyles((theme) => ({
+const classes = {
     appBar: {
         position: 'relative',
     },
-    title: {
+    title: theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
-    },
-}))
+    })
+}
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
 const MessageForm = (props) => {
-    const classes = useStyles()
     const [isSignedIn, setIsSignedIn] = useState(false)
     const [open, setOpen] = useState(false)
     const [users, setUsers] = useState([])
@@ -131,12 +129,12 @@ const MessageForm = (props) => {
                     </Button>
                 }
                 <Dialog fullScreen open={props.open || open} onClose={handleClose} aria-labelledby="message-form-dialog" TransitionComponent={Transition}>
-                    <AppBar className={classes.appBar}>
+                    <AppBar sx={classes.appBar}>
                         <Toolbar>
                             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                                 <CloseIcon />
                             </IconButton>
-                            <Typography variant="h6" className={classes.title}>
+                            <Typography variant="h6" sx={classes.title}>
                                 {strings.NEW_MESSAGE}
                             </Typography>
                         </Toolbar>

@@ -333,7 +333,7 @@ const SignIn = () => {
                   }
                 }
                 variant="contained"
-                color="secondary"
+                color="error"
                 size="small"
                 disabled={!isGoogleSdkLoaded}
                 style={authBtnStyle}
@@ -351,7 +351,7 @@ const SignIn = () => {
                   }
                 }
                 variant="contained"
-                color="primary"
+                color="info"
                 size="small"
                 disabled={!isFacebookSdkLoaded}
                 style={authBtnStyle}
@@ -361,7 +361,7 @@ const SignIn = () => {
               <Button
                 onClick={handleEmailAuth}
                 variant="contained"
-                color="default"
+                color="inherit"
                 size="small"
                 style={authBtnStyle}
               >
@@ -379,7 +379,7 @@ const SignIn = () => {
           maxWidth="xs"
           open={openEmailAuthDialog}
         >
-          <DialogTitle disableTypography>
+          <DialogTitle>
             <div>
               <Typography variant="h5" className="email-auth-close-title">{strings.SIGN_IN_HEADING}</Typography>
               <IconButton aria-label="close" className="email-auth-close-btn" onClick={handleEmailAuthClose}>
@@ -416,14 +416,14 @@ const SignIn = () => {
                 <Button
                   type="submit"
                   variant="contained"
-                  color="primary"
+                  color="info"
                   size="small"
                 >
                   {strings.SIGN_IN}
                 </Button>
                 <Button
                   variant="contained"
-                  color="default"
+                  color="inherit"
                   size="small"
                   href="/sign-up"
                 >

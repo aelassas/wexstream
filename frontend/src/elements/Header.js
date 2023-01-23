@@ -4,7 +4,7 @@ import { strings } from '../config/app.config'
 import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService'
 import { getNotificationCounter } from '../services/NotificationService'
 import { getMessageCounter } from '../services/MessageService'
-import { alpha, makeStyles } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -21,7 +21,7 @@ import LanguageIcon from '@mui/icons-material/Language'
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
+import ListItemButton  from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import HomeIcon from '@mui/icons-material/Home'
@@ -47,14 +47,15 @@ import {
     FormHelperText,
     FormControlLabel,
     Switch,
-    Typography
+    Typography,
+    Box
 } from '@mui/material'
 
 const ListItemLink = (props) => (
-    <ListItem button component="a" {...props} />
+    <ListItemButton component="a" {...props} />
 )
 
-const Header = (props) =>{
+const Header = (props) => {
     const [currentLanguage, setCurrentLanguage] = useState(null)
     const [lang, setLang] = useState(DEFAULT_LANGUAGE)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -82,30 +83,30 @@ const Header = (props) =>{
     const isLangMenuOpen = Boolean(langAnchorEl)
     const isSideMenuOpen = Boolean(sideAnchorEl)
 
-    const useStyles = makeStyles((theme) => ({
+    const classes = {
         list: {
             width: 250,
         },
-        formControl: {
+        formControl: theme => ({
             margin: theme.spacing(1),
             minWidth: 120,
-        },
-        selectEmpty: {
+        }),
+        selectEmpty: theme => ({
             marginTop: theme.spacing(2),
-        },
+        }),
         grow: {
             flexGrow: 1
         },
-        menuButton: {
+        menuButton: theme => ({
             marginRight: theme.spacing(2),
-        },
-        title: {
+        }),
+        title: theme => ({
             display: 'none',
             [theme.breakpoints.up('sm')]: {
                 display: 'block',
             },
-        },
-        search: {
+        }),
+        search: theme => ({
             position: 'relative',
             borderRadius: theme.shape.borderRadius,
             backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -123,8 +124,8 @@ const Header = (props) =>{
                 marginRight: -15,
                 width: 168,
             },
-        },
-        searchIcon: {
+        }),
+        searchIcon: theme => ({
             padding: theme.spacing(0, 2),
             height: '100%',
             position: 'absolute',
@@ -132,11 +133,11 @@ const Header = (props) =>{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-        },
+        }),
         inputRoot: {
             color: 'inherit',
         },
-        inputInput: {
+        inputInput: theme => ({
             padding: theme.spacing(1, 1, 1, 0),
             // vertical padding + font size from searchIcon
             paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
@@ -145,23 +146,21 @@ const Header = (props) =>{
             [theme.breakpoints.up('md')]: {
                 width: '20ch',
             },
-        },
-        sectionDesktop: {
+        }),
+        sectionDesktop: theme => ({
             display: 'none',
             [theme.breakpoints.up('md')]: {
                 display: 'flex',
             },
-        },
-        sectionMobile: {
+        }),
+        sectionMobile: theme => ({
             display: 'flex',
             marginRight: -13,
             [theme.breakpoints.up('md')]: {
                 display: 'none',
             },
-        }
-    }))
-
-    const classes = useStyles()
+        })
+    }
 
     const handleAccountMenuOpen = (event) => {
         setAnchorEl(event.currentTarget)
@@ -476,17 +475,16 @@ const Header = (props) =>{
         >
             <MenuItem onClick={handleLangMenuClose} data-code="en">English</MenuItem>
             <MenuItem onClick={handleLangMenuClose} data-code="fr">Français</MenuItem>
-            <MenuItem onClick={handleLangMenuClose} data-code="ar">العربية</MenuItem>
         </Menu>
     )
 
     return (
-        <div className={classes.grow} style={props.hidden ? { display: 'none' } : null} >
+        <Box sx={classes.grow} style={props.hidden ? { display: 'none' } : null}>
             <AppBar position="fixed">
                 <Toolbar>
                     <IconButton
                         edge="start"
-                        className={classes.menuButton}
+                        sx={classes.menuButton}
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleSideMenuOpen}
@@ -495,7 +493,7 @@ const Header = (props) =>{
                     </IconButton>
                     <React.Fragment>
                         <Drawer open={isSideMenuOpen} onClose={handleSideMenuClose}>
-                            <List className={classes.list}>
+                            <List sx={classes.list}>
                                 <ListItemLink href="/home">
                                     <ListItemIcon>{<HomeIcon />}</ListItemIcon>
                                     <ListItemText primary={strings.HOME} />
@@ -530,10 +528,10 @@ const Header = (props) =>{
                         </Drawer>
                     </React.Fragment>
                     {(isSignedIn && !props.hideSearch) &&
-                        <div className={classes.search}>
-                            <div className={classes.searchIcon}>
+                        <Box sx={classes.search}>
+                            <Box sx={classes.searchIcon}>
                                 <SearchIcon />
-                            </div>
+                            </Box>
                             <InputBase
                                 placeholder={strings.SEARCH_PLACEHOLDER}
                                 classes={{
@@ -545,7 +543,7 @@ const Header = (props) =>{
                                 onChange={handleSearchChange}
                                 value={searchKeyword}
                             />
-                        </div>
+                        </Box>
                     }
                     {(isSignedIn && !isMobile() && !props.hideLiveButton && isLiveButtonVisible && props.user && props.user.verified && !isLoading) && <Button
                         variant="contained"
@@ -556,8 +554,8 @@ const Header = (props) =>{
                     >
                         {strings.LIVE_STREAM}
                     </Button>}
-                    <div className={classes.grow} />
-                    <div className={classes.sectionDesktop}>
+                    <Box sx={classes.grow} />
+                    <Box sx={classes.sectionDesktop}>
                         {isSignedIn && <IconButton aria-label="" color="inherit" onClick={handleMessagesClick}>
                             <Badge badgeContent={messageCount > 0 ? messageCount : null} color="secondary">
                                 <MailIcon />
@@ -571,7 +569,7 @@ const Header = (props) =>{
                         {((isLoaded || !init) && !isLoading) && <Button
                             variant="contained"
                             color="primary"
-                            className={classes.button}
+                            sx={classes.button}
                             startIcon={<LanguageIcon />}
                             onClick={handleLangMenuOpen}
                             disableElevation
@@ -589,12 +587,12 @@ const Header = (props) =>{
                         >
                             <Avatar loggedUser={props.user} user={props.user} size="small" readonly />
                         </IconButton>}
-                    </div>
-                    <div className={classes.sectionMobile}>
+                    </Box>
+                    <Box sx={classes.sectionMobile}>
                         {(!isSignedIn && !isLoading && !init) && <Button
                             variant="contained"
                             color="primary"
-                            className={classes.button}
+                            sx={classes.button}
                             startIcon={<LanguageIcon />}
                             onClick={handleLangMenuOpen}
                             disableElevation
@@ -627,7 +625,7 @@ const Header = (props) =>{
                         >
                             <Videocam style={{ fill: 'white' }} />
                         </IconButton>}
-                    </div>
+                    </Box>
                 </Toolbar>
             </AppBar>
             <Dialog
@@ -680,7 +678,7 @@ const Header = (props) =>{
             {renderMobileMenu}
             {renderMenu}
             {renderLanguageMenu}
-        </div >
+        </Box >
     )
 }
 

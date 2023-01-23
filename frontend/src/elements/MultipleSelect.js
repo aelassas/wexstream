@@ -1,6 +1,5 @@
 import React, { useState, useEffect, forwardRef, useRef, useImperativeHandle } from 'react'
-import { makeStyles } from "@mui/material/styles"
-import { Autocomplete, TextField } from "@mui/material"
+import { Autocomplete, TextField, Box } from "@mui/material"
 
 const ListBox = forwardRef(
     function ListBoxBase(props, ref) {
@@ -17,14 +16,14 @@ const ListBox = forwardRef(
     },
 )
 
-const useStyles = makeStyles((theme) => ({
-    root: {
+const classes = {
+    root: theme => ({
         width: 325,
         "& > * + *": {
             marginTop: theme.spacing(3)
         }
-    }
-}))
+    })
+}
 
 const MultipleSelect = ({
     label,
@@ -40,7 +39,6 @@ const MultipleSelect = ({
     onClear,
     loading
 }) => {
-    const classes = useStyles()
     const [values, setValues] = useState([])
 
     useEffect(() => {
@@ -48,7 +46,7 @@ const MultipleSelect = ({
     }, [selectedUsers])
 
     return (
-        <div className={classes.root}>
+        <Box sx={classes.root}>
             <Autocomplete
                 options={[...values, ...options]}
                 filterOptions={() => options}
@@ -79,7 +77,7 @@ const MultipleSelect = ({
                 onFocus={onFocus || null}
                 onInputChange={onInputChange || null}
             />
-        </div>
+        </Box>
     )
 }
 

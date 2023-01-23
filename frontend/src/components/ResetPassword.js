@@ -47,68 +47,65 @@ const ResetPassword = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
 
-        compare(currentPassword, password)
-            .then((passwordMatch) => {
-                setCurrentPasswordError(!passwordMatch)
+        const passwordMatch = compare(user._id, password)
+        setCurrentPasswordError(!passwordMatch)
 
-                if (passwordMatch) {
-                    if (newPassword.length === 0) {
-                        setNewPasswordRequiredError(true)
-                        setPasswordLengthError(false)
-                        setConfirmPasswordError(false)
-                        return
+        if (passwordMatch) {
+            if (newPassword.length === 0) {
+                setNewPasswordRequiredError(true)
+                setPasswordLengthError(false)
+                setConfirmPasswordError(false)
+                return
+            } else {
+                setNewPasswordRequiredError(false)
+            }
+
+            if (newPassword.length < 6) {
+                setPasswordLengthError(true)
+                setConfirmPasswordError(false)
+                return
+            } else {
+                setPasswordLengthError(false)
+            }
+
+            if (newPassword !== confirmPassword) {
+                setConfirmPasswordError(true)
+                return
+            } else {
+                setConfirmPasswordError(false)
+            }
+
+            const data = {
+                email: email,
+                password: password,
+                newPassword: newPassword
+            }
+
+            resetPassword(data)
+                .then(status => {
+                    if (status === 200) {
+                        getUser(user._id)
+                            .then(user => {
+                                setUser(user)
+                                setPassword(user.password)
+                                setCurrentPassword('')
+                                setNewPassword('')
+                                setConfirmPassword('')
+                                Helper.info(strings.PASSWORD_UPDATE)
+                            })
+                            .catch(err => {
+                                Helper.error(null, err)
+                            })
                     } else {
-                        setNewPasswordRequiredError(false)
+                        setError(true)
+                        Helper.error(strings.PASSWORD_UPDATE_ERROR)
                     }
-
-                    if (newPassword.length < 6) {
-                        setPasswordLengthError(true)
-                        setConfirmPasswordError(false)
-                        return
-                    } else {
-                        setPasswordLengthError(false)
-                    }
-
-                    if (newPassword !== confirmPassword) {
-                        setConfirmPasswordError(true)
-                        return
-                    } else {
-                        setConfirmPasswordError(false)
-                    }
-
-                    const data = {
-                        email: email,
-                        password: password,
-                        newPassword: newPassword
-                    }
-
-                    resetPassword(data)
-                        .then(status => {
-                            if (status === 200) {
-                                getUser(user._id)
-                                    .then(user => {
-                                        setUser(user)
-                                        setPassword(user.password)
-                                        setCurrentPassword('')
-                                        setNewPassword('')
-                                        setConfirmPassword('')
-                                        Helper.info(strings.PASSWORD_UPDATE)
-                                    })
-                                    .catch(err => {
-                                        Helper.error(null, err)
-                                    })
-                            } else {
-                                setError(true)
-                                Helper.error(strings.PASSWORD_UPDATE_ERROR)
-                            }
-                        })
-                        .catch(err => {
-                            setError(true)
-                            Helper.error(strings.PASSWORD_UPDATE_ERROR, err)
-                        })
-                }
-            })
-
+                })
+                .catch(err => {
+                    setError(true)
+                    Helper.error(strings.PASSWORD_UPDATE_ERROR, err)
+                })
+        }
     }
 
     const onLoad = (user) => {

@@ -575,7 +575,7 @@ const Search = () => {
                                     </Link>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    disableTypography
+                                    
                                     data-id={_user._id}
                                     primary={<Link href={`/profile?u=${_user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{_user.fullName}</Typography></Link>}
                                     secondary={_user.connection && !_user.connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(_user.connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (_user.connection && _user.connection.isPending ? strings.CONNECTION_PENDING : null)}

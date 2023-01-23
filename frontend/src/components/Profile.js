@@ -1038,7 +1038,7 @@ const Profile = () => {
                                             (
                                                 <ListItem key={conference._id} className="timeline-item">
                                                     <ListItemText
-                                                        disableTypography
+                                                        
                                                         primary={
                                                             <div style={{ marginBottom: 5 }}>
                                                                 <Videocam color={conference.isLive ? 'secondary' : 'disabled'} className={`timeline-avatar`} />

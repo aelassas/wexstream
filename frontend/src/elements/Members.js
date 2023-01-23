@@ -79,7 +79,7 @@ const Members = (props) => {
                                     </Link>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    disableTypography
+                                    
                                     data-id={_user._id}
                                     primary={<Link href={`/profile?u=${_user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{_user.fullName}</Typography></Link>}
                                 >

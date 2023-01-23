@@ -19,6 +19,7 @@ import fs from 'fs'
 import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
+import util from 'util'
 
 const DEFAULT_LANGUAGE = process.env.WS_DEFAULT_LANGUAGE
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true'
@@ -235,7 +236,13 @@ export const signup = (req, res) => {
     body.verified = false
     body.blacklisted = false
 
+    const salt = bcrypt.genSaltSync(10)
+    const password = body.password
+    const passwordHash = bcrypt.hashSync(password, salt)
+    body.password = passwordHash
+
     const user = new User(body)
+
     user.save()
         .then(user => {
             // generate token and save
@@ -509,19 +516,25 @@ export const resetPassword = (req, res) => {
                 console.error('[user.resetPassword] User not found:', req.body.email)
                 res.sendStatus(204)
             } else {
-                if (req.body.password === user.password) {
-                    user.password = req.body.newPassword
-                    user.save()
-                        .then(user => {
-                            res.sendStatus(200)
-                        })
-                        .catch(err => {
-                            console.error(strings.DB_ERROR, err)
-                            res.status(400).send(strings.DB_ERROR + err)
-                        })
-                } else {
-                    res.sendStatus(204)
-                }
+                bcrypt.compare(req.body.password, user.password).then(passwordMatch => {
+                    if (passwordMatch) {
+                        const salt = bcrypt.genSaltSync(10)
+                        const password = req.body.newPassword
+                        const passwordHash = bcrypt.hashSync(password, salt)
+                        user.password = passwordHash
+
+                        user.save()
+                            .then(() => {
+                                res.sendStatus(200)
+                            })
+                            .catch(err => {
+                                console.error(strings.DB_ERROR, err)
+                                res.status(400).send(strings.DB_ERROR + err)
+                            })
+                    } else {
+                        res.sendStatus(204)
+                    }
+                })
             }
         })
 }
@@ -976,4 +989,26 @@ export const report = (req, res) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
+}
+
+export const comparePassword = async (req, res) => {
+    try {
+        const { userId, password } = req.body
+        const user = await User.findOne({ email: userId })
+
+        if (user) {
+            const passwordMatch = await util.promisify(bcrypt.compare)(password, user.password)
+
+            if (passwordMatch) {
+                return res.sendStatus(200)
+            } else {
+                return res.sendStatus(204)
+            }
+        } else {
+            return res.sendStatus(204)
+        }
+    } catch (err) {
+        console.error(strings.ERROR, err)
+        res.status(400).send(strings.ERROR + err)
+    }
 }

@@ -35,7 +35,8 @@ export default new LocalizedStrings.default({
         REPORTED_BY: 'Reported by: ',
         REPORTED_USER: 'Reported user: ',
         CONFERENCE_NOTIFICATION: 'started the live conference',
-        CONFERENCE_NOTIFICATION_CLOSED: 'closed the live conference'
+        CONFERENCE_NOTIFICATION_CLOSED: 'closed the live conference',
+        ERROR: 'An error occured: '
     },
     fr: {
         ACCOUNT_VALIDATION_SUBJECT: 'Validation de votre compte',
@@ -71,6 +72,7 @@ export default new LocalizedStrings.default({
         REPORTED_BY: 'Siganlé par : ',
         REPORTED_USER: 'Utilisateur signalé : ',
         CONFERENCE_NOTIFICATION: 'a démarré la conférence',
-        CONFERENCE_NOTIFICATION_CLOSED: 'a terminé la conférence'
+        CONFERENCE_NOTIFICATION_CLOSED: 'a terminé la conférence',
+        ERROR: "Une errur s'est produite : "
     }
 })

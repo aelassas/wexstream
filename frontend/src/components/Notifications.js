@@ -403,7 +403,7 @@ const Notifications = () => {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            disableTypography
+                                            
                                             primary={<Typography style={{ fontWeight: !notification.isRead ? 'bold' : 'normal', color: '#373737' }}>{moment(notification.notifiedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography>}
                                             secondary={
                                                 <div>

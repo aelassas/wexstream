@@ -15,27 +15,27 @@ const Messages = lazy(() => import('./components/Messages'))
 const Settings = lazy(() => import('./components/Settings'))
 const ResetPassword = lazy(() => import('./components/ResetPassword'))
 const Contact = lazy(() => import('./components/Contact'))
-const NoMatch = lazy(() => import('./components/NoMatch'))
+// const NoMatch = lazy(() => import('./components/NoMatch'))
 
 const App = () => (
 	<Router>
 		<div className="App">
 			<Suspense fallback={<></>}>
 				<Routes>
-					<Route exact path="/sign-in" component={SignIn} />
-					<Route exact path="/sign-up" component={SignUp} />
-					<Route exact path="/home" component={Home} />
-					<Route exact path="/conference" component={Conference} />
-					<Route exact path="/profile" component={Profile} />
-					<Route exact path="/search" component={Search} />
-					<Route exact path="/notifications" component={Notifications} />
-					<Route exact path="/connections" component={Connections} />
-					<Route exact path="/messages" component={Messages} />
-					<Route exact path="/settings" component={Settings} />
-					<Route exact path="/reset-password" component={ResetPassword} />
-					<Route exact path="/tos" component={ToS} />
-					<Route exact path="/about" component={About} />
-					<Route exact path="/contact" component={Contact} />
+					<Route exact path="/sign-in" element={<SignIn />} />
+					<Route exact path="/sign-up" element={<SignUp />} />
+					<Route exact path="/home" element={<Home />} />
+					<Route exact path="/conference" element={<Conference />} />
+					<Route exact path="/profile" element={<Profile />} />
+					<Route exact path="/search" element={<Search />} />
+					<Route exact path="/notifications" element={<Notifications />} />
+					<Route exact path="/connections" element={<Connections />} />
+					<Route exact path="/messages" element={<Messages />} />
+					<Route exact path="/settings" element={<Settings />} />
+					<Route exact path="/reset-password" element={<ResetPassword />} />
+					<Route exact path="/tos" element={<ToS />} />
+					<Route exact path="/about" element={<About />} />
+					<Route exact path="/contact" element={<Contact />} />
 
 					<Route path="*" element={<SignIn />} />
 				</Routes>

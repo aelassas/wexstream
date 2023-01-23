@@ -159,7 +159,7 @@ const Home = () => {
                             (
                                 <ListItem key={timelineEntry._id} className="timeline-item">
                                     <ListItemText
-                                        disableTypography
+                                        
                                         primary={
                                             <div style={{ marginBottom: 5 }}>
                                                 <Link href={`/profile?u=${timelineEntry.speaker._id}`} className="timeline-link">
