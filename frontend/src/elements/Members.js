@@ -19,7 +19,7 @@ import Avatar from './Avatar'
 import { getMembers } from '../services/ConferenceService'
 import { strings } from '../config/app.config'
 
-export const Members = (props) => {
+const Members = (props) => {
     const [members, setMembers] = useState([])
     const [openDialog, setOpenDialog] = useState(false)
     const [rtl, setRtl] = useState(false)
@@ -96,3 +96,5 @@ export const Members = (props) => {
         </Dialog>
     )
 }
+
+export default Members
