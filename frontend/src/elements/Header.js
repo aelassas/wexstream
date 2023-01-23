@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter } from 'next/router'
 import { LANGUAGES, DEFAULT_LANGUAGE, isMobile } from '../config/env.config'
 import { strings } from '../config/app.config'
 import { getSearchKeyword, getLanguage, updateLanguage, setLanguage, getCurrentUser, signout, getQueryLanguage } from '../services/UserService'
@@ -55,8 +54,7 @@ const ListItemLink = (props) => (
     <ListItem button component="a" {...props} />
 )
 
-export default withRouter(function Header(props) {
-
+const Header = (props) =>{
     const [currentLanguage, setCurrentLanguage] = useState(null)
     const [lang, setLang] = useState(DEFAULT_LANGUAGE)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -684,4 +682,6 @@ export default withRouter(function Header(props) {
             {renderLanguageMenu}
         </div >
     )
-})
+}
+
+export default Header
