@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function MultipleSelect({
+const MultipleSelect = ({
     label,
     callbackFromMultipleSelect,
     reference,
@@ -25,7 +25,7 @@ export default function MultipleSelect({
     onInputChange,
     onClear,
     loading
-}) {
+}) => {
     const classes = useStyles()
     const [values, setValues] = useState([])
 
@@ -67,3 +67,5 @@ export default function MultipleSelect({
         </div>
     )
 }
+
+export default MultipleSelect
