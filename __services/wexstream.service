@@ -9,10 +9,8 @@ WorkingDirectory=/opt/wexstream/api
 Type=simple
 Restart=always
 StartLimitBurst=0
-StandardOutput=append:/var/log/wexstream-api.log
-StandardError=append:/var/log/wexstream-api.log
-User=wexstream
-Group=wexstream
+StandardOutput=append:/var/log/wexstream.log
+StandardError=append:/var/log/wexstream.log
 
 [Install]
 WantedBy=multi-user.target
