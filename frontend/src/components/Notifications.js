@@ -301,7 +301,7 @@ const Notifications = () => {
             if (status === 200) {
                 const _notifications = [...notifications]
 
-                for (let i = 0 i < _notifications.length i++) {
+                for (let i = 0; i < _notifications.length; i++) {
                     const notification = _notifications[i]
                     if (!notification.isRead) {
                         notification.isRead = true
@@ -373,7 +373,7 @@ const Notifications = () => {
                     </Card>
                     :
                     <div>
-                        <Card variant="outlined" className={`notifications-actions${rtl ? '-rtl' : ''}`} style={notifications.length === 0 ? { display: 'none' } : null}>
+                        <Card variant="outlined" className="notifications-actions" style={notifications.length === 0 ? { display: 'none' } : null}>
                             <CardContent>
                                 <Tooltip title={strings.DELETE_ALL}>
                                     <IconButton

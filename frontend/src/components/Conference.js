@@ -69,7 +69,7 @@ const Conference = () => {
             configOverwrite: {
                 prejoinPageEnabled: false,
                 useHostPageLocalStorage: true,
-                defaultLanguage: language,
+                defaultLanguage: user.language,
                 disableDeepLinking: true
             },
             interfaceConfigOverwrite: {
@@ -371,12 +371,12 @@ const Conference = () => {
                                                 updateConf({ isLive: true, broadcastedAt: Date.now() }, () => {
                                                     setUserName(getUsername())
                                                     setConferenceUrl(window.location.href)
-                                                    startConference(currentUser.accessToken)
+                                                    startConference(user.accessToken)
                                                 })
                                             } else {
                                                 setUserName(getUsername())
                                                 setConferenceUrl(window.location.href)
-                                                startConference(currentUser.accessToken)
+                                                startConference(user.accessToken)
                                             }
                                         } else {
                                             setLoading(false)

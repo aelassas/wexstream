@@ -231,7 +231,9 @@ export const strings = new LocalizedStrings({
 		RESET_PASSWORD: 'Reset Password',
 		PLEASE_WAIT: 'Please wait...',
 		SIGN_IN_WITH_FACEBOOK: 'Sign in with Facebook',
-		DELETE_ALL_NOTIFICATIONS: 'Are you sure you want to delete all notifications?'
+		DELETE_ALL_NOTIFICATIONS: 'Are you sure you want to delete all notifications?',
+		NO_MATCH: 'Nothing to see here!',
+		GO_TO_HOME: 'Go to the home page',
 	},
 	fr: {
 		APP_TITLE: 'Wexstream - Visioconférences sécurisées de haute qualité',
@@ -461,7 +463,9 @@ export const strings = new LocalizedStrings({
 		RESET_PASSWORD: 'Changer le Mot de Passe',
 		PLEASE_WAIT: 'Veuillez patienter...',
 		SIGN_IN_WITH_FACEBOOK: 'Se connecter avec Facebook',
-		DELETE_ALL_NOTIFICATIONS: 'Êtes vous sûr de vouloir supprimer toutes les notifications?'
+		DELETE_ALL_NOTIFICATIONS: 'Êtes vous sûr de vouloir supprimer toutes les notifications?',
+		NO_MATCH: 'Rien à voir ici !',
+		GO_TO_HOME: "Aller à la page d'accueil",
 	}
 })
 

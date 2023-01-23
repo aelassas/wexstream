@@ -53,7 +53,7 @@ const Connections = () => {
     const [page, setPage] = useState(1)
     const [fetch, setFetch] = useState(false)
 
-    findIndex = (userId) => (
+    const findIndex = (userId) => (
         connections.findIndex(c => c.user._id === userId)
     )
 
@@ -154,7 +154,7 @@ const Connections = () => {
         const isConnectionPending = disconnectTarget.getAttribute('data-is-connection-pending') === 'true'
         const connected = disconnectTarget.getAttribute('data-is-connected') === 'true'
         const connectionId = disconnectTarget.getAttribute('data-id')
-        const connections = [...connections] // Make a shallow copy of connections
+        const _connections = [...connections] // Make a shallow copy of connections
 
         if (isApprover && (isConnectionPending || connected)) {
             getConnectionIds(connectionId, user._id)
@@ -180,8 +180,8 @@ const Connections = () => {
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
                                                             const index = findIndex(connectionId)
-                                                            connections.splice(index, 1)
-                                                            setConnections(connections)
+                                                            _connections.splice(index, 1)
+                                                            setConnections(_connections)
                                                             setOpenDisconnectDialog(false)
 
                                                             getNotificationCounter(user._id)
@@ -220,8 +220,8 @@ const Connections = () => {
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
                                                             const index = findIndex(connectionId)
-                                                            connections.splice(index, 1)
-                                                            setConnections(connections)
+                                                            _connections.splice(index, 1)
+                                                            setConnections(_connections)
                                                             setOpenDisconnectDialog(false)
                                                             Helper.info(strings.CONNECTION_DELETED)
                                                         }
@@ -290,8 +290,8 @@ const Connections = () => {
                                                 .then(notificationStatus => {
                                                     if (notificationStatus === 200) {
                                                         const index = findIndex(connectionId)
-                                                        connections.splice(index, 1)
-                                                        setConnections(connections)
+                                                        _connections.splice(index, 1)
+                                                        setConnections(_connections)
                                                         setOpenDisconnectDialog(false)
                                                         Helper.info(strings.CONNECTION_DELETED)
                                                     }
@@ -315,8 +315,8 @@ const Connections = () => {
                                     .then(status => {
                                         if (status === 200) {
                                             const index = findIndex(connectionId)
-                                            connections.splice(index, 1)
-                                            setConnections(connections)
+                                            _connections.splice(index, 1)
+                                            setConnections(_connections)
                                             setOpenDisconnectDialog(false)
                                             Helper.info(strings.CONNECTION_CANCELED)
                                         } else {
@@ -352,7 +352,7 @@ const Connections = () => {
         const isConnectionPending = declineTarget.getAttribute('data-is-connection-pending') === 'true'
         const connected = declineTarget.getAttribute('data-is-connected') === 'true'
         const connectionId = declineTarget.getAttribute('data-id')
-        const connections = [...connections] // Make a shallow copy of users
+        const _connections = [...connections] // Make a shallow copy of users
 
         if (isApprover && isConnectionPending && !connected) {
             getConnectionIds(connectionId, user._id)
@@ -380,8 +380,8 @@ const Connections = () => {
                                                     .then(notificationStatus => {
                                                         if (notificationStatus === 200) {
                                                             const index = findIndex(connectionId)
-                                                            connections.splice(index, 1)
-                                                            setConnections(connections)
+                                                            _connections.splice(index, 1)
+                                                            setConnections(_connections)
                                                             setOpenDeclineDialog(false)
 
                                                             getNotificationCounter(user._id)

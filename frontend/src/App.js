@@ -15,7 +15,6 @@ const Messages = lazy(() => import('./components/Messages'))
 const Settings = lazy(() => import('./components/Settings'))
 const ResetPassword = lazy(() => import('./components/ResetPassword'))
 const Contact = lazy(() => import('./components/Contact'))
-const Donate = lazy(() => import('./components/Donate'))
 const NoMatch = lazy(() => import('./components/NoMatch'))
 
 const App = () => (
@@ -37,7 +36,6 @@ const App = () => (
 					<Route exact path="/tos" component={ToS} />
 					<Route exact path="/about" component={About} />
 					<Route exact path="/contact" component={Contact} />
-					<Route exact path="/donate" component={Donate} />
 
 					<Route path="*" element={<NoMatch />} />
 				</Routes>

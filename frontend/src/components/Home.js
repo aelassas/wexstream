@@ -66,9 +66,9 @@ const Home = () => {
             .then(status => {
                 if (status === 200) {
                     const index = findIndex(entryId)
-                    const entries = [...entries]
-                    entries.splice(index, 1)
-                    setEntries(entries)
+                    const _entries = [...entries]
+                    _entries.splice(index, 1)
+                    setEntries(_entries)
                     setOpenDeleteDialog(false)
                 } else {
                     Helper.error()
@@ -86,8 +86,8 @@ const Home = () => {
 
         TimelineService.getEntries(user._id, page)
             .then(data => {
-                const entries = [...entries, ...data]
-                setEntries(entries)
+                const _entries = [...entries, ...data]
+                setEntries(_entries)
                 setFetch(data.length > 0)
                 setLoading(false)
             })

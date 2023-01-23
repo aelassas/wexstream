@@ -53,7 +53,7 @@ const Messages = () => {
         }
 
         const messageId = msgId || event.currentTarget.getAttribute('data-id')
-        const message = _messages.find(msg => msg._id === messageId)
+        const message = messages.find(msg => msg._id === messageId)
         const _messages = [...messages] // Make a shallow copy of messages
         if (!message.isRead) {
             markMessageAsRead(message._id)

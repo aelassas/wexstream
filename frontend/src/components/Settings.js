@@ -84,7 +84,7 @@ const Settings = () => {
         _closeDialog()
         setDeleting(true)
 
-        deleteUser(state.user._id)
+        deleteUser(user._id)
             .then(status => {
                 if (status === 200) {
                     signout()

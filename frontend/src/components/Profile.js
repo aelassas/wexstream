@@ -105,14 +105,14 @@ const Profile = () => {
 
     const handleConfirmDisconnect = (e) => {
         const connectionId = user._id
-        const user = loggedUser
+        const _user = loggedUser
 
         if (isApprover && (isConnectionPending || isConnected)) {
-            getConnectionIds(connectionId, user._id)
+            getConnectionIds(connectionId, _user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
                         const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
-                        getNotification(user._id, _senderConnectionId, _approverConnectionId)
+                        getNotification(_user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Disconnect
                                     decline(notification._id)
@@ -121,10 +121,10 @@ const Profile = () => {
                                                 const notification = {
                                                     user: connectionId,
                                                     isRequest: false,
-                                                    message: user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
+                                                    message: _user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
                                                     isLink: true,
-                                                    senderUser: user._id,
-                                                    link: `${window.location.origin}/profile?u=${user._id}`
+                                                    senderUser: _user._id,
+                                                    link: `${window.location.origin}/profile?u=${_user._id}`
                                                 }
                                                 notify(notification)
                                                     .then(notificationStatus => {
@@ -134,7 +134,7 @@ const Profile = () => {
                                                             setIsApprover(false)
                                                             setOpenDisconnectDialog(false)
 
-                                                            getNotificationCounter(user._id)
+                                                            getNotificationCounter(_user._id)
                                                                 .then(notificationCounter => {
                                                                     setNotificationCount(notificationCounter.count)
                                                                     Helper.info(strings.CONNECTION_DELETED)
@@ -158,16 +158,16 @@ const Profile = () => {
                                             Helper.error(strings.CONNECTION_DELETE_ERROR, err)
                                         })
                                 } else {
-                                    deleteConnection(user._id, connectionId)
+                                    deleteConnection(_user._id, connectionId)
                                         .then(status => {
                                             if (status === 200) {
                                                 const notification = {
                                                     user: connectionId,
                                                     isRequest: false,
-                                                    message: user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
+                                                    message: _user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
                                                     isLink: true,
-                                                    senderUser: user._id,
-                                                    link: `${window.location.origin}/profile?u=${user._id}`
+                                                    senderUser: _user._id,
+                                                    link: `${window.location.origin}/profile?u=${_user._id}`
                                                 }
                                                 notify(notification)
                                                     .then(notificationStatus => {
@@ -206,7 +206,7 @@ const Profile = () => {
                     Helper.error(strings.CONNECTION_DELETE_ERROR, err)
                 })
         } else if (isConnectionPending || isConnected) {
-            getConnectionIds(user._id, connectionId)
+            getConnectionIds(_user._id, connectionId)
                 .then(connectionIds => {
                     if (connectionIds) {
                         const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
@@ -223,17 +223,17 @@ const Profile = () => {
                             })
 
                         if (isConnected) { // Disconnect
-                            deleteConnection(user._id, connectionId)
+                            deleteConnection(_user._id, connectionId)
                                 .then(status => {
 
                                     if (status === 200) {
                                         const notification = {
                                             user: connectionId,
                                             isRequest: false,
-                                            message: user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
+                                            message: _user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
                                             isLink: true,
-                                            senderUser: user._id,
-                                            link: `${window.location.origin}/profile?u=${user._id}`
+                                            senderUser: _user._id,
+                                            link: `${window.location.origin}/profile?u=${_user._id}`
                                         }
 
                                         notify(notification)
@@ -263,7 +263,7 @@ const Profile = () => {
                                 })
 
                         } else { // Cancel request
-                            deleteConnection(user._id, connectionId)
+                            deleteConnection(_user._id, connectionId)
                                 .then(status => {
                                     if (status === 200) {
                                         setIsConnected(false)
@@ -296,14 +296,14 @@ const Profile = () => {
 
     const handleConnect = (e) => {
         const connectionId = user._id
-        const user = loggedUser
+        const _user = loggedUser
 
         if (isApprover && isConnectionPending && !isConnected) {
-            getConnectionIds(connectionId, user._id)
+            getConnectionIds(connectionId, _user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
                         const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
-                        getNotification(user._id, _senderConnectionId, _approverConnectionId)
+                        getNotification(_user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) { // Connect
                                     approve(notification._id)
@@ -312,10 +312,10 @@ const Profile = () => {
                                                 const notification = {
                                                     user: connectionId,
                                                     isRequest: false,
-                                                    message: strings.CONNECTION_APPROVE_NOTIFICATION + ' ' + user.fullName + '.',
+                                                    message: strings.CONNECTION_APPROVE_NOTIFICATION + ' ' + _user.fullName + '.',
                                                     isLink: true,
-                                                    senderUser: user._id,
-                                                    link: `${window.location.origin}/profile?u=${user._id}`
+                                                    senderUser: _user._id,
+                                                    link: `${window.location.origin}/profile?u=${_user._id}`
                                                 }
                                                 notify(notification)
                                                     .then(notificationStatus => {
@@ -323,7 +323,7 @@ const Profile = () => {
 
                                                             setIsConnected(true)
                                                             setIsConnectionPending(false)
-                                                            getConnection(user._id, connectionId)
+                                                            getConnection(_user._id, connectionId)
                                                                 .then(
                                                                     conn => {
                                                                         if (conn) {
@@ -334,7 +334,7 @@ const Profile = () => {
                                                                     Helper.error(null, err)
                                                                 })
 
-                                                            getNotificationCounter(user._id)
+                                                            getNotificationCounter(_user._id)
                                                                 .then(notificationCounter => {
                                                                     setNotificationCount(notificationCounter.count)
                                                                     Helper.info(strings.CONNECTION_APPROVE)
@@ -377,19 +377,19 @@ const Profile = () => {
             if (isConnectionPending || isConnected) {
                 setOpenDisconnectDialog(true)
             } else { // Send connection request
-                const data = { _id: user._id, connectionId: connectionId }
+                const data = { _id: _user._id, connectionId: connectionId }
                 connect(data)
                     .then(connectionIds => {
                         if (connectionIds) {
                             const notification = {
                                 user: connectionId,
-                                message: user.fullName + ' ' + strings.CONNECTION_REQUEST_NOTIFICATION,
+                                message: _user.fullName + ' ' + strings.CONNECTION_REQUEST_NOTIFICATION,
                                 isRequest: true,
                                 senderConnection: connectionIds._senderConnectionId,
                                 approverConnection: connectionIds._approverConnectionId,
                                 isLink: true,
-                                senderUser: user._id,
-                                link: `${window.location.origin}/profile?u=${user._id}`
+                                senderUser: _user._id,
+                                link: `${window.location.origin}/profile?u=${_user._id}`
                             }
 
                             notify(notification)
@@ -427,14 +427,14 @@ const Profile = () => {
 
     const handleConfirmDecline = (e) => {
         const connectionId = user._id
-        const user = loggedUser
+        const _user = loggedUser
 
         if (isApprover && isConnectionPending && !isConnected) {
-            getConnectionIds(connectionId, user._id)
+            getConnectionIds(connectionId, _user._id)
                 .then(connectionIds => {
                     if (connectionIds) {
                         const _senderConnectionId = connectionIds._senderConnectionId, _approverConnectionId = connectionIds._approverConnectionId
-                        getNotification(user._id, _senderConnectionId, _approverConnectionId)
+                        getNotification(_user._id, _senderConnectionId, _approverConnectionId)
                             .then(notification => {
                                 if (notification) {
                                     decline(notification._id)
@@ -442,13 +442,13 @@ const Profile = () => {
                                             if (status === 200) {
                                                 const notification = {
                                                     user: connectionId,
-                                                    message: user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
+                                                    message: _user.fullName + ' ' + strings.CONNECTION_REJECT_NOTIFICATION,
                                                     isRequest: false,
                                                     senderConnection: connectionIds._senderConnectionId,
                                                     approverConnection: connectionIds._approverConnectionId,
                                                     isLink: true,
-                                                    senderUser: user._id,
-                                                    link: `${window.location.origin}/profile?u=${user._id}`
+                                                    senderUser: _user._id,
+                                                    link: `${window.location.origin}/profile?u=${_user._id}`
                                                 }
 
                                                 notify(notification)
@@ -459,7 +459,7 @@ const Profile = () => {
                                                             setIsApprover(false)
                                                             setOpenDeclineDialog(false)
 
-                                                            getNotificationCounter(user._id)
+                                                            getNotificationCounter(_user._id)
                                                                 .then(notificationCounter => {
                                                                     setNotificationCount(notificationCounter.count)
                                                                     Helper.info(strings.CONNECTION_DECLINE)

@@ -31,7 +31,7 @@ import {
     ThumbUp,
     ThumbDown,
     Cancel,
-    LinkIcon
+    Link as LinkIcon
 } from '@mui/icons-material'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env.config'
 import Master from '../elements/Master'

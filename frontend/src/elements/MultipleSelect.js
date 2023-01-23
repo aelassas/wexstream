@@ -1,7 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import Autocomplete from "@material-ui/lab/Autocomplete"
+import React, { useState, useEffect, forwardRef, useRef, useImperativeHandle } from 'react'
 import { makeStyles } from "@mui/material/styles"
-import TextField from "@mui/material/TextField"
+import { Autocomplete, TextField } from "@mui/material"
+
+const ListBox = forwardRef(
+    function ListBoxBase(props, ref) {
+        const { children, ...rest } = props;
+
+        const innerRef = useRef(null);
+
+        useImperativeHandle(ref, () => innerRef.current);
+
+        return (
+            // eslint-disable-next-line
+            <ul {...rest} ref={innerRef} role='list-box'>{children}</ul>
+        );
+    },
+)
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -61,6 +75,7 @@ const MultipleSelect = ({
                     />
                 )}
                 ListboxProps={ListboxProps || null}
+                ListboxComponent={ListBox}
                 onFocus={onFocus || null}
                 onInputChange={onInputChange || null}
             />

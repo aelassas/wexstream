@@ -14,6 +14,7 @@ import {
     Checkbox,
     Link
 } from '@mui/material'
+import Header from '../elements/Header'
 
 const SignUp = () => {
     const [fullName, setFullName] = useState('')
@@ -150,14 +151,6 @@ const SignUp = () => {
             }).catch((err) => {
                 setEmailError(true)
             })
-    }
-
-    const onLoad = (user) => {
-        if (user) {
-            window.location.href = '/home'
-        } else {
-            setVisible(true)
-        }
     }
 
     useEffect(() => {
