@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as ConnectionService from '../services/ConnectionService'
@@ -59,9 +59,8 @@ const Search = () => {
 
     const handleCancelDisconnect = (e) => {
         setOpenDisconnectDialog(false)
-
     }
-    
+
     const handleConnect = (e) => {
         setDisconnectTarget(e.currentTarget)
 
@@ -520,7 +519,7 @@ const Search = () => {
         setOpenMessageForm(false)
     }
 
-    const fetchUsers = (page) => {
+    const fetchUsers = (user, page, searchKeyword) => {
         setLoading(true)
 
         UserService.searchUsers(user._id, searchKeyword, false, page)
@@ -535,23 +534,27 @@ const Search = () => {
             })
     }
 
-    const onLoad = (user) => {
+    const onLoad = (_user) => {
         const language = UserService.getLanguage()
+        const _searchKeyword = UserService.getSearchKeyword()
         moment.locale(language)
-        setUser(user)
-        setSearchKeyword(UserService.getSearchKeyword())
+        setUser(_user)
+        setSearchKeyword(_searchKeyword)
+        fetchUsers(_user, page, _searchKeyword)
+    }
 
+    useEffect(() => {
         const div = document.querySelector('.content')
         if (div) {
             div.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                     const _page = page + 1
                     setPage(_page)
-                    fetchUsers(_page)
+                    fetchUsers(user, _page, searchKeyword)
                 }
             }
         }
-    }
+    }, [fetch, loading, page, user, searchKeyword]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Master onLoad={onLoad} notificationCount={notificationCount} strict>
@@ -575,7 +578,7 @@ const Search = () => {
                                     </Link>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    
+
                                     data-id={_user._id}
                                     primary={<Link href={`/profile?u=${_user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{_user.fullName}</Typography></Link>}
                                     secondary={_user.connection && !_user.connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(_user.connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (_user.connection && _user.connection.isPending ? strings.CONNECTION_PENDING : null)}
