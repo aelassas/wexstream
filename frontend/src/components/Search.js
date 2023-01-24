@@ -520,18 +520,20 @@ const Search = () => {
     }
 
     const fetchUsers = (user, page, searchKeyword) => {
-        setLoading(true)
+        if (user) {
+            setLoading(true)
 
-        UserService.searchUsers(user._id, searchKeyword, false, page)
-            .then(data => {
-                const _users = [...users, ...data]
-                setUsers(_users)
-                setFetch(data.length > 0)
-                setLoading(false)
-            })
-            .catch(err => {
-                Helper.error(null, err)
-            })
+            UserService.searchUsers(user._id, searchKeyword, false, page)
+                .then(data => {
+                    const _users = [...users, ...data]
+                    setUsers(_users)
+                    setFetch(data.length > 0)
+                    setLoading(false)
+                })
+                .catch(err => {
+                    Helper.error(null, err)
+                })
+        }
     }
 
     const onLoad = (_user) => {
