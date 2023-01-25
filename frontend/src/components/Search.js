@@ -590,7 +590,7 @@ const Search = () => {
                                     (
                                         <Button
                                             variant="contained"
-                                            color={_user.connection && !_user.connection.isPending ? "secondary" : (_user.connection && _user.connection.isPending && !_user.connection.isApprover ? "default" : "primary")}
+                                            color={_user.connection && !_user.connection.isPending ? "secondary" : (_user.connection && _user.connection.isPending && !_user.connection.isApprover ? "inherit" : "primary")}
                                             size="small"
                                             data-id={_user._id}
                                             data-is-approver={_user.connection && _user.connection.isApprover}
@@ -615,7 +615,7 @@ const Search = () => {
                                             (
                                                 <Tooltip title={strings.DISCONNECT}>
                                                     <IconButton
-                                                        color="secondary"
+                                                        color="error"
                                                         size="small"
                                                         data-id={_user._id}
                                                         data-is-approver={_user.connection && _user.connection.isApprover}
@@ -632,7 +632,7 @@ const Search = () => {
                                                     (
                                                         <Tooltip title={strings.APPROVE}>
                                                             <IconButton
-                                                                color="primary"
+                                                                color="info"
                                                                 size="small"
                                                                 data-id={_user._id}
                                                                 data-is-approver={_user.connection && _user.connection.isApprover}
@@ -648,7 +648,7 @@ const Search = () => {
                                                     (
                                                         <Tooltip title={strings.CANCEL}>
                                                             <IconButton
-                                                                color="default"
+                                                                color="inherit"
                                                                 size="small"
                                                                 data-id={_user._id}
                                                                 data-is-approver={_user.connection && _user.connection.isApprover}
@@ -758,8 +758,8 @@ const Search = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{connected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
+                        <Button onClick={handleCancelDisconnect} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDisconnect} color="info">{strings.YES}</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog
@@ -770,8 +770,8 @@ const Search = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                        <Button onClick={handleCancelDecline} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDecline} color="error">{strings.DECLINE}</Button>
                     </DialogActions>
                 </Dialog>
                 <MessageForm user={user} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={to} />

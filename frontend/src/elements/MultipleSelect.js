@@ -52,7 +52,7 @@ const MultipleSelect = ({
                 filterOptions={() => options}
                 value={values}
                 getOptionLabel={(option) => option.fullName}
-                getOptionSelected={(option, value) => option._id === value._id}
+                isOptionEqualToValue={(option, value) => option._id === value._id}
                 onChange={(event, values) => {
                     setValues(values)
                     callbackFromMultipleSelect(values, userKey, reference)
@@ -71,6 +71,9 @@ const MultipleSelect = ({
                         variant="outlined"
                         required={required && values.length === 0}
                     />
+                )}
+                renderOption={(props, option) => (
+                    <li {...props} key={option._id}>{option.fullName}</li>
                 )}
                 ListboxProps={ListboxProps || null}
                 ListboxComponent={ListBox}

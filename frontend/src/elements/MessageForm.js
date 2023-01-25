@@ -3,7 +3,6 @@ import { strings } from '../config/lang'
 import { getLanguage, searchUsers, getUserById } from '../services/UserService'
 import { TextField, Button } from "@mui/material"
 import MultipleSelect from "./MultipleSelect"
-import { toast } from 'react-toastify'
 import { sendMessage } from '../services/MessageService'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
@@ -14,6 +13,7 @@ import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { PAGE_FETCH_OFFSET } from '../config/env'
+import * as Helper from '../common/Helper'
 
 const classes = {
     appBar: {
@@ -81,17 +81,17 @@ const MessageForm = (props) => {
             sendMessage(data)
                 .then(status => {
                     if (status === 200) {
-                        toast(strings.MESSAGE_SENT, { type: 'info' })
+                        Helper.info(strings.MESSAGE_SENT)
                         handleClose(event)
                     } else {
-                        toast(strings.GENERIC_ERROR, { type: 'error' })
+                        Helper.error()
                     }
                 })
                 .catch(err => {
-                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                    Helper.error(null, err)
                 })
         } else {
-            toast(strings.GENERIC_ERROR, { type: 'error' })
+            Helper.error()
         }
     }
 
@@ -111,7 +111,7 @@ const MessageForm = (props) => {
                             }
                         })
                         .catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' })
+                            Helper.error(null, err)
                         })
                 }
             }
@@ -163,7 +163,7 @@ const MessageForm = (props) => {
                                                     setPage(p)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                    Helper.error(null, err)
                                                 })
                                         }
                                     }
@@ -183,7 +183,7 @@ const MessageForm = (props) => {
                                                     setInit(true)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                    Helper.error(null, err)
                                                 })
                                         }
                                     }
@@ -206,7 +206,7 @@ const MessageForm = (props) => {
                                                     setPage(p)
                                                 })
                                                 .catch(err => {
-                                                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                    Helper.error(null, err)
                                                 })
                                         }
                                     }
@@ -226,7 +226,7 @@ const MessageForm = (props) => {
                                                 setPage(p)
                                             })
                                             .catch(err => {
-                                                toast(strings.GENERIC_ERROR, { type: 'error' })
+                                                Helper.error(null, err)
                                             })
                                     }
                                 }
@@ -253,14 +253,14 @@ const MessageForm = (props) => {
                             <div className="message-form-actions">
                                 <Button
                                     variant="contained"
-                                    color="primary"
+                                    color="info"
                                     type="submit"
                                 >
                                     {strings.SEND}
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    color="default"
+                                    color="inherit"
                                     onClick={handleClose}
                                     className="message-form-cancel"
                                 >
