@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import { getMessages, markMessageAsRead, markMessageAsUnread, deleteMessage, getMessageCounter, getMessageId } from '../services/MessageService'
@@ -110,7 +110,6 @@ const Messages = () => {
 
     const handleDelete = (e) => {
         e.preventDefault()
-
         const _messages = [...messages] // Make a shallow copy of messages
         deleteMessage(messageId)
             .then(status => {
@@ -220,22 +219,24 @@ const Messages = () => {
         closeDialog()
     }
 
-    const fetchMessages = (page, onFetch) => {
-        setLoading(true)
+    const fetchMessages = (user, page, onFetch) => {
+        if (user) {
+            setLoading(true)
 
-        getMessages(user._id, page)
-            .then(data => {
-                const _messages = [...messages, ...data]
-                setMessages(_messages)
-                setFetch(data.length > 0)
-                if (onFetch) {
-                    onFetch()
-                }
-                setLoading(false)
-            })
-            .catch(err => {
-                Helper.error(null, err)
-            })
+            getMessages(user._id, page)
+                .then(data => {
+                    const _messages = [...messages, ...data]
+                    setMessages(_messages)
+                    setFetch(data.length > 0)
+                    if (onFetch) {
+                        onFetch()
+                    }
+                    setLoading(false)
+                })
+                .catch(err => {
+                    Helper.error(null, err)
+                })
+        }
     }
 
     const onLoad = (user) => {
@@ -243,25 +244,27 @@ const Messages = () => {
         moment.locale(language)
         setUser(user)
 
-        fetchMessages(page, () => {
+        fetchMessages(user, page, () => {
             const messageId = getMessageId()
             if (messageId !== '') {
                 handleMessageClick(null, messageId)
             }
             setFirstLoad(false)
         })
+    }
 
+    useEffect(() => {
         const ul = document.querySelector('.message-items')
         if (ul) {
             ul.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - MESSAGES_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                     const _page = page + 1
                     setPage(_page)
-                    fetchMessages(_page)
+                    fetchMessages(user, _page)
                 }
             }
         }
-    }
+    }, [user, fetch, loading, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Master onLoad={onLoad} messageCount={messageCount} strict>
@@ -345,8 +348,8 @@ const Messages = () => {
                 <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                 <DialogContent>{strings.DELETE_MESSAGE_CONFIRM}</DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                    <Button onClick={handleDelete} color="secondary">{strings.DELETE}</Button>
+                    <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                    <Button onClick={handleDelete} color="error">{strings.DELETE}</Button>
                 </DialogActions>
             </Dialog>
             {loading && <Backdrop text={strings.LOADING} />}

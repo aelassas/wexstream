@@ -233,7 +233,7 @@ const Avatar = (props) => {
                 </Dialog>
             </div>
             :
-            null
+            <></>
     )
 }
 

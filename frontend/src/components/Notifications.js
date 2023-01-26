@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import {
@@ -46,10 +46,10 @@ const Notifications = () => {
     const [notificationCount, setNotificationCount] = useState()
     const [loading, setLoading] = useState(false)
     const [openDeclineDialog, setOpenDeclineDialog] = useState(false)
-    const [declineTarget, setDeclineTarget] = useState(null)
+    const [declineTarget, setDeclineTarget] = useState()
     const [page, setPage] = useState(1)
     const [fetch, setFetch] = useState(false)
-    const [openDeleteDialog, setOpenDeleteDialog] = useState(null)
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
 
     const findIndex = (notificationId) => (
         notifications.findIndex(n => n._id === notificationId)
@@ -284,39 +284,47 @@ const Notifications = () => {
     }
 
     const handleConfirmDelete = () => {
-        deleteNotifications(user._id).then(status => {
-            if (status === 200) {
-                setNotifications([])
-                setNotificationCount(0)
-                setOpenDeleteDialog(false)
-            } else {
-                setOpenDeleteDialog(false)
-                Helper.error()
-            }
-        })
+        deleteNotifications(user._id)
+            .then(status => {
+                if (status === 200) {
+                    setNotifications([])
+                    setNotificationCount(0)
+                    setOpenDeleteDialog(false)
+                } else {
+                    setOpenDeleteDialog(false)
+                    Helper.error()
+                }
+            })
+            .catch(err => {
+                Helper.error(null, err)
+            })
     }
 
     const handleMarkAllAsRead = () => {
-        markAllAsRead(user._id).then(status => {
-            if (status === 200) {
-                const _notifications = [...notifications]
+        markAllAsRead(user._id)
+            .then(status => {
+                if (status === 200) {
+                    const _notifications = [...notifications]
 
-                for (let i = 0; i < _notifications.length; i++) {
-                    const notification = _notifications[i]
-                    if (!notification.isRead) {
-                        notification.isRead = true
+                    for (let i = 0; i < _notifications.length; i++) {
+                        const notification = _notifications[i]
+                        if (!notification.isRead) {
+                            notification.isRead = true
+                        }
                     }
-                }
 
-                setNotifications(_notifications)
-                setNotificationCount(0)
-            } else {
-                Helper.error()
-            }
-        })
+                    setNotifications(_notifications)
+                    setNotificationCount(0)
+                } else {
+                    Helper.error()
+                }
+            })
+            .catch(err => {
+                Helper.error(null, err)
+            })
     }
 
-    const fetchNotifications = (page) => {
+    const fetchNotifications = (user, page) => {
         setLoading(true)
 
         getNotifications(user._id, page)
@@ -337,8 +345,6 @@ const Notifications = () => {
         moment.locale(language)
         setUser(user)
 
-        fetchNotifications(page)
-
         getNotificationCounter(user._id)
             .then(notificationCounter => {
                 setNotificationCount(notificationCounter.count)
@@ -347,17 +353,21 @@ const Notifications = () => {
                 Helper.error(null, err)
             })
 
+        fetchNotifications(user, page)
+    }
+
+    useEffect(() => {
         const ul = document.querySelector('.notifications-list')
         if (ul) {
             ul.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                     const _page = page + 1
                     setPage(_page)
-                    fetchNotifications(_page)
+                    fetchNotifications(user, _page)
                 }
             }
         }
-    }
+    }, [fetch, loading, page, user]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Master onLoad={onLoad} notificationCount={notificationCount} strict>
@@ -403,20 +413,19 @@ const Notifications = () => {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
-                                            
                                             primary={<Typography style={{ fontWeight: !notification.isRead ? 'bold' : 'normal', color: '#373737' }}>{moment(notification.notifiedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography>}
                                             secondary={
-                                                <div>
+                                                <span>
                                                     {
                                                         notification.isLink ?
                                                             <Link href={notification.link} style={{ wordBreak: 'break-all' }}>{notification.message}</Link>
-                                                            : <div style={{ wordBreak: 'break-all' }}>{notification.message}</div>
+                                                            : <span style={{ wordBreak: 'break-all' }}>{notification.message}</span>
                                                     }
                                                     {isMobile() ?
-                                                        <div>
+                                                        <span>
                                                             {
                                                                 notification.isRequest && !notification.isConnected && !notification.isDeclined ?
-                                                                    <div style={{ display: 'inline-block' }}>
+                                                                    <span style={{ display: 'inline-block' }}>
                                                                         <Tooltip title={strings.APPROVE}>
                                                                             <IconButton
                                                                                 color="primary"
@@ -437,8 +446,8 @@ const Notifications = () => {
                                                                                 <ThumbDown />
                                                                             </IconButton>
                                                                         </Tooltip>
-                                                                    </div>
-                                                                    : null
+                                                                    </span>
+                                                                    : <></>
                                                             }
                                                             {!notification.isRead
                                                                 ?
@@ -471,10 +480,10 @@ const Notifications = () => {
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                             </Tooltip>
-                                                        </div>
-                                                        : null
+                                                        </span>
+                                                        : <></>
                                                     }
-                                                </div>
+                                                </span>
                                             } />
                                         {!isMobile() ?
                                             <div>
@@ -536,7 +545,7 @@ const Notifications = () => {
                                                     </IconButton>
                                                 </Tooltip>
                                             </div>
-                                            : null
+                                            : <></>
                                         }
                                     </ListItem>
                                 )
@@ -552,8 +561,8 @@ const Notifications = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                        <Button onClick={handleCancelDecline} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDecline} color="error">{strings.DECLINE}</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog
@@ -564,8 +573,8 @@ const Notifications = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DELETE_ALL_NOTIFICATIONS}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
+                        <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDelete} color="error">{strings.DELETE}</Button>
                     </DialogActions>
                 </Dialog>
             </div>
