@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import {
-    getUserId, getUserById, checkBlockedUser, reportUser, blockUser, unblockUser
+    getUserId, getUserById, checkBlockedUser, reportUser, blockUser, unblockUser, getLanguage
 } from '../services/UserService'
 import { getConnection, getConnectionIds, deleteConnection, connect } from '../services/ConnectionService'
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
@@ -67,8 +67,8 @@ const Profile = () => {
     const [userNotFound, setUserNotFound] = useState(false)
     const [conferences, setConferences] = useState([])
     const [currentTarget, setCurrentTarget] = useState()
-    const [isLoading, setIsLoading] = useState(false)
-    const [isLoadingAvatar, setIsLoadingAvatar] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [loadingAvatar, setIsLoadingAvatar] = useState(false)
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false)
     const [page, setPage] = useState(1)
     const [fetch, setFetch] = useState(false)
@@ -546,23 +546,6 @@ const Profile = () => {
             })
     }
 
-    const fetchConferences = (page) => {
-        setIsLoading(true)
-
-        getConferences(user._id, isPrivate, page)
-            .then(data => {
-                const _conferences = [...conferences, ...data]
-
-                setConferences(_conferences)
-                setFetch(data.length > 0)
-                setIsLoading(false)
-            })
-            .catch(err => {
-                setIsLoading(false)
-                Helper.error(null, err)
-            })
-    }
-
     const handleActionsClick = (event) => {
         setAnchorEl(event.currentTarget)
         setOpenActions(true)
@@ -655,7 +638,7 @@ const Profile = () => {
     }
 
     const handleMembers = event => {
-        setIsLoading(true)
+        setLoading(true)
         const conferenceId = event.currentTarget.getAttribute('data-id')
         setConferenceId(conferenceId)
         setOpenMembersDialog(true)
@@ -666,16 +649,15 @@ const Profile = () => {
     }
 
     const handleMembersFetched = event => {
-        setIsLoading(false)
+        setLoading(false)
     }
 
     const handleMembersError = () => {
-        setIsLoading(false)
+        setLoading(false)
         Helper.error()
     }
 
-    const infiniteScroll = () => {
-
+    useEffect(() => {
         if (!userNotFound && !error) {
             if (isMobile()) {
                 const div = document.querySelector('.profile-container')
@@ -685,10 +667,10 @@ const Profile = () => {
                     const profileHeaderHeight = profileHeader.clientHeight
                     const profileHeaderOffset = 100
                     div.onscroll = (event) => {
-                        if (fetch && !isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop + (profileHeaderHeight + profileHeaderOffset))) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
+                        if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop + (profileHeaderHeight + profileHeaderOffset))) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                             const _page = page + 1
-                            fetchConferences(_page)
                             setPage(_page)
+                            fetchConferences(user, _page, isPrivate)
                         }
                     }
                 }
@@ -696,20 +678,42 @@ const Profile = () => {
                 const div = document.querySelector('.profile-timeline')
                 if (div) {
                     div.onscroll = (event) => {
-                        if (fetch && !isLoading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
+                        if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                             const _page = page + 1
-                            fetchConferences(_page)
                             setPage(_page)
+                            fetchConferences(user, _page, isPrivate)
                         }
                     }
                 }
             }
 
         }
+    }, [userNotFound, error, fetch, loading, user, page, isPrivate])
+
+    const fetchConferences = (user, page, isPrivate) => {
+        if (user) {
+            setLoading(true)
+
+            getConferences(user._id, isPrivate, page)
+                .then(data => {
+                    const _conferences = [...conferences, ...data]
+
+                    setConferences(_conferences)
+                    setFetch(data.length > 0)
+                    setLoading(false)
+                })
+                .catch(err => {
+                    setLoading(false)
+                    Helper.error(null, err)
+                })
+        }
     }
 
     const onLoad = (user) => {
-        setIsLoading(true)
+        setLoading(true)
+
+        const language = getLanguage()
+        moment.locale(language)
 
         let userId = getUserId()
         if (userId === '') {
@@ -723,7 +727,7 @@ const Profile = () => {
                         if (userStatus === 200) {
                             setLoggedUser(user)
                             setUnauthorized(true)
-                            setIsLoading(false)
+                            setLoading(false)
                         } else if (userStatus === 204) {
                             getUserById(userId)
                                 .then(_user => {
@@ -749,8 +753,8 @@ const Profile = () => {
                                                     setUser(_user)
                                                     setIsPrivate(isPrivate)
 
-                                                    fetchConferences()
-                                                    infiniteScroll()
+                                                    fetchConferences(user, page, isPrivate)
+                                                    // infiniteScroll()
                                                 }
 
                                                 if (conn) {
@@ -782,28 +786,28 @@ const Profile = () => {
                                     setLoggedUser(user)
                                     setUser(null)
                                     setError(true)
-                                    setIsLoading(false)
+                                    setLoading(false)
                                 })
                         } else {
                             setLoggedUser(user)
                             setUser(null)
                             setError(true)
-                            setIsLoading(false)
+                            setLoading(false)
                         }
                     })
                     .catch(err => {
                         setLoggedUser(user)
                         setUser(null)
                         setError(true)
-                        setIsLoading(false)
+                        setLoading(false)
                     })
 
             } else {
                 setLoggedUser(user)
                 setUser(user)
                 setIsPrivate(true)
-                fetchConferences()
-                infiniteScroll()
+                fetchConferences(user, page, true)
+                // infiniteScroll()
             }
         } else {
             setLoggedUser(user)
@@ -1025,7 +1029,7 @@ const Profile = () => {
                                         </div>
                                     </div>
                                     <div className={rtl ? 'profile-timeline-rtl' : 'profile-timeline'}>
-                                        {conferences.length === 0 && !isLoading ?
+                                        {conferences.length === 0 && !loading ?
                                             <Card variant="outlined" className={rtl ? 'profile-card-rtl' : 'profile-card'}>
                                                 <CardContent>
                                                     <Typography color="textSecondary">
@@ -1039,7 +1043,7 @@ const Profile = () => {
                                                 (
                                                     <ListItem key={conference._id} className="timeline-item">
                                                         <ListItemText
-
+                                                            disableTypography
                                                             primary={
                                                                 <div style={{ marginBottom: 5 }}>
                                                                     <Videocam color={conference.isLive ? 'secondary' : 'disabled'} className={`timeline-avatar`} />
@@ -1135,8 +1139,8 @@ const Profile = () => {
                                         onClose={handleCloseMembers}
                                         onFetch={handleMembersFetched}
                                         onError={handleMembersError} />
-                                    {isLoading && <Backdrop text={strings.LOADING} />}
-                                    {isLoadingAvatar && <Backdrop text={strings.PLEASE_WAIT} />}
+                                    {loading && <Backdrop text={strings.LOADING} />}
+                                    {loadingAvatar && <Backdrop text={strings.PLEASE_WAIT} />}
                                 </div>
                             )
                         )}

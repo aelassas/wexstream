@@ -497,7 +497,7 @@ const Connections = () => {
                                     </Link>
                                 </ListItemAvatar>
                                 <ListItemText
-
+                                    disableTypography
                                     data-id={connection.user._id}
                                     primary={<Link href={`/profile?u=${connection.user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{connection.user.fullName}</Typography></Link>}
                                     secondary={!connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (connection.isPending ? strings.CONNECTION_PENDING : null)}

@@ -1,11 +1,8 @@
-import express from 'express'
 import Conference from '../models/Conference.js'
 import User from '../models/User.js'
 import Connection from '../models/Connection.js'
 import Notification from '../models/Notification.js'
 import NotificationCounter from '../models/NotificationCounter.js'
-import routeNames from '../config/conferenceRoutes.config.js'
-import authJwt from '../middlewares/authJwt.js'
 import strings from '../config/app.config.js'
 import { escapeRegex } from '../common/helper.js'
 
@@ -54,7 +51,7 @@ export const update = (req, res) => {
         })
 }
 
-export const addMember =  (req, res) => {
+export const addMember = (req, res) => {
     Conference.findById(req.params.conferenceId)
         .then(conf => {
             if (conf) {
@@ -114,7 +111,7 @@ export const deleteConference = (req, res) => {
         })
 }
 
-export const getConference =  (req, res) => {
+export const getConference = (req, res) => {
     Conference.findById(req.params.conferenceId)
         .populate('speaker')
         .then(conf => {
@@ -131,7 +128,7 @@ export const getConference =  (req, res) => {
         })
 }
 
-export const getConferences =  (req, res) => {
+export const getConferences = (req, res) => {
     const page = parseInt(req.params.page)
     const pageSize = parseInt(req.params.pageSize)
     let query = { speaker: req.params.userId }
@@ -139,7 +136,7 @@ export const getConferences =  (req, res) => {
     if (req.params.isPrivate === 'false') {
         query.isPrivate = false
     }
-
+    
     Conference.find(query, null, { skip: ((page - 1) * pageSize), limit: pageSize })
         .sort({ createdAt: -1 })
         .then(confs => {
@@ -151,7 +148,7 @@ export const getConferences =  (req, res) => {
         })
 }
 
-export const getMembers =  async (req, res) => {
+export const getMembers = async (req, res) => {
     Conference.findById(req.params.conferenceId)
         .populate({
             path: 'members',
