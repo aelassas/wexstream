@@ -413,19 +413,20 @@ const Notifications = () => {
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText
+                                            disableTypography
                                             primary={<Typography style={{ fontWeight: !notification.isRead ? 'bold' : 'normal', color: '#373737' }}>{moment(notification.notifiedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)}</Typography>}
                                             secondary={
-                                                <span>
+                                                <div>
                                                     {
                                                         notification.isLink ?
                                                             <Link href={notification.link} style={{ wordBreak: 'break-all' }}>{notification.message}</Link>
-                                                            : <span style={{ wordBreak: 'break-all' }}>{notification.message}</span>
+                                                            : <div style={{ wordBreak: 'break-all' }}>{notification.message}</div>
                                                     }
                                                     {isMobile() ?
-                                                        <span>
+                                                        <div>
                                                             {
                                                                 notification.isRequest && !notification.isConnected && !notification.isDeclined ?
-                                                                    <span style={{ display: 'inline-block' }}>
+                                                                    <div style={{ display: 'inline-block' }}>
                                                                         <Tooltip title={strings.APPROVE}>
                                                                             <IconButton
                                                                                 color="primary"
@@ -446,7 +447,7 @@ const Notifications = () => {
                                                                                 <ThumbDown />
                                                                             </IconButton>
                                                                         </Tooltip>
-                                                                    </span>
+                                                                    </div>
                                                                     : <></>
                                                             }
                                                             {!notification.isRead
@@ -480,10 +481,10 @@ const Notifications = () => {
                                                                     <DeleteIcon />
                                                                 </IconButton>
                                                             </Tooltip>
-                                                        </span>
+                                                        </div>
                                                         : <></>
                                                     }
-                                                </span>
+                                                </div>
                                             } />
                                         {!isMobile() ?
                                             <div>

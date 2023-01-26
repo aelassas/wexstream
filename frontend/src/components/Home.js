@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as TimelineService from '../services/TimelineService'
@@ -81,19 +81,21 @@ const Home = () => {
             })
     }
 
-    const fetchEntries = (page) => {
-        setLoading(true)
+    const fetchEntries = (user, page) => {
+        if (user) {
+            setLoading(true)
 
-        TimelineService.getEntries(user._id, page)
-            .then(data => {
-                const _entries = [...entries, ...data]
-                setEntries(_entries)
-                setFetch(data.length > 0)
-                setLoading(false)
-            })
-            .catch(() => {
-                Helper.error()
-            })
+            TimelineService.getEntries(user._id, page)
+                .then(data => {
+                    const _entries = [...entries, ...data]
+                    setEntries(_entries)
+                    setFetch(data.length > 0)
+                    setLoading(false)
+                })
+                .catch(() => {
+                    Helper.error()
+                })
+        }
     }
 
     const handleMembers = (event) => {
@@ -119,20 +121,22 @@ const Home = () => {
     const onLoad = (user) => {
         const language = UserService.getLanguage()
         moment.locale(language)
-
         setUser(user)
+        fetchEntries(user, page)
+    }
 
+    useEffect(() => {
         const div = document.querySelector('.home-timeline')
         if (div) {
             div.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                     const _page = page + 1
                     setPage(_page)
-                    fetchEntries(_page)
+                    fetchEntries(user, _page)
                 }
             }
         }
-    }
+    }, [fetch, loading, user, page])
 
     const iconStyles = {
         float: 'left',
@@ -159,7 +163,7 @@ const Home = () => {
                             (
                                 <ListItem key={timelineEntry._id} className="timeline-item">
                                     <ListItemText
-                                        
+                                        disableTypography
                                         primary={
                                             <div style={{ marginBottom: 5 }}>
                                                 <Link href={`/profile?u=${timelineEntry.speaker._id}`} className="timeline-link">
@@ -247,8 +251,8 @@ const Home = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DELETE_ENTRY_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
+                        <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDelete} color="error">{strings.DELETE}</Button>
                     </DialogActions>
                 </Dialog>
                 <Members
