@@ -65,10 +65,6 @@ const SignUp = () => {
             })
     }
 
-    const preventDefault = (e) => {
-        e.preventDefault()
-    }
-
     const handleTosChange = (e) => {
         setTosChecked(e.target.checked)
     }
@@ -178,9 +174,9 @@ const SignUp = () => {
         <div>
             <Header />
             {visible &&
-                <Paper className="UserService.signup-form UserService.signup-form-wrapper" elevation={10}>
-                    <div className="UserService.signup">
-                        <h1 className="UserService.signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
+                <Paper className="signup-form signup-form-wrapper" elevation={10}>
+                    <div className="signup">
+                        <h1 className="signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
                         <form onSubmit={handleSubmit}>
                             <div>
                                 <FormControl fullWidth margin="dense">
@@ -235,7 +231,7 @@ const SignUp = () => {
                                         type="password"
                                     />
                                 </FormControl>
-                                <div className="UserService.signup-tos">
+                                <div className="signup-tos">
                                     <table>
                                         <tbody>
                                             <tr>
@@ -248,7 +244,7 @@ const SignUp = () => {
                                                     />
                                                 </td>
                                                 <td>
-                                                    <Link href="/tos" onClick={preventDefault}>{strings.TOS_SIGN_UP}</Link>
+                                                    <Link href="/tos" target="_blank">{strings.TOS_SIGN_UP}</Link>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -258,7 +254,7 @@ const SignUp = () => {
                                     <Button
                                         type="submit"
                                         variant="contained"
-                                        color="primary"
+                                        color="info"
                                         size="small"
                                         disabled={emailError || !tosChecked}
                                     >
@@ -266,7 +262,7 @@ const SignUp = () => {
                                     </Button>
                                     <Button
                                         variant="contained"
-                                        color="default"
+                                        color="inherit"
                                         size="small"
                                         href="/sign-in"
                                     >
