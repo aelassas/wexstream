@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
@@ -438,38 +438,42 @@ const Connections = () => {
         window.location = '/profile?u=' + userId
     }
 
-    const fetchConnections = (page) => {
-        setLoading(true)
+    const fetchConnections = (user, page) => {
+        if (user) {
+            setLoading(true)
 
-        getConnections(user._id, page)
-            .then(data => {
-                const _connections = [...connections, ...data]
-                setConnections(_connections)
-                setFetch(data.length > 0)
-                setLoading(false)
-            })
-            .catch(err => {
-                Helper.error()
-            })
+            getConnections(user._id, page)
+                .then(data => {
+                    const _connections = [...connections, ...data]
+                    setConnections(_connections)
+                    setFetch(data.length > 0)
+                    setLoading(false)
+                })
+                .catch(err => {
+                    Helper.error()
+                })
+        }
     }
 
     const onLoad = (user) => {
         const language = getLanguage()
         moment.locale(language)
         setUser(user)
-        fetchConnections(1)
+        fetchConnections(user, page)
+    }
 
+    useEffect(() => {
         const div = document.querySelector('.content')
         if (div) {
             div.onscroll = (event) => {
                 if (fetch && !loading && (((window.innerHeight - PAGE_TOP_OFFSET) + event.target.scrollTop)) >= (event.target.scrollHeight - PAGE_FETCH_OFFSET)) {
                     const _page = page + 1
                     setPage(_page)
-                    fetchConnections(_page)
+                    fetchConnections(user, _page)
                 }
             }
         }
-    }
+    }, [fetch, loading, user, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <Master onLoad={onLoad} notificationCount={notificationCount} strict>
@@ -493,7 +497,7 @@ const Connections = () => {
                                     </Link>
                                 </ListItemAvatar>
                                 <ListItemText
-                                    
+
                                     data-id={connection.user._id}
                                     primary={<Link href={`/profile?u=${connection.user._id}`}><Typography style={{ fontWeight: 500, color: '#373737' }}>{connection.user.fullName}</Typography></Link>}
                                     secondary={!connection.isPending ? (strings.CONNECTED + ' ' + strings.AT + ' ' + moment(connection.connectedAt).format(process.env.REACT_APP_WS_DATE_FORMAT)) : (connection.isPending ? strings.CONNECTION_PENDING : null)}
@@ -667,8 +671,8 @@ const Connections = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{connected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
+                        <Button onClick={handleCancelDisconnect} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDisconnect} color="info">{strings.YES}</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog
@@ -679,8 +683,8 @@ const Connections = () => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                        <Button onClick={handleCancelDecline} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleConfirmDecline} color="error">{strings.DECLINE}</Button>
                     </DialogActions>
                 </Dialog>
                 <MessageForm user={user} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={to} />

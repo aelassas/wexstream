@@ -586,14 +586,14 @@ html, body, .App, #root {
 
 @media only screen and (min-width: 960px) {
 	.notifications-actions, .notifications-actions-rtl {
-		width: 750px;
+		width: 850px;
 	}
 	.notifications-list {
 		position: absolute !important;
 		top: 70px;
 		bottom: 0;
 		overflow-y: auto;
-		width: 750px;
+		width: 850px;
 	}
 }
 
