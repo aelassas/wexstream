@@ -136,7 +136,7 @@ const Home = () => {
                 }
             }
         }
-    }, [fetch, loading, user, page])
+    }, [fetch, loading, user, page]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const iconStyles = {
         float: 'left',
