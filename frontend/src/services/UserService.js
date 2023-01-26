@@ -248,7 +248,7 @@ export const updatePrivateMessages = (data) => (
 
 export const compare = async (userId, password) => {
     const data = { userId, password }
-    const { status } = await axios.get(API_HOST + '/api/compare-password', data, { headers: authHeader() })
+    const { status } = await axios.post(API_HOST + '/api/compare-password', data, { headers: authHeader() })
     return status === 200
 }
 

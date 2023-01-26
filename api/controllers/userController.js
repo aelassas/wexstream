@@ -510,31 +510,34 @@ export const updatePrivateMessages = (req, res) => {
 }
 
 export const resetPassword = (req, res) => {
-    User.findOne({ email: req.body.email })
+    const { userId, password, newPassword } = req.body
+
+    User.findById(userId)
         .then(user => {
             if (!user) {
-                console.error('[user.resetPassword] User not found:', req.body.email)
+                console.error('[user.resetPassword] User not found:', userId)
                 res.sendStatus(204)
             } else {
-                bcrypt.compare(req.body.password, user.password).then(passwordMatch => {
-                    if (passwordMatch) {
-                        const salt = bcrypt.genSaltSync(10)
-                        const password = req.body.newPassword
-                        const passwordHash = bcrypt.hashSync(password, salt)
-                        user.password = passwordHash
+                bcrypt.compare(password, user.password)
+                    .then(passwordMatch => {
+                        if (passwordMatch) {
+                            const salt = bcrypt.genSaltSync(10)
+                            const password = newPassword
+                            const passwordHash = bcrypt.hashSync(password, salt)
+                            user.password = passwordHash
 
-                        user.save()
-                            .then(() => {
-                                res.sendStatus(200)
-                            })
-                            .catch(err => {
-                                console.error(strings.DB_ERROR, err)
-                                res.status(400).send(strings.DB_ERROR + err)
-                            })
-                    } else {
-                        res.sendStatus(204)
-                    }
-                })
+                            user.save()
+                                .then(() => {
+                                    res.sendStatus(200)
+                                })
+                                .catch(err => {
+                                    console.error(strings.DB_ERROR, err)
+                                    res.status(400).send(strings.DB_ERROR + err)
+                                })
+                        } else {
+                            res.sendStatus(204)
+                        }
+                    })
             }
         })
 }
@@ -994,7 +997,7 @@ export const report = (req, res) => {
 export const comparePassword = async (req, res) => {
     try {
         const { userId, password } = req.body
-        const user = await User.findOne({ email: userId })
+        const user = await User.findById(userId)
 
         if (user) {
             const passwordMatch = await util.promisify(bcrypt.compare)(password, user.password)

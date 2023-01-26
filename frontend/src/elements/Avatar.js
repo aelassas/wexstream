@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { strings } from '../config/lang'
 import { getUserById, updateAvatar, deleteAvatar, getCurrentUser, getLanguage } from '../services/UserService'
 import Button from '@mui/material/Button'
-import { toast } from 'react-toastify'
 import MaterialAvatar from '@mui/material/Avatar'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import Badge from '@mui/material/Badge'
@@ -14,6 +13,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import { CDN } from '../config/env'
+import * as Helper from '../common/Helper'
 
 const Avatar = (props) => {
     const [error, setError] = useState(false)
@@ -31,43 +31,42 @@ const Avatar = (props) => {
         const file = e.target.files[0]
 
         reader.onloadend = () => {
-            updateAvatar(_id, file).then(
-                status => {
-                    if (status === 200) {
-                        getUserById(_id).then(user => {
-                            if (user) {
-                                setUser(user)
-                                if (props.onChange) {
-                                    const img = document.querySelector('.avatar > img')
-                                    img.onload = () => {
+            updateAvatar(_id, file)
+                .then(
+                    status => {
+                        if (status === 200) {
+                            getUserById(_id)
+                                .then(user => {
+                                    if (user) {
+                                        setUser(user)
+                                        if (props.onChange) {
+                                            props.onChange(user)
+                                        }
+                                    } else {
+                                        Helper.error()
+                                        if (props.onChange) {
+                                            props.onChange(user)
+                                        }
+                                    }
+                                }).catch(err => {
+                                    Helper.error(null, err)
+                                    if (props.onChange) {
                                         props.onChange(user)
                                     }
-                                }
-                            } else {
-                                toast(strings.GENERIC_ERROR, { type: 'error' })
-                                if (props.onChange) {
-                                    props.onChange(user)
-                                }
-                            }
-                        }).catch(err => {
-                            toast(strings.GENERIC_ERROR, { type: 'error' })
+                                })
+                        } else {
+                            Helper.error()
                             if (props.onChange) {
                                 props.onChange(user)
                             }
-                        })
-                    } else {
-                        toast(strings.GENERIC_ERROR, { type: 'error' })
-                        if (props.onChange) {
-                            props.onChange(user)
                         }
                     }
-                }
-            ).catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' })
-                if (props.onChange) {
-                    props.onChange(user)
-                }
-            })
+                ).catch(err => {
+                    Helper.error(null, err)
+                    if (props.onChange) {
+                        props.onChange(user)
+                    }
+                })
         }
 
         reader.readAsDataURL(file)
@@ -103,24 +102,25 @@ const Avatar = (props) => {
         deleteAvatar(_id)
             .then(status => {
                 if (status === 200) {
-                    getUserById(_id).then(user => {
-                        if (user) {
-                            setUser(user)
-                            if (props.onChange) {
-                                props.onChange(user)
+                    getUserById(_id)
+                        .then(user => {
+                            if (user) {
+                                setUser(user)
+                                if (props.onChange) {
+                                    props.onChange(user)
+                                }
+                                closeDialog()
+                            } else {
+                                Helper.error()
                             }
-                            closeDialog()
-                        } else {
-                            toast(strings.GENERIC_ERROR, { type: 'error' })
-                        }
-                    }).catch(err => {
-                        toast(strings.GENERIC_ERROR, { type: 'error' })
-                    })
+                        }).catch(err => {
+                            Helper.error(null, err)
+                        })
                 } else {
-                    toast(strings.GENERIC_ERROR, { type: 'error' })
+                    Helper.error()
                 }
             }).catch(err => {
-                toast(strings.GENERIC_ERROR, { type: 'error' })
+                Helper.error(null, err)
             })
     }
 
@@ -227,8 +227,8 @@ const Avatar = (props) => {
                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                     <DialogContent>{strings.DELETE_AVATAR_CONFIRM}</DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                        <Button onClick={handleDelete} color="secondary">{strings.DELETE}</Button>
+                        <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                        <Button onClick={handleDelete} color="error">{strings.DELETE}</Button>
                     </DialogActions>
                 </Dialog>
             </div>

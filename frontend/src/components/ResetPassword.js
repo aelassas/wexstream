@@ -15,8 +15,6 @@ import * as Helper from '../common/Helper'
 
 const ResetPassword = () => {
     const [user, setUser] = useState()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -44,10 +42,10 @@ const ResetPassword = () => {
         }
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const passwordMatch = compare(user._id, password)
+        const passwordMatch = await compare(user._id, currentPassword)
         setCurrentPasswordError(!passwordMatch)
 
         if (passwordMatch) {
@@ -76,8 +74,8 @@ const ResetPassword = () => {
             }
 
             const data = {
-                email: email,
-                password: password,
+                userId: user._id,
+                password: currentPassword,
                 newPassword: newPassword
             }
 
@@ -87,7 +85,6 @@ const ResetPassword = () => {
                         getUser(user._id)
                             .then(user => {
                                 setUser(user)
-                                setPassword(user.password)
                                 setCurrentPassword('')
                                 setNewPassword('')
                                 setConfirmPassword('')
@@ -110,8 +107,6 @@ const ResetPassword = () => {
 
     const onLoad = (user) => {
         setUser(user)
-        setEmail(user.email)
-        setPassword(user.password)
     }
 
     return (
