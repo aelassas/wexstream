@@ -25,6 +25,7 @@ import util from 'util'
 const DEFAULT_LANGUAGE = process.env.WS_DEFAULT_LANGUAGE
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true'
 const JWT_SECRET = process.env.WS_JWT_SECRET
+const JWT_SUB = process.env.WS_JWT_SUB
 const JWT_EXPIRE_AT = parseInt(process.env.WS_JWT_EXPIRE_AT)
 const APP_HOST = process.env.WS_APP_HOST
 const SMTP_HOST = process.env.WS_SMTP_HOST
@@ -88,7 +89,7 @@ export const googleAuth = (req, res) => {
                 },
                 aud: "wexstream",
                 iss: "wexstream",
-                sub: "www.wexstream.com",
+                sub: JWT_SUB,
                 room: "*",
                 exp: (Math.floor(Date.now() / 1000) + JWT_EXPIRE_AT)
             }
@@ -161,7 +162,7 @@ export const facebookAuth = (req, res) => {
                 },
                 aud: "wexstream",
                 iss: "wexstream",
-                sub: "www.wexstream.com",
+                sub: JWT_SUB,
                 room: "*",
                 exp: (Math.floor(Date.now() / 1000) + JWT_EXPIRE_AT)
             }
@@ -191,39 +192,40 @@ export const signin = (req, res) => {
             if (!user || (user && !user.password)) {
                 res.sendStatus(204)
             } else {
-                bcrypt.compare(req.body.password, user.password).then(passwordMatch => {
-                    if (passwordMatch) {
-                        const payload = {
-                            context: {
-                                user: {
-                                    name: user.fullName,
-                                    id: user.id
+                bcrypt.compare(req.body.password, user.password)
+                    .then(passwordMatch => {
+                        if (passwordMatch) {
+                            const payload = {
+                                context: {
+                                    user: {
+                                        name: user.fullName,
+                                        id: user.id
+                                    },
+                                    group: "wexstream"
                                 },
-                                group: "wexstream"
-                            },
-                            aud: "wexstream",
-                            iss: "wexstream",
-                            sub: "www.wexstream.com",
-                            room: "*",
-                            exp: (Math.floor(Date.now() / 1000) + JWT_EXPIRE_AT)
+                                aud: "wexstream",
+                                iss: "wexstream",
+                                sub: JWT_SUB,
+                                room: "*",
+                                exp: (Math.floor(Date.now() / 1000) + JWT_EXPIRE_AT)
+                            }
+
+                            const token = jwt.sign(payload, JWT_SECRET)
+
+                            res.status(200).send({
+                                id: user._id,
+                                email: user.email,
+                                fullName: user.fullName,
+                                language: user.language,
+                                enableEmailNotifications: user.enableEmailNotifications,
+                                enablePrivateMessages: user.enablePrivateMessages,
+                                accessToken: token,
+                                blacklisted: user.blacklisted
+                            })
+                        } else {
+                            res.sendStatus(204)
                         }
-
-                        const token = jwt.sign(payload, JWT_SECRET)
-
-                        res.status(200).send({
-                            id: user._id,
-                            email: user.email,
-                            fullName: user.fullName,
-                            language: user.language,
-                            enableEmailNotifications: user.enableEmailNotifications,
-                            enablePrivateMessages: user.enablePrivateMessages,
-                            accessToken: token,
-                            blacklisted: user.blacklisted
-                        })
-                    } else {
-                        res.sendStatus(204)
-                    }
-                })
+                    })
             }
         })
 }

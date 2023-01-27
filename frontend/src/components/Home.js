@@ -227,7 +227,7 @@ const Home = () => {
                                                 }
                                                 {timelineEntry.conference.isLive &&
                                                     <Typography style={{ marginTop: 10, fontWeight: 500, color: '#f50057' }}>
-                                                        <Videocam color="secondary" style={{ marginRight: 4, marginBottom: -6 }} />
+                                                        <Videocam color="error" style={{ marginRight: 4, marginBottom: -6 }} />
                                                         {strings.LIVE}
                                                     </Typography>
                                                 }

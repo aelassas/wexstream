@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import { JITSI_API, JITSI_HOST, isMobile } from '../config/env'
-import { getUsername } from '../services/UserService'
 import { getConferenceId, getConference, updateConference, addMember, closeConference } from '../services/ConferenceService'
 import { getConnection } from '../services/ConnectionService'
 import { createTimelineEntries } from '../services/TimelineService'
+import { getAccessToken } from '../services/UserService'
 import {
     IconButton,
     Tooltip,
@@ -42,7 +42,6 @@ const Conference = () => {
     const [user, setUser] = useState()
     const [conference, setConference] = useState()
     const [conferenceUrl, setConferenceUrl] = useState()
-    const [userName, setUserName] = useState('')
     const [open, setOpen] = useState(false)
     const [error, setError] = useState(false)
     const [unAuthorized, setUnAuthorized] = useState(false)
@@ -56,20 +55,21 @@ const Conference = () => {
     const [fullscreen, setFullscreen] = useState(false)
     const [mute, setMute] = useState(false)
     const [showButtons, setShowButtons] = useState(false)
+    const [startConf, setStartConf] = useState(false)
 
-    const startConference = (token) => {
+    const startConference = useCallback(() => {
         localStorage.removeItem('jitsiLocalStorage')
         localStorage.setItem('jitsiLocalStorage', JSON.stringify({ language: user.language }))
 
         const options = {
             roomName: conference._id,
-            noSsl: false,
+            // noSsl: false,
             width: '100%',
             height: '100%',
             configOverwrite: {
                 prejoinPageEnabled: false,
                 useHostPageLocalStorage: true,
-                defaultLanguage: user.language,
+                // defaultLanguage: user.language,
                 disableDeepLinking: true
             },
             interfaceConfigOverwrite: {
@@ -77,9 +77,10 @@ const Conference = () => {
             },
             parentNode: document.querySelector('#conf'),
             userInfo: {
-                displayName: userName
+                displayName: user.fullName
             },
-            jwt: token
+            lang: user.language,
+            jwt: user.accessToken
         }
         api = new window.JitsiMeetExternalAPI(domain, options)
 
@@ -87,10 +88,10 @@ const Conference = () => {
             readyToClose: handleClose,
             videoConferenceJoined: handleVideoConferenceJoined,
             videoConferenceLeft: handleVideoConferenceLeft,
-            eventLeft: handleParticipantLeft,
-            eventJoined: handleParticipantJoined,
-            eventKickedOut: handleParticipantKickedOut,
-            eventRoleChanged: handleParticipantRoleChanged,
+            participantLeft: handleParticipantLeft,
+            participantJoined: handleParticipantJoined,
+            participantRoleChanged: handleParticipantRoleChanged,
+            participantKickedOut: handleParticipantKickedOut,
             audioMuteStatusChanged: handleMuteStatus,
             videoMuteStatusChanged: handleVideoStatus
         })
@@ -103,9 +104,16 @@ const Conference = () => {
         if (conference.isLive && conference.speaker._id === user._id) {
             createTimelineEntries(user._id, conference._id, true)
         }
-    }
+    }, [user, conference]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    const updateConf = (data, onSuccess) => {
+
+    useEffect(() => {
+        if (user && conference && startConf) {
+            startConference()
+        }
+    }, [startConf, user, conference, startConference])
+
+    const updateConf = (conference, data, onSuccess) => {
         updateConference(conference._id, data)
             .then(status => {
                 if (status === 200) {
@@ -153,7 +161,7 @@ const Conference = () => {
         getConference(conference._id)
             .then(conference => {
                 if (conference.isLive && (conference.speaker._id === user._id)) {
-                    updateConf({ isLive: false, finishedAt: Date.now() }, () => {
+                    updateConf(conference, { isLive: false, finishedAt: Date.now() }, () => {
                         closeConference(user._id, conference._id).then(() => {
                             window.location = '/home'
                         })
@@ -186,7 +194,7 @@ const Conference = () => {
         const participants = api.getParticipantsInfo()
 
         if (conference.speaker._id === user._id) {
-            api.executeCommand('toggleLobby', true)
+            // api.executeCommand('toggleLobby', true)
             setShowButtons(true)
         } else if (conference.speaker._id !== user._id && participants.length === 1) {
             api.dispose()
@@ -214,7 +222,6 @@ const Conference = () => {
     }
 
     const handleParticipantRoleChanged = (event) => {
-
         if (event.role === 'moderator') {
             api.executeCommand('toggleLobby', true)
         }
@@ -319,6 +326,7 @@ const Conference = () => {
         }
 
         setLoading(true)
+        user.accessToken = getAccessToken()
         setUser(user)
 
         if (user.verified) {
@@ -368,15 +376,17 @@ const Conference = () => {
                                     externalApi.addEventListener('load', () => {
                                         if (window.JitsiMeetExternalAPI) {
                                             if (!conference.isLive && (conference.speaker._id === user._id)) {
-                                                updateConf({ isLive: true, broadcastedAt: Date.now() }, () => {
-                                                    setUserName(getUsername())
+                                                updateConf(conference, { isLive: true, broadcastedAt: Date.now() }, () => {
+                                                    // setUserName(getUsername())
                                                     setConferenceUrl(window.location.href)
-                                                    startConference(user.accessToken)
+                                                    // startConference(user, conference)
+                                                    setStartConf(true)
                                                 })
                                             } else {
-                                                setUserName(getUsername())
+                                                // setUserName(getUsername())
                                                 setConferenceUrl(window.location.href)
-                                                startConference(user.accessToken)
+                                                // startConference(user, conference)
+                                                setStartConf(true)
                                             }
                                         } else {
                                             setLoading(false)

@@ -149,6 +149,16 @@ export const getUsername = () => {
     }
 }
 
+export const getAccessToken = () => {
+    const user = JSON.parse(localStorage.getItem('ws-user'))
+
+    if (user && user.accessToken) {
+        return user.accessToken
+    } else {
+        return ''
+    }
+}
+
 export const getLanguage = () => {
     const user = JSON.parse(localStorage.getItem('ws-user'))
 
