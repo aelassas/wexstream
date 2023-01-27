@@ -688,7 +688,7 @@ const Profile = () => {
             }
 
         }
-    }, [userNotFound, error, fetch, loading, user, page, isPrivate])
+    }, [userNotFound, error, fetch, loading, user, page, isPrivate]) // eslint-disable-line react-hooks/exhaustive-deps
 
     const fetchConferences = (user, page, isPrivate) => {
         if (user) {
