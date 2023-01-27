@@ -874,7 +874,7 @@ const Profile = () => {
                                             <div className="profile-actions">
                                                 <Button
                                                     variant="contained"
-                                                    color={isConnected ? "secondary" : (isConnectionPending && !isApprover ? "default" : "primary")}
+                                                    color={isConnected ? "error" : (isConnectionPending && !isApprover ? "inherit" : "info")}
                                                     size="small"
                                                     onClick={handleConnect}
                                                 >
@@ -891,7 +891,7 @@ const Profile = () => {
                                                     &&
                                                     <Button
                                                         variant="contained"
-                                                        color="secondary"
+                                                        color="error"
                                                         size="small"
                                                         onClick={handleDecline}
                                                     >
@@ -902,7 +902,7 @@ const Profile = () => {
                                                     &&
                                                     <Button
                                                         variant="contained"
-                                                        color="primary"
+                                                        color="info"
                                                         size="small"
                                                         onClick={handleSendMessage}
                                                     >
@@ -961,8 +961,8 @@ const Profile = () => {
                                                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                                                     <DialogContent>{isConnected ? strings.DISCONNECT_CONFIRM : strings.CANCEL_CONFIRM}</DialogContent>
                                                     <DialogActions>
-                                                        <Button onClick={handleCancelDisconnect} color="default">{strings.CANCEL}</Button>
-                                                        <Button onClick={handleConfirmDisconnect} color="secondary">{strings.YES}</Button>
+                                                        <Button onClick={handleCancelDisconnect} color="inherit">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmDisconnect} color="info">{strings.YES}</Button>
                                                     </DialogActions>
                                                 </Dialog>
                                                 <Dialog
@@ -973,8 +973,8 @@ const Profile = () => {
                                                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                                                     <DialogContent>{strings.DECLINE_CONFIRM}</DialogContent>
                                                     <DialogActions>
-                                                        <Button onClick={handleCancelDecline} color="default">{strings.CANCEL}</Button>
-                                                        <Button onClick={handleConfirmDecline} color="secondary">{strings.DECLINE}</Button>
+                                                        <Button onClick={handleCancelDecline} color="inherit">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmDecline} color="error">{strings.DECLINE}</Button>
                                                     </DialogActions>
                                                 </Dialog>
                                                 <Dialog
@@ -999,8 +999,8 @@ const Profile = () => {
                                                         </FormControl>
                                                     </DialogContent>
                                                     <DialogActions className="buttons">
-                                                        <Button onClick={handleCancelReport} color="default" variant="contained">{strings.CANCEL}</Button>
-                                                        <Button onClick={handleConfirmReport} color="secondary" variant="contained" disabled={reportMessage.length === 0}>{strings.REPORT}</Button>
+                                                        <Button onClick={handleCancelReport} color="inherit" variant="contained">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmReport} color="info" variant="contained" disabled={reportMessage.length === 0}>{strings.REPORT}</Button>
                                                     </DialogActions>
                                                 </Dialog>
                                                 <Dialog
@@ -1011,8 +1011,8 @@ const Profile = () => {
                                                     <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                                                     <DialogContent>{isBlocked ? strings.UNBLOCK_CONFIRM : strings.BLOCK_CONFIRM}</DialogContent>
                                                     <DialogActions>
-                                                        <Button onClick={handleCancelBlock} color="default">{strings.CANCEL}</Button>
-                                                        <Button onClick={handleConfirmBlock} color="secondary">{isBlocked ? strings.UNBLOCK : strings.BLOCK}</Button>
+                                                        <Button onClick={handleCancelBlock} color="inherit">{strings.CANCEL}</Button>
+                                                        <Button onClick={handleConfirmBlock} color="info">{isBlocked ? strings.UNBLOCK : strings.BLOCK}</Button>
                                                     </DialogActions>
                                                 </Dialog>
                                                 <MessageForm user={loggedUser} hideButton={true} open={openMessageForm} onClose={handleMessageFormClose} to={user._id} />
@@ -1046,7 +1046,7 @@ const Profile = () => {
                                                             disableTypography
                                                             primary={
                                                                 <div style={{ marginBottom: 5 }}>
-                                                                    <Videocam color={conference.isLive ? 'secondary' : 'disabled'} className={`timeline-avatar`} />
+                                                                    <Videocam color={conference.isLive ? 'errpr' : 'disabled'} className={`timeline-avatar`} />
                                                                     <div className="profile-timeline-item-title">
                                                                         <Link href={`/conference?c=${conference._id}`}>
                                                                             <Typography style={{ fontWeight: 'bold', color: '#373737' }}>{conference.title}</Typography>
@@ -1128,8 +1128,8 @@ const Profile = () => {
                                         <DialogTitle>{strings.CONFIRM_TITLE}</DialogTitle>
                                         <DialogContent>{strings.DELETE_CONFERENCE_CONFIRM}</DialogContent>
                                         <DialogActions>
-                                            <Button onClick={handleCancelDelete} color="default">{strings.CANCEL}</Button>
-                                            <Button onClick={handleConfirmDelete} color="secondary">{strings.DELETE}</Button>
+                                            <Button onClick={handleCancelDelete} color="inherit">{strings.CANCEL}</Button>
+                                            <Button onClick={handleConfirmDelete} color="error">{strings.DELETE}</Button>
                                         </DialogActions>
                                     </Dialog>
                                     <Members
