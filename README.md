@@ -6,6 +6,8 @@
 
 Wexstream is an open source video conferencing platform built with [Node.js](https://nodejs.org/), [React](https://reactjs.org/) and [Jitsi](https://github.com/jitsi/jitsi-meet).
 
+Wexstream lets you create a network and share your private video conferences with your network. Wexstream lets you also create public video conferences and share them with people outside your network.
+
 Wexstream lets you stay in touch with all your teams, family, friends, or colleagues. Instant video conferences, efficiently adapting to your scale for free.
 
 - Unlimited users: There are no artificial restrictions on the number of users or conference participants. Server power and bandwidth are the only limiting factors.
