@@ -407,7 +407,6 @@ const Conference = () => {
                                 } else {
                                     getConnection(conference.speaker._id, user._id)
                                         .then(connection => {
-                                            console.log(connection)
                                             authorized = (connection && connection.isPending === false)
 
                                             if (authorized) {
