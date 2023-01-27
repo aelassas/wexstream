@@ -4,9 +4,8 @@ start_time=`date +%s`
 echo "Deploying Wexstream API..."
 
 cd /opt/wexstream
-git reset --hard
 git pull
-chmod +x -R /opt/wexstream/__scripts
+sudo chmod +x -R /opt/wexstream/__scripts
 
 cd /opt/wexstream/api
 npm ci
