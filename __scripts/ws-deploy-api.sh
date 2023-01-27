@@ -11,8 +11,8 @@ chmod +x -R /opt/wexstream/__scripts
 cd /opt/wexstream/api
 npm ci
 
-sudo systemctl restart wexstream-api
-sudo systemctl status wexstream-api --no-pager
+sudo systemctl restart wexstream
+sudo systemctl status wexstream --no-pager
 
 finish_time=`date +%s`
 elapsed_time=$((finish_time  - start_time))
