@@ -14,5 +14,3 @@ sudo systemctl restart wexstream-api
 sudo systemctl status wexstream-api --no-pager
 
 echo "Wexstream API deployed."
-
-$SHEL
