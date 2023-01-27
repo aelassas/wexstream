@@ -2,16 +2,14 @@
 
 echo "Deploying Wexstream app..."
 
-cd /opt/wexstream/react
+cd /opt/wexstream/frontend
 git reset --hard
 git pull
-chmod +x -R /opt/wexstream/scripts
+chmod +x -R /opt/wexstream/__scripts
 
 sudo rm -rf build
 npm ci
 npm run build
-
-#jitsi-restart
 
 sudo rm -rf /var/www/wexstream
 sudo mkdir -p /var/www/wexstream
