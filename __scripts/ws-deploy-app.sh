@@ -1,5 +1,6 @@
 #!/bin/bash
 
+start_time=`date +%s`
 echo "Deploying Wexstream app..."
 
 cd /opt/wexstream/frontend
@@ -18,4 +19,8 @@ sudo cp -rf build/* /var/www/wexstream
 sudo systemctl restart nginx
 sudo systemctl status nginx --no-pager
 
-echo "Wexstream app deployed."
+finish_time=`date +%s`
+elapsed_time=$((finish_time  - start_time))
+((sec=elapsed_time%60, elapsed_time/=60, min=elapsed_time%60, hrs=elapsed_time/60))
+timestamp=$(printf "Wexstream app deployed in %d minutes and %d seconds." $min $sec)
+echo $timestamp
