@@ -359,9 +359,7 @@ body,
 		align-items: center;
 		justify-content: center;
 		display: flex;
-		position: absolute;
-		top: calc(50% - 370px);
-		right: calc(50% - 175px);
+		margin-left: calc(50% - 175px) !important;
 		width: 350px;
 		height: 730px;
 		padding: 30px;
@@ -380,9 +378,7 @@ body,
 		align-items: center;
 		justify-content: center;
 		display: flex;
-		position: absolute;
-		top: calc(50% - 350px);
-		right: calc(50% - 275px);
+		margin-left: calc(50% - 275px) !important;
 		width: 550px;
 		height: 750px;
 		padding: 30px;

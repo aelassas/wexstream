@@ -174,114 +174,116 @@ const SignUp = () => {
         <div>
             <Header />
             {visible &&
-                <Paper className="signup-form signup-form-wrapper" elevation={10}>
-                    <div className="signup">
-                        <h1 className="signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
-                        <form onSubmit={handleSubmit}>
-                            <div>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel htmlFor="full-name">{strings.FULL_NAME}</InputLabel>
-                                    <Input
-                                        id="full-name"
-                                        type="text"
-                                        value={fullName}
-                                        name="FullName"
-                                        required
-                                        onChange={handleOnChangeFullName}
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel htmlFor="email">{strings.EMAIL}</InputLabel>
-                                    <Input
-                                        id="email"
-                                        type="text"
-                                        error={emailError}
-                                        value={email}
-                                        name="Email"
-                                        onBlur={handleOnBlur}
-                                        onChange={handleOnChangeEmail}
-                                        autoComplete="Email"
-                                        required
-                                    />
-                                    <FormHelperText error={emailError}>
-                                        {emailError ? strings.INVALID_EMAIL : ''}
-                                    </FormHelperText>
-                                </FormControl>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel htmlFor="password">{strings.PASSWORD}</InputLabel>
-                                    <Input
-                                        id="password"
-                                        value={password}
-                                        name="Password"
-                                        onChange={handleOnChangePassword}
-                                        autoComplete="password"
-                                        required
-                                        type="password"
-                                    />
-                                </FormControl>
-                                <FormControl fullWidth margin="dense">
-                                    <InputLabel htmlFor="confirm-password">{strings.CONFIRM_PASSWORD}</InputLabel>
-                                    <Input
-                                        id="confirm-password"
-                                        value={confirmPassword}
-                                        name="ConfirmPassword"
-                                        onChange={handleOnChangeConfirmPassword}
-                                        autoComplete="password"
-                                        required
-                                        type="password"
-                                    />
-                                </FormControl>
-                                <div className="signup-tos">
-                                    <table>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <Checkbox
-                                                        checked={tosChecked}
-                                                        onChange={handleTosChange}
-                                                        name="tosChecked"
-                                                        color="primary"
-                                                    />
-                                                </td>
-                                                <td>
-                                                    <Link href="/tos" target="_blank">{strings.TOS_SIGN_UP}</Link>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div className="buttons">
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="info"
-                                        size="small"
-                                        disabled={emailError || !tosChecked}
-                                    >
-                                        {strings.SIGN_UP}
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="inherit"
-                                        size="small"
-                                        href="/sign-in"
-                                    >
-                                        {strings.CANCEL}
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className="form-error">
-                                {(passwordError || passwordsDontMatch || error) &&
-                                    <div>
-                                        {passwordError && <Error message={strings.ERROR_IN_PASSWORD} />}
-                                        {passwordsDontMatch && <Error message={strings.PASSWORDS_DONT_MATCH} />}
-                                        {error && <Error message={strings.ERROR_IN_SIGN_UP} />}
+                <div className='content'>
+                    <Paper className="signup-form signup-form-wrapper" elevation={10}>
+                        <div className="signup">
+                            <h1 className="signup-form-title"> {strings.SIGN_UP_HEADING} </h1>
+                            <form onSubmit={handleSubmit}>
+                                <div>
+                                    <FormControl fullWidth margin="dense">
+                                        <InputLabel htmlFor="full-name">{strings.FULL_NAME}</InputLabel>
+                                        <Input
+                                            id="full-name"
+                                            type="text"
+                                            value={fullName}
+                                            name="FullName"
+                                            required
+                                            onChange={handleOnChangeFullName}
+                                        />
+                                    </FormControl>
+                                    <FormControl fullWidth margin="dense">
+                                        <InputLabel htmlFor="email">{strings.EMAIL}</InputLabel>
+                                        <Input
+                                            id="email"
+                                            type="text"
+                                            error={emailError}
+                                            value={email}
+                                            name="Email"
+                                            onBlur={handleOnBlur}
+                                            onChange={handleOnChangeEmail}
+                                            autoComplete="Email"
+                                            required
+                                        />
+                                        <FormHelperText error={emailError}>
+                                            {emailError ? strings.INVALID_EMAIL : ''}
+                                        </FormHelperText>
+                                    </FormControl>
+                                    <FormControl fullWidth margin="dense">
+                                        <InputLabel htmlFor="password">{strings.PASSWORD}</InputLabel>
+                                        <Input
+                                            id="password"
+                                            value={password}
+                                            name="Password"
+                                            onChange={handleOnChangePassword}
+                                            autoComplete="password"
+                                            required
+                                            type="password"
+                                        />
+                                    </FormControl>
+                                    <FormControl fullWidth margin="dense">
+                                        <InputLabel htmlFor="confirm-password">{strings.CONFIRM_PASSWORD}</InputLabel>
+                                        <Input
+                                            id="confirm-password"
+                                            value={confirmPassword}
+                                            name="ConfirmPassword"
+                                            onChange={handleOnChangeConfirmPassword}
+                                            autoComplete="password"
+                                            required
+                                            type="password"
+                                        />
+                                    </FormControl>
+                                    <div className="signup-tos">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <Checkbox
+                                                            checked={tosChecked}
+                                                            onChange={handleTosChange}
+                                                            name="tosChecked"
+                                                            color="primary"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <Link href="/tos" target="_blank">{strings.TOS_SIGN_UP}</Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                }
-                            </div>
-                        </form>
-                    </div>
-                </Paper>
+                                    <div className="buttons">
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="info"
+                                            size="small"
+                                            disabled={emailError || !tosChecked}
+                                        >
+                                            {strings.SIGN_UP}
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="inherit"
+                                            size="small"
+                                            href="/sign-in"
+                                        >
+                                            {strings.CANCEL}
+                                        </Button>
+                                    </div>
+                                </div>
+                                <div className="form-error">
+                                    {(passwordError || passwordsDontMatch || error) &&
+                                        <div>
+                                            {passwordError && <Error message={strings.ERROR_IN_PASSWORD} />}
+                                            {passwordsDontMatch && <Error message={strings.PASSWORDS_DONT_MATCH} />}
+                                            {error && <Error message={strings.ERROR_IN_SIGN_UP} />}
+                                        </div>
+                                    }
+                                </div>
+                            </form>
+                        </div>
+                    </Paper>
+                </div>
             }
             {loading && <Backdrop text={strings.PLEASE_WAIT} />}
         </div>
