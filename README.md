@@ -63,6 +63,14 @@ You can find installation instructions [here](https://github.com/aelassas/wexstr
 
 You can find instructions [here](https://github.com/aelassas/wexstream/wiki/Run-from-Source-Code).
 
+# Terms of Service
+
+You can find the terms of service [here](https://github.com/aelassas/wexstream/wiki/Terms-of-Service).
+
+# Source Code
+
+You can find a description of the source code [here](https://www.codeproject.com/Articles/5353196/Wexstream-Video-Conferencing-Platform-with-Node-js).
+
 # Quick Overview
 
 Below is the login page:
