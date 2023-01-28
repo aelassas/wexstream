@@ -590,7 +590,7 @@ const Search = () => {
                                     (
                                         <Button
                                             variant="contained"
-                                            color={_user.connection && !_user.connection.isPending ? "secondary" : (_user.connection && _user.connection.isPending && !_user.connection.isApprover ? "inherit" : "primary")}
+                                            color={_user.connection && !_user.connection.isPending ? "error" : (_user.connection && _user.connection.isPending && !_user.connection.isApprover ? "inherit" : "primary")}
                                             size="small"
                                             data-id={_user._id}
                                             data-is-approver={_user.connection && _user.connection.isApprover}
@@ -684,7 +684,7 @@ const Search = () => {
                                             (
                                                 <Button
                                                     variant="contained"
-                                                    color="secondary"
+                                                    color="error"
                                                     size="small"
                                                     data-id={_user._id}
                                                     data-is-approver={_user.connection && _user.connection.isApprover}
@@ -699,7 +699,7 @@ const Search = () => {
                                             (
                                                 < Tooltip title={strings.DECLINE}>
                                                     <IconButton
-                                                        color="secondary"
+                                                        color="error"
                                                         size="small"
                                                         data-id={_user._id}
                                                         data-is-approver={_user.connection && _user.connection.isApprover}

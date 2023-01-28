@@ -557,12 +557,12 @@ const Header = (props) => {
                     <Box sx={classes.grow} />
                     <Box sx={classes.sectionDesktop}>
                         {isSignedIn && <IconButton aria-label="" color="inherit" onClick={handleMessagesClick}>
-                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="secondary">
+                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="error">
                                 <MailIcon />
                             </Badge>
                         </IconButton>}
                         {isSignedIn && <IconButton aria-label="" color="inherit" onClick={handleNotificationsClick}>
-                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="secondary">
+                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>}
@@ -601,12 +601,12 @@ const Header = (props) => {
                             {getLang(lang)}
                         </Button>}
                         {isSignedIn && <IconButton color="inherit" onClick={handleMessagesClick}>
-                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="secondary" >
+                            <Badge badgeContent={messageCount > 0 ? messageCount : null} color="error" >
                                 <MailIcon />
                             </Badge>
                         </IconButton>}
                         {isSignedIn && <IconButton color="inherit" onClick={handleNotificationsClick}>
-                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="secondary">
+                            <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="error">
                                 <NotificationsIcon />
                             </Badge>
                         </IconButton>}

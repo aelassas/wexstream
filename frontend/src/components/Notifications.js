@@ -387,7 +387,7 @@ const Notifications = () => {
                             <CardContent>
                                 <Tooltip title={strings.DELETE_ALL}>
                                     <IconButton
-                                        color="secondary"
+                                        color="error"
                                         onClick={handleDeleteAllNotifications}
                                     >
                                         <DeleteIcon />
@@ -439,7 +439,7 @@ const Notifications = () => {
                                                                         </Tooltip>
                                                                         <Tooltip title={strings.DECLINE}>
                                                                             <IconButton
-                                                                                color="secondary"
+                                                                                color="error"
                                                                                 data-id={notification._id}
                                                                                 data-conn-id={notification.senderConnection._id}
                                                                                 onClick={handleDecline}
@@ -474,7 +474,7 @@ const Notifications = () => {
                                                             }
                                                             <Tooltip title={strings.DELETE}>
                                                                 <IconButton
-                                                                    color="secondary"
+                                                                    color="error"
                                                                     data-id={notification._id}
                                                                     onClick={handleDeleteNotification}
                                                                 >
@@ -493,7 +493,7 @@ const Notifications = () => {
                                                         <div style={{ display: 'inline-block' }}>
                                                             <Button
                                                                 variant="contained"
-                                                                color={notification.isConnected ? "secondary" : (notification.isConnectionPending && !notification.isApprover ? "default" : "primary")}
+                                                                color={notification.isConnected ? "error" : (notification.isConnectionPending && !notification.isApprover ? "default" : "primary")}
                                                                 size="small"
                                                                 data-id={notification._id}
                                                                 data-conn-id={notification.senderConnection._id}
@@ -503,7 +503,7 @@ const Notifications = () => {
                                                             </Button>
                                                             <Button
                                                                 variant="contained"
-                                                                color="secondary"
+                                                                color="error"
                                                                 size="small"
                                                                 data-id={notification._id}
                                                                 data-conn-id={notification.senderConnection._id}
@@ -538,7 +538,7 @@ const Notifications = () => {
                                                 }
                                                 <Tooltip title={strings.DELETE}>
                                                     <IconButton
-                                                        color="secondary"
+                                                        color="error"
                                                         data-id={notification._id}
                                                         onClick={handleDeleteNotification}
                                                     >

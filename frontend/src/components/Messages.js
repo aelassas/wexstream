@@ -327,7 +327,7 @@ const Messages = () => {
                                 }
                                 <Tooltip title={strings.DELETE}>
                                     <IconButton
-                                        color="secondary"
+                                        color="error"
                                         data-id={message._id}
                                         onClick={handleDeleteMessage}
                                     >

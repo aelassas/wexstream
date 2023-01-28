@@ -507,7 +507,7 @@ const Connections = () => {
                                     (
                                         <Button
                                             variant="contained"
-                                            color={!connection.isPending ? "secondary" : (connection.isPending && connection.isApprover ? "default" : "primary")}
+                                            color={!connection.isPending ? "error" : (connection.isPending && connection.isApprover ? "default" : "primary")}
                                             size="small"
                                             data-id={connection.user._id}
                                             data-is-approver={!connection.isApprover}
@@ -533,7 +533,7 @@ const Connections = () => {
                                             (
                                                 <Tooltip title={strings.DISCONNECT}>
                                                     <IconButton
-                                                        color="secondary"
+                                                        color="error"
                                                         size="small"
                                                         data-id={connection.user._id}
                                                         data-is-approver={!connection.isApprover}
@@ -601,7 +601,7 @@ const Connections = () => {
                                         (
                                             <Button
                                                 variant="contained"
-                                                color="secondary"
+                                                color="error"
                                                 size="small"
                                                 data-id={connection.user._id}
                                                 data-is-approver={!connection.isApprover}
@@ -616,7 +616,7 @@ const Connections = () => {
                                         (
                                             < Tooltip title={strings.DECLINE}>
                                                 <IconButton
-                                                    color="secondary"
+                                                    color="error"
                                                     size="small"
                                                     data-id={connection.user._id}
                                                     data-is-approver={!connection.isApprover}
