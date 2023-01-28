@@ -31,9 +31,9 @@ import {
     WhatsappShareButton,
     WhatsappIcon
 } from "react-share"
-import Backdrop from '../elements/SimpleBackdrop'
+import Backdrop from '../components/SimpleBackdrop'
 import * as Helper from '../common/Helper'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 
 let domain = JITSI_HOST
 let api = {}

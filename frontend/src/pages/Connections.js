@@ -3,9 +3,9 @@ import { strings } from '../config/lang'
 import { getLanguage } from '../services/UserService'
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
 import { getConnections, getConnectionIds, deleteConnection } from '../services/ConnectionService'
-import MessageForm from '../elements/MessageForm'
-import Avatar from '../elements/Avatar'
-import Backdrop from '../elements/SimpleBackdrop'
+import MessageForm from '../components/MessageForm'
+import Avatar from '../components/Avatar'
+import Backdrop from '../components/SimpleBackdrop'
 import moment from 'moment'
 import 'moment/locale/fr'
 import 'moment/locale/ar'
@@ -35,7 +35,7 @@ import {
     Link as LinkIcon
 } from '@mui/icons-material'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const Connections = () => {

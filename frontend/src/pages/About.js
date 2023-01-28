@@ -1,5 +1,5 @@
 import React from 'react'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 import { strings } from '../config/lang'
 
 const About = () => (

@@ -13,7 +13,7 @@ import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar'
 import Info from '@mui/icons-material/Info'
-import Backdrop from '../elements/SimpleBackdrop'
+import Backdrop from '../components/SimpleBackdrop'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ReadIcon from '@mui/icons-material/Drafts'
 import UnreadIcon from '@mui/icons-material/Email'
@@ -37,7 +37,7 @@ import {
     ThumbDown
 } from '@mui/icons-material'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const Notifications = () => {

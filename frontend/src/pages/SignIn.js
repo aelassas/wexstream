@@ -21,8 +21,8 @@ import {
   VerifiedUser,
   Close
 } from '@mui/icons-material'
-import Error from '../elements/Error'
-import Header from '../elements/Header'
+import Error from '../components/Error'
+import Header from '../components/Header'
 import * as UserService from '../services/UserService'
 import * as MessageService from '../services/MessageService'
 import * as ConferenceService from '../services/ConferenceService'

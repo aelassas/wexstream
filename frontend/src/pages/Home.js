@@ -28,10 +28,10 @@ import {
 import moment from 'moment'
 import 'moment/locale/fr'
 import 'moment/locale/ar'
-import Avatar from '../elements/Avatar'
+import Avatar from '../components/Avatar'
 import { PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
-import Members from '../elements/Members'
-import Master from '../elements/Master'
+import Members from '../components/Members'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const Home = () => {

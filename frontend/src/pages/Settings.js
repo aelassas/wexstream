@@ -23,10 +23,10 @@ import {
     DialogContent,
     DialogActions,
 } from '@mui/material'
-import Backdrop from '../elements/SimpleBackdrop'
-import Avatar from '../elements/Avatar'
+import Backdrop from '../components/SimpleBackdrop'
+import Avatar from '../components/Avatar'
 import validator from 'validator'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const Settings = () => {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as Helper from '../common/Helper'
-import Backdrop from '../elements/SimpleBackdrop'
-import Error from '../elements/Error'
+import Backdrop from '../components/SimpleBackdrop'
+import Error from '../components/Error'
 import {
     Input,
     InputLabel,
@@ -14,7 +14,7 @@ import {
     Checkbox,
     Link
 } from '@mui/material'
-import Header from '../elements/Header'
+import Header from '../components/Header'
 
 const SignUp = () => {
     const [fullName, setFullName] = useState('')

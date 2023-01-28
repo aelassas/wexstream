@@ -7,8 +7,8 @@ import { getConnection, getConnectionIds, deleteConnection, connect } from '../s
 import { notify, getNotification, getNotificationCounter, deleteNotification, approve, decline } from '../services/NotificationService'
 import { getConferences, deleteConference } from '../services/ConferenceService'
 import { deleteSpeakerEntries } from '../services/TimelineService'
-import Backdrop from '../elements/SimpleBackdrop'
-import Avatar from '../elements/Avatar'
+import Backdrop from '../components/SimpleBackdrop'
+import Avatar from '../components/Avatar'
 import {
     Typography,
     Card,
@@ -47,11 +47,11 @@ import {
 import moment from 'moment'
 import 'moment/locale/fr'
 import 'moment/locale/ar'
-import MessageForm from '../elements/MessageForm'
+import MessageForm from '../components/MessageForm'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
-import Members from '../elements/Members'
+import Members from '../components/Members'
 import * as Helper from '../common/Helper'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 
 const Profile = () => {
     const [user, setUser] = useState()

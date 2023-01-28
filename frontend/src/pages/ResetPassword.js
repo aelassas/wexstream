@@ -9,8 +9,8 @@ import {
     Input,
     Button
 } from '@mui/material'
-import Error from '../elements/Error'
-import Master from '../elements/Master'
+import Error from '../components/Error'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const ResetPassword = () => {

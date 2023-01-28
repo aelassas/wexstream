@@ -1,6 +1,6 @@
 import React from 'react'
 import { strings } from '../config/lang'
-import Master from '../elements/Master.js'
+import Master from '../components/Master.js'
 
 
 const Contact = () => (

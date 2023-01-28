@@ -3,9 +3,9 @@ import { strings } from '../config/lang'
 import * as UserService from '../services/UserService'
 import * as ConnectionService from '../services/ConnectionService'
 import * as NotificationService from '../services/NotificationService'
-import Backdrop from '../elements/SimpleBackdrop'
-import MessageForm from '../elements/MessageForm'
-import Avatar from '../elements/Avatar'
+import Backdrop from '../components/SimpleBackdrop'
+import MessageForm from '../components/MessageForm'
+import Avatar from '../components/Avatar'
 import moment from 'moment'
 import 'moment/locale/fr'
 import {
@@ -34,7 +34,7 @@ import {
     Link as LinkIcon
 } from '@mui/icons-material'
 import { isMobile, PAGE_TOP_OFFSET, PAGE_FETCH_OFFSET } from '../config/env'
-import Master from '../elements/Master'
+import Master from '../components/Master'
 import * as Helper from '../common/Helper'
 
 const Search = () => {
