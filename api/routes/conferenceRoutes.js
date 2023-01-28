@@ -3,7 +3,6 @@ import routeNames from '../config/conferenceRoutes.config.js'
 import authJwt from '../middlewares/authJwt.js'
 import * as conferenceController from '../controllers/conferenceController.js'
 
-
 const routes = express.Router()
 
 routes.route(routeNames.create).post(authJwt.verifyToken, conferenceController.create)
