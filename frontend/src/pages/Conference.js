@@ -345,20 +345,6 @@ const Conference = () => {
                                     return
                                 }
 
-                                // if (user._id === conference.speaker._id) {
-                                //     authorized = true
-                                // } else if (conference.isPrivate === false) {
-                                //     authorized = true
-                                // } else {
-                                //     let connection = null
-                                //     try {
-                                //         connection = await getConnection(conference.speaker._id, user._id)
-                                //     } catch (err) {
-                                //         Helper.error()
-                                //     }
-                                //     authorized = (connection && connection.isPending === false)
-                                // }
-
                                 let startConf = () => {
                                     setConference(conference)
 
