@@ -133,7 +133,7 @@ Below is the notifications page:
 <img src="https://wexstream.github.io/content/wexstream-9.png" width="900" />
 </p>
 
-From the messages page, the user can read and manage his notifications.
+From the notifications page, the user can read and manage his notifications.
 
 Below is the profile page:
 
@@ -165,7 +165,7 @@ Below is the dialog for creating a new video conference:
 <img src="https://wexstream.github.io/content/wexstream-13.png" width="900" />
 </p>
 
-The user inputs a required title, an optional desctiption and a flag that indicates that the video conference is private or public. If the video conference is private, it will be available to its network only. Otherwise if the video conference is public, it will be available to everyone.
+The user inputs a required title, an optional desctiption and a flag that indicates whether video conference is private or public. If the video conference is private, it will be available to its network only. Otherwise if the video conference is public, it will be available to everyone.
 
 Below is the conference page:
 
@@ -173,4 +173,4 @@ Below is the conference page:
 <img src="https://wexstream.github.io/content/wexstream-14.png" width="900" />
 </p>
 
-The user can will obtain a unique video conference URL that he can share with his network if the conference is private or everyone if the conference is public. The user can start/stop his camera, share his screen with the participants, protect his conferene with a password, raise/lower his hand, see the participants, send private messages to the participants and so on.
+The user will obtain a unique video conference URL that he can share with his network if the conference is private or everyone if the conference is public. The user can start/stop his camera, share his screen with the participants, protect his conferene with a password, raise/lower his hand, see the participants, send private messages to the participants and so on.
