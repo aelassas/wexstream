@@ -6,7 +6,7 @@ import Master from '../elements/Master'
 const NoMatch = (props) => {
 
     const noMatch = () => (
-        <div className='msg'>
+        <div className='content no-match'>
             <h2>{commonStrings.NO_MATCH}</h2>
             <p><Link href='/'>{commonStrings.GO_TO_HOME}</Link></p>
         </div>

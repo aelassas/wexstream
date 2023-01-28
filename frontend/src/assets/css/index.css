@@ -1,4 +1,7 @@
-html, body, .App, #root {
+html,
+body,
+.App,
+#root {
 	margin: 0;
 	padding: 0;
 	height: 100%;
@@ -23,6 +26,7 @@ html, body, .App, #root {
 		position: absolute !important;
 		right: 285px;
 	}
+
 	.live-btn-rtl {
 		position: absolute !important;
 		left: 280px;
@@ -36,16 +40,19 @@ html, body, .App, #root {
 		position: absolute !important;
 		right: 45px;
 	}
+
 	.live-btn-rtl {
 		position: absolute !important;
 		left: 45px;
 	}
+
 	.live-btn-mobile {
 		position: fixed !important;
 		bottom: 20px;
 		right: 20px;
 		background-color: #f50057 !important;
 	}
+
 	.live-btn-mobile-rtl {
 		position: fixed !important;
 		bottom: 20px;
@@ -193,6 +200,7 @@ html, body, .App, #root {
 		width: 350px;
 		margin: 5px;
 	}
+
 	.signin-form {
 		align-items: center;
 		justify-content: center;
@@ -203,6 +211,7 @@ html, body, .App, #root {
 		margin-left: calc(50% - 150px);
 		border: 1px solid rgba(0, 0, 0, 0.12);
 	}
+
 	.signin-form-rtl {
 		align-items: center;
 		justify-content: center;
@@ -213,13 +222,16 @@ html, body, .App, #root {
 		margin-right: calc(50% - 150px);
 		border: 1px solid rgba(0, 0, 0, 0.12);
 	}
+
 	.auth {
 		width: 350px;
 	}
+
 	.auth button {
 		display: block;
 		margin-bottom: 15px;
 	}
+
 	.signin-footer {
 		align-items: center;
 		justify-content: center;
@@ -228,6 +240,7 @@ html, body, .App, #root {
 		margin-top: 15px;
 		margin-left: calc(50% - 150px);
 	}
+
 	.signin-footer-rtl {
 		align-items: center;
 		justify-content: center;
@@ -244,6 +257,7 @@ html, body, .App, #root {
 	.signin-card {
 		display: none;
 	}
+
 	.signin-form {
 		align-items: center;
 		justify-content: center;
@@ -254,6 +268,7 @@ html, body, .App, #root {
 		margin-left: calc(50% - 150px);
 		border: 1px solid rgba(0, 0, 0, 0.12);
 	}
+
 	.signin-form-rtl {
 		align-items: center;
 		justify-content: center;
@@ -264,17 +279,21 @@ html, body, .App, #root {
 		margin-right: calc(50% - 150px);
 		border: 1px solid rgba(0, 0, 0, 0.12);
 	}
+
 	.auth {
 		width: 300px;
 	}
+
 	.auth button {
 		display: block;
 		margin-bottom: 15px;
 	}
+
 	.signin-footer {
 		margin-top: 15px;
 		margin-left: calc(50% - 68px);
 	}
+
 	.signin-footer-rtl {
 		margin-top: 15px;
 		margin-right: calc(50% - 68px);
@@ -347,6 +366,7 @@ html, body, .App, #root {
 		height: 730px;
 		padding: 30px;
 	}
+
 	.recaptcha {
 		margin-top: 25px;
 		margin-left: -10px;
@@ -367,6 +387,7 @@ html, body, .App, #root {
 		height: 750px;
 		padding: 30px;
 	}
+
 	.recaptcha {
 		margin-top: 25px;
 		margin-left: 85px;
@@ -422,24 +443,28 @@ html, body, .App, #root {
 		overflow-x: hidden;
 		padding-top: 15px;
 	}
+
 	.conf-share-btn {
 		position: absolute !important;
 		bottom: 80px;
 		right: 25px;
 		background-color: #131519 !important;
 	}
+
 	.conf-fullscreen-btn {
 		position: absolute !important;
 		bottom: 132px;
 		right: 25px;
 		background-color: #131519 !important;
 	}
+
 	.conf-mute-btn {
 		position: absolute !important;
 		bottom: 184px;
 		right: 25px;
 		background-color: #131519 !important;
 	}
+
 	.conf-actions {
 		position: absolute;
 		bottom: 80px;
@@ -456,6 +481,7 @@ html, body, .App, #root {
 		right: 20px;
 		background-color: #131519 !important;
 	}
+
 	.conf-actions {
 		position: absolute;
 		bottom: 25px;
@@ -549,7 +575,8 @@ html, body, .App, #root {
 	margin: 0 5px 0 5px;
 }
 
-.list-item-avatar, .list-item-avatar-rtl {
+.list-item-avatar,
+.list-item-avatar-rtl {
 	cursor: pointer;
 }
 
@@ -585,9 +612,12 @@ html, body, .App, #root {
 /* Device width is greater than or equal to 960px */
 
 @media only screen and (min-width: 960px) {
-	.notifications-actions, .notifications-actions-rtl {
+
+	.notifications-actions,
+	.notifications-actions-rtl {
 		width: 850px;
 	}
+
 	.notifications-list {
 		position: absolute !important;
 		top: 70px;
@@ -600,9 +630,12 @@ html, body, .App, #root {
 /* Device width is lower than or equal to 960px */
 
 @media only screen and (max-width: 960px) {
-	.notifications-actions, .notifications-actions-rtl {
+
+	.notifications-actions,
+	.notifications-actions-rtl {
 		width: 300px;
 	}
+
 	.notifications-list {
 		position: absolute !important;
 		top: 70px;
@@ -632,7 +665,8 @@ html, body, .App, #root {
 
 /* About, ToS */
 
-.about, .tos {
+.about,
+.tos {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -744,6 +778,7 @@ html, body, .App, #root {
 		width: 330px;
 		padding: 30px;
 	}
+
 	.net-settings-form {
 		align-items: center;
 		justify-content: center;
@@ -753,9 +788,11 @@ html, body, .App, #root {
 		padding: 30px;
 		margin-top: 30px;
 	}
+
 	.net-settings-ctn {
 		height: 240px;
 	}
+
 	.dz-settings-form {
 		align-items: center;
 		justify-content: center;
@@ -765,6 +802,7 @@ html, body, .App, #root {
 		padding: 30px;
 		margin-top: 30px;
 	}
+
 	.reset-password-btn {
 		margin-top: 10px !important;
 	}
@@ -780,6 +818,7 @@ html, body, .App, #root {
 		width: 450px;
 		padding: 30px;
 	}
+
 	.net-settings-form {
 		align-items: center;
 		justify-content: center;
@@ -789,9 +828,11 @@ html, body, .App, #root {
 		padding: 30px;
 		margin-top: 30px;
 	}
+
 	.net-settings-ctn {
 		height: 190px;
 	}
+
 	.dz-settings-form {
 		align-items: center;
 		justify-content: center;
@@ -824,6 +865,7 @@ html, body, .App, #root {
 		transform: translateX(-25%);
 		margin: 20px 0 20px 0;
 	}
+
 	.profile-avatar-rtl {
 		position: relative;
 		right: 50%;
@@ -831,12 +873,14 @@ html, body, .App, #root {
 		margin: 20px 0 20px 0;
 		text-align: initial;
 	}
+
 	.profile-avatar-settings {
 		position: relative;
 		left: 50%;
 		transform: translateX(-33%);
 		margin: 20px 0 20px 0;
 	}
+
 	.profile-avatar-settings-rtl {
 		position: relative;
 		right: 50%;
@@ -844,6 +888,7 @@ html, body, .App, #root {
 		margin: 20px 0 20px 0;
 		text-align: initial;
 	}
+
 	.dz-settings-ctn {
 		height: 230px;
 	}
@@ -856,6 +901,7 @@ html, body, .App, #root {
 		transform: translateX(-25%);
 		margin: 20px 0 20px 0;
 	}
+
 	.profile-avatar-rtl {
 		position: relative;
 		right: 50%;
@@ -863,12 +909,14 @@ html, body, .App, #root {
 		margin: 20px 0 20px 0;
 		text-align: initial;
 	}
+
 	.profile-avatar-settings {
 		position: relative;
 		left: 50%;
 		transform: translateX(-25%);
 		margin: 20px 0 20px 0;
 	}
+
 	.profile-avatar-settings-rtl {
 		position: relative;
 		right: 50%;
@@ -876,6 +924,7 @@ html, body, .App, #root {
 		margin: 20px 0 20px 0;
 		text-align: initial;
 	}
+
 	.dz-settings-ctn {
 		height: 180px;
 	}
@@ -901,7 +950,8 @@ html, body, .App, #root {
 
 /* Avatar */
 
-.avatar, .avatar-large {
+.avatar,
+.avatar-large {
 	width: 170px !important;
 	height: 170px !important;
 }
@@ -956,6 +1006,7 @@ html, body, .App, #root {
 		overflow-x: hidden;
 		margin-left: 5px;
 	}
+
 	.profile-content-rtl {
 		position: absolute;
 		top: 55px;
@@ -966,6 +1017,7 @@ html, body, .App, #root {
 		overflow-x: hidden;
 		margin-right: 5px;
 	}
+
 	.profile-container {
 		position: absolute;
 		top: 0;
@@ -976,6 +1028,7 @@ html, body, .App, #root {
 		overflow-x: hidden;
 		margin-left: 5px;
 	}
+
 	.profile-container-rtl {
 		position: absolute;
 		top: 0;
@@ -986,29 +1039,35 @@ html, body, .App, #root {
 		overflow-x: hidden;
 		margin-right: 5px;
 	}
+
 	.profile-header {
 		width: 360px;
 		text-align: center;
 	}
+
 	.profile-header-rtl {
 		width: 360px;
 		text-align: center;
 	}
+
 	.profile-info {
 		margin-top: 15px;
 		width: 360px;
 		word-break: break-all;
 		text-align: left;
 	}
+
 	.profile-info-rtl {
 		margin-top: 15px;
 		width: 360px;
 		word-break: break-all;
 		text-align: right;
 	}
+
 	.profile-info-card {
 		width: 360px;
 	}
+
 	.profile-card {
 		width: 300px;
 		display: inline-block;
@@ -1016,6 +1075,7 @@ html, body, .App, #root {
 		margin-top: 15px;
 		margin-left: 15px;
 	}
+
 	.profile-card-rtl {
 		width: 300px;
 		display: inline-block;
@@ -1023,31 +1083,38 @@ html, body, .App, #root {
 		margin-top: 15px;
 		margin-right: 15px;
 	}
+
 	.profile-info-ln {
 		margin-top: 7px;
 		margin-left: -15px;
 	}
+
 	.profile-info-ln-rtl {
 		margin-top: 7px;
 		margin-right: -15px;
 	}
+
 	.profile-timeline {
 		display: inline-block;
 	}
+
 	.profile-timeline-rtl {
 		overflow-x: hidden;
 		overflow-y: auto;
 	}
+
 	.conf-list {
 		width: 350px;
 		display: inline-block;
 		overflow-wrap: break-word;
 	}
+
 	.conf-list-rtl {
 		width: 350px;
 		display: inline-block;
 		overflow-wrap: break-word;
 	}
+
 	.profile-timeline-item-title {
 		display: inline-block;
 		height: 32px;
@@ -1067,6 +1134,7 @@ html, body, .App, #root {
 		left: 15px;
 		text-align: center;
 	}
+
 	.profile-header-rtl {
 		width: 350px;
 		position: absolute;
@@ -1074,21 +1142,25 @@ html, body, .App, #root {
 		right: 15px;
 		text-align: center;
 	}
+
 	.profile-info {
 		margin-top: 15px;
 		width: 350px;
 		word-break: break-all;
 		text-align: left;
 	}
+
 	.profile-info-rtl {
 		margin-top: 15px;
 		width: 350px;
 		word-break: break-all;
 		text-align: right;
 	}
+
 	.profile-info-card {
 		width: 350px;
 	}
+
 	.profile-card {
 		width: 350px;
 		display: inline-block;
@@ -1096,6 +1168,7 @@ html, body, .App, #root {
 		margin-left: calc(50% - 175px) !important;
 		text-align: center;
 	}
+
 	.profile-card-rtl {
 		width: 350px;
 		display: inline-block;
@@ -1103,12 +1176,15 @@ html, body, .App, #root {
 		margin-right: calc(50% - 175px) !important;
 		text-align: center;
 	}
+
 	.profile-info-ln {
 		margin-top: 7px;
 	}
+
 	.profile-info-ln-rtl {
 		margin-top: 7px;
 	}
+
 	.profile-timeline {
 		position: absolute;
 		top: 0;
@@ -1119,6 +1195,7 @@ html, body, .App, #root {
 		overflow-y: auto;
 		margin-left: -100px;
 	}
+
 	.profile-timeline-rtl {
 		position: absolute;
 		top: 0;
@@ -1129,18 +1206,21 @@ html, body, .App, #root {
 		overflow-y: auto;
 		margin-right: -100px;
 	}
+
 	.conf-list {
 		width: 350px;
 		display: inline-block;
 		margin-left: calc(50% - 190px) !important;
 		overflow-wrap: break-word;
 	}
+
 	.conf-list-rtl {
 		width: 350px;
 		display: inline-block;
 		margin-right: calc(50% - 190px) !important;
 		overflow-wrap: break-word;
 	}
+
 	.profile-timeline-item-title {
 		display: inline-block;
 		height: 32px;
@@ -1157,12 +1237,14 @@ html, body, .App, #root {
 		margin-left: calc(50% - 250px) !important;
 		overflow-wrap: break-word;
 	}
+
 	.conf-list-rtl {
 		width: 550px;
 		display: inline-block;
 		margin-right: calc(50% - 250px) !important;
 		overflow-wrap: break-word;
 	}
+
 	.profile-timeline-item-title {
 		display: inline-block;
 		height: 32px;
@@ -1219,6 +1301,7 @@ html, body, .App, #root {
 		left: 0;
 		margin-left: calc(50% - 175px);
 	}
+
 	.home-timeline-rtl {
 		position: absolute;
 		overflow-y: auto;
@@ -1228,16 +1311,19 @@ html, body, .App, #root {
 		left: 0;
 		margin-right: calc(50% - 175px);
 	}
+
 	.timeline-card {
 		margin-top: 15px;
 		text-align: center;
 		width: 250px;
 		margin-left: 75px;
 	}
+
 	.timeline-list {
 		width: 350px;
 		overflow-wrap: break-word;
 	}
+
 	.timeline-item-title {
 		display: inline-block;
 		height: 32px;
@@ -1259,6 +1345,7 @@ html, body, .App, #root {
 		left: 0;
 		margin-left: calc(50% - 275px);
 	}
+
 	.home-timeline-rtl {
 		position: absolute;
 		overflow-y: auto;
@@ -1268,16 +1355,19 @@ html, body, .App, #root {
 		left: 0;
 		margin-right: calc(50% - 275px);
 	}
+
 	.timeline-card {
 		margin-top: 15px;
 		text-align: center;
 		width: 400px;
 		margin-left: 75px;
 	}
+
 	.timeline-list {
 		width: 500px;
 		overflow-wrap: break-word;
 	}
+
 	.timeline-item-title {
 		display: inline-block;
 		height: 32px;
@@ -1352,11 +1442,16 @@ html, body, .App, #root {
 
 /* Contact, Donate */
 
-.contact, .donate {
+.contact,
+.donate {
 	position: absolute;
 	top: 0;
 	right: 0;
 	left: 0;
 	margin: 15px 40px 0 40px;
 	padding-bottom: 80px;
+}
+
+.no-match {
+	margin-left: 15px;
 }
