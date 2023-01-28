@@ -65,4 +65,112 @@ You can find instructions [here](https://github.com/aelassas/wexstream/wiki/Run-
 
 # Quick Overview
 
-TODO
+Below is the login page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-1.png" width="900" />
+</p>
+
+The user can authenticate through Google, Facebook or email by creating an account from the sign up page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-1-bis.png" width="900" />
+</p>
+
+Below is the about page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-2.png" width="900" />
+</p>
+
+Below is the terms of service page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-3.png" width="900" />
+</p>
+
+Below is the contact page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-4.png" width="900" />
+</p>
+
+When the user signs in, he arrives to the home page where he can see his timeline:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-5.png" width="900" />
+</p>
+
+The timeline contains the video conferences of the user's network.
+
+Below is the network page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-6.png" width="900" />
+</p>
+
+From the network page, the user can search for users and send connection requests or private messages.
+
+Below is the connections page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-7.png" width="900" />
+</p>
+
+The connections page contains the user's network.
+
+Below is the messages page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-8.png" width="900" />
+</p>
+
+From the messages page, the user can read and manage his messages or send new messages.
+
+Below is the notifications page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-9.png" width="900" />
+</p>
+
+From the messages page, the user can read and manage his notifications.
+
+Below is the profile page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-10.png" width="900" />
+</p>
+
+From the profile page, the user can see the private and public video conferences of a member of his network or public video conferences of a user outside his network.
+
+Below is the settings page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-11.png" width="900" />
+</p>
+
+From the settings page, the user can manage his settings or delete his account.
+
+Below is the reset password page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-12.png" width="900" />
+</p>
+
+From this page, the user who signed up with his email can change his password.
+
+Below is the dialog for creating a new video conference:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-13.png" width="900" />
+</p>
+
+The user inputs a required title, an optional desctiption and a flag that indicates that the video conference is private or public. If the video conference is private, it will be available to its network only. Otherwise if the video conference is public, it will be available to everyone.
+
+Below is the conference page:
+
+<p align="center">
+<img src="https://wexstream.github.io/content/wexstream-14.png" width="900" />
+</p>
+
+The user can will obtain a unique video conference URL that he can share with his network if the conference is private or everyone if the conference is public. The user can start/stop his camera, share his screen with the participants, protect his conferene with a password, raise/lower his hand, see the participants, send private messages to the participants and so on.
