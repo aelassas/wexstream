@@ -345,7 +345,7 @@ const Conference = () => {
                                     return
                                 }
 
-                                let startConf = () => {
+                                const startConf = () => {
                                     setConference(conference)
 
                                     const script = document.createElement('script')
