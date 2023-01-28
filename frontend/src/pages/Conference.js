@@ -284,7 +284,6 @@ const Conference = () => {
             const fullscreen = JSON.parse(window.android.fullscreen())
             setFullscreen(fullscreen)
         } else if (isMobile()) {
-
             if (fullscreen) {
                 setFullscreen(false)
                 exitFullscreen()
@@ -449,7 +448,7 @@ const Conference = () => {
     const size = 42, round = true
 
     return (
-        <Master onLoad={onLoad} hidden={fullscreen} hideLiveButton={!error && !notFound && !unAuthorized && !closed && !externalApiError} strict>
+        <Master onLoad={onLoad} hideHeader={fullscreen} hideLiveButton={!error && !notFound && !unAuthorized && !closed && !externalApiError} strict>
             <div className={fullscreen ? "content-full-screen" : "content"} >
                 <div className="conf">
                     {
