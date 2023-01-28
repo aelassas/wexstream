@@ -63,14 +63,13 @@ const Conference = () => {
 
         const options = {
             roomName: conference._id,
-            // noSsl: false,
             width: '100%',
             height: '100%',
             configOverwrite: {
                 prejoinPageEnabled: false,
                 useHostPageLocalStorage: true,
-                // defaultLanguage: user.language,
-                disableDeepLinking: true
+                disableDeepLinking: true,
+                disabledNotifications: ['dialog.thankYou']
             },
             interfaceConfigOverwrite: {
                 // overwrite interface properties
