@@ -361,15 +361,11 @@ const Conference = () => {
                                         if (window.JitsiMeetExternalAPI) {
                                             if (!conference.isLive && (conference.speaker._id === user._id)) {
                                                 updateConf(conference, { isLive: true, broadcastedAt: Date.now() }, () => {
-                                                    // setUserName(getUsername())
                                                     setConferenceUrl(window.location.href)
-                                                    // startConference(user, conference)
                                                     setStartConf(true)
                                                 })
                                             } else {
-                                                // setUserName(getUsername())
                                                 setConferenceUrl(window.location.href)
-                                                // startConference(user, conference)
                                                 setStartConf(true)
                                             }
                                         } else {
