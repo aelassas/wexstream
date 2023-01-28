@@ -387,7 +387,7 @@ const Notifications = () => {
                             <CardContent>
                                 <Tooltip title={strings.DELETE_ALL}>
                                     <IconButton
-                                        color="error"
+                                        color="default"
                                         onClick={handleDeleteAllNotifications}
                                     >
                                         <DeleteIcon />
@@ -474,7 +474,7 @@ const Notifications = () => {
                                                             }
                                                             <Tooltip title={strings.DELETE}>
                                                                 <IconButton
-                                                                    color="error"
+                                                                    color="default"
                                                                     data-id={notification._id}
                                                                     onClick={handleDeleteNotification}
                                                                 >
@@ -538,7 +538,7 @@ const Notifications = () => {
                                                 }
                                                 <Tooltip title={strings.DELETE}>
                                                     <IconButton
-                                                        color="error"
+                                                        color="default"
                                                         data-id={notification._id}
                                                         onClick={handleDeleteNotification}
                                                     >
