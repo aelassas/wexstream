@@ -1,4 +1,4 @@
-[![Frontend CI](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml/badge.svg)](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml) [![open in vscode](https://img.shields.io/badge/open%20in-vscode-1f425f.svg)](https://vscode.dev/github/aelassas/wexstream)
+[![Frontend CI](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml/badge.svg)](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml) [![Open in vscode](https://img.shields.io/badge/Open%20in-vscode-1f425f.svg)](https://vscode.dev/github/aelassas/wexstream)
 
 <p align="center">
 <img src="https://wexstream.github.io/content/readme.png" width="900" />
