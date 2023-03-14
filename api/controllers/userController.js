@@ -355,7 +355,6 @@ export const resendLink = (req, res, next) => {
         // user has been already verified
         else if (user.verified) {
             return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED))
-
         }
         // send verification link
         else {
