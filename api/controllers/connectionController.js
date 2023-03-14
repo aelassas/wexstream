@@ -109,7 +109,7 @@ export const getConnection = (req, res) => {
 
 export const getConnections = async (req, res) => {
     try {
-        const userId = mongoose.Types.ObjectId(req.params.userId)
+        const userId = new mongoose.Types.ObjectId(req.params.userId)
         const page = parseInt(req.params.page)
         const pageSize = parseInt(req.params.pageSize)
 

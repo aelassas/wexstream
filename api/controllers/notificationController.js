@@ -255,7 +255,7 @@ export const decline = (req, res) => {
 
 export const getNotifications = async (req, res) => {
     try {
-        const userId = mongoose.Types.ObjectId(req.params.userId)
+        const userId = new mongoose.Types.ObjectId(req.params.userId)
         const page = parseInt(req.params.page)
         const pageSize = parseInt(req.params.pageSize)
 
@@ -374,7 +374,7 @@ export const markAsRead = (req, res) => {
 
 export const markAllAsRead = (req, res) => {
     const bulk = Notification.collection.initializeOrderedBulkOp()
-    bulk.find({ user: mongoose.Types.ObjectId(req.params.userId), isRead: false }).update({ $set: { isRead: true } })
+    bulk.find({ user: new mongoose.Types.ObjectId(req.params.userId), isRead: false }).update({ $set: { isRead: true } })
     bulk.execute((err) => {
         if (err) {
             console.error(strings.DB_ERROR, err)

@@ -326,7 +326,7 @@ export const confirmEmail = (req, res) => {
                     // change verified to true
                     user.verified = true
                     user.verifiedAt = Date.now()
-                    user.save((err) => {
+                    user.save().catch((err) => {
                         // error occur
                         if (err) {
                             console.error('[user.confirmEmail] ' + strings.DB_ERROR + ' ' + req.params, err)
@@ -361,7 +361,7 @@ export const resendLink = (req, res, next) => {
         else {
             // generate token and save
             const token = new Token({ user: user._id, token: crypto.randomBytes(16).toString('hex') })
-            token.save((err) => {
+            token.save().catch((err) => {
                 if (err) {
                     console.error('[user.resendLink] ' + strings.DB_ERROR, req.params)
                     return res.status(500).send(getStatusMessage(user.language, err.message))
@@ -675,7 +675,7 @@ export const validateEmail = (req, res) => {
 export const search = async (req, res) => {
 
     try {
-        const userId = mongoose.Types.ObjectId(req.params.userId)
+        const userId = new mongoose.Types.ObjectId(req.params.userId)
         const searchKeyword = escapeStringRegexp(req.query.s || '')
         const options = 'i'
         const page = parseInt(req.params.page)
@@ -713,7 +713,7 @@ export const search = async (req, res) => {
                         {
                             fullName: { $regex: searchKeyword, $options: options }
                         },
-                        { _id: { $ne: mongoose.Types.ObjectId(req.params.userId) } },
+                        { _id: { $ne: new mongoose.Types.ObjectId(req.params.userId) } },
                         { blockedUser: { $eq: undefined } }
                     ]
                 }
@@ -851,7 +851,7 @@ export const block = (req, res) => {
                 blockedUser.save()
                     .then(async () => {
                         const notifications = await Notification.aggregate([
-                            { $match: { user: mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: mongoose.Types.ObjectId(req.params.userId), isRead: false } }
+                            { $match: { user: new mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: new mongoose.Types.ObjectId(req.params.userId), isRead: false } }
                         ])
 
                         if (notifications.length > 0) {
@@ -881,7 +881,7 @@ export const unblock = (req, res) => {
         .then(async result => {
             if (result.deletedCount === 1) {
                 const notifications = await Notification.aggregate([
-                    { $match: { user: mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: mongoose.Types.ObjectId(req.params.userId), isRead: false } }
+                    { $match: { user: new mongoose.Types.ObjectId(req.params.blockedUserId), senderUser: new mongoose.Types.ObjectId(req.params.userId), isRead: false } }
                 ])
 
                 if (notifications.length > 0) {

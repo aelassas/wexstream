@@ -29,7 +29,7 @@ export const create = (req, res) => {
                                             .then(entry => {
                                                 if (!entry) {
                                                     const timelineEntry = new Timeline({ speaker: req.params.speakerId, subscriber: connection.user._id, conference: req.params.conferenceId })
-                                                    timelineEntry.save(() => {
+                                                    timelineEntry.save().then(() => {
                                                         if (req.params.isStarted) {
                                                             Notification.findOne({ $and: [{ user: connection.user._id }, { $or: [{ message: { $regex: regex, $options: 'i' } }, { link: { $regex: regex, $options: 'i' } }] }] })
                                                                 .then(notification => {
@@ -109,7 +109,7 @@ export const getEntries = async (req, res) => {
         const pageSize = parseInt(req.params.pageSize)
 
         const entries = await Timeline.aggregate([
-            { $match: { subscriber: mongoose.Types.ObjectId(req.params.subscriberId) } },
+            { $match: { subscriber: new mongoose.Types.ObjectId(req.params.subscriberId) } },
             {
                 $lookup: {
                     from: 'User',

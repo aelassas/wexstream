@@ -120,7 +120,7 @@ export const getMessages = async (req, res) => {
         const pageSize = parseInt(req.params.pageSize)
 
         const messages = await Message.aggregate([
-            { $match: { to: mongoose.Types.ObjectId(req.params.userId) } },
+            { $match: { to: new mongoose.Types.ObjectId(req.params.userId) } },
             {
                 $lookup: {
                     from: 'User',
