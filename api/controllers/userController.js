@@ -302,92 +302,105 @@ export const signup = (req, res) => {
 }
 
 export const confirmEmail = (req, res) => {
-    Token.findOne({ token: req.params.token }, (err, token) => {
-        User.findOne({ email: req.params.email }, (err, user) => {
-            strings.setLanguage(user.language)
-            // token is not found into database i.e. token may have expired 
-            if (!token) {
-                console.error(strings.ACCOUNT_VALIDATION_LINK_EXPIRED, req.params)
-                return res.status(400).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_LINK_EXPIRED))
-            }
-            // if token is found then check valid user 
-            else {
-                // not valid user
-                if (!user) {
-                    console.error('[user.confirmEmail] User not found', req.params)
-                    return res.status(401).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_LINK_ERROR))
-                }
-                // user is already verified
-                else if (user.verified) {
-                    return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED))
-                }
-                // verify user
-                else {
-                    // change verified to true
-                    user.verified = true
-                    user.verifiedAt = Date.now()
-                    user.save().catch((err) => {
-                        // error occur
-                        if (err) {
-                            console.error('[user.confirmEmail] ' + strings.DB_ERROR + ' ' + req.params, err)
-                            return res.status(500).send(getStatusMessage(user.language, err.message))
+    Token.findOne({ token: req.params.token })
+        .then(token => {
+            User.findOne({ email: req.params.email })
+                .then(user => {
+                    strings.setLanguage(user.language)
+                    // token is not found into database i.e. token may have expired 
+                    if (!token) {
+                        console.error(strings.ACCOUNT_VALIDATION_LINK_EXPIRED, req.params)
+                        return res.status(400).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_LINK_EXPIRED))
+                    }
+                    // if token is found then check valid user 
+                    else {
+                        // not valid user
+                        if (!user) {
+                            console.error('[user.confirmEmail] User not found', req.params)
+                            return res.status(401).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_LINK_ERROR))
                         }
-                        // account successfully verified
+                        // user is already verified
+                        else if (user.verified) {
+                            return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED))
+                        }
+                        // verify user
                         else {
-                            return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_SUCCESS))
-                        }
-                    })
+                            // change verified to true
+                            user.verified = true
+                            user.verifiedAt = Date.now()
+                            user.save()
+                                .then(() => res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_SUCCESS)))
+                                .catch((err) => {
+                                    // error occur
+                                    console.error('[user.confirmEmail] ' + strings.DB_ERROR + ' ' + req.params, err)
+                                    return res.status(500).send(getStatusMessage(user.language, err.message))
+                                })
 
-                }
-            }
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error(strings.DB_ERROR, err)
+                    res.status(400).send(strings.DB_ERROR + err)
+                })
         })
-    })
+        .catch(err => {
+            console.error(strings.DB_ERROR, err)
+            res.status(400).send(strings.DB_ERROR + err)
+        })
 }
 
 export const resendLink = (req, res, next) => {
-    User.findOne({ email: req.body.email }, (err, user) => {
+    User.findOne({ email: req.body.email })
+        .then(user => {
 
-        // user is not found into database
-        if (!user) {
-            console.error('[user.resendLink] User not found:', req.params)
-            return res.status(400).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_RESEND_ERROR))
-        }
-        // user has been already verified
-        else if (user.verified) {
-            return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED))
-        }
-        // send verification link
-        else {
-            // generate token and save
-            const token = new Token({ user: user._id, token: crypto.randomBytes(16).toString('hex') })
-            token.save().catch((err) => {
-                if (err) {
-                    console.error('[user.resendLink] ' + strings.DB_ERROR, req.params)
-                    return res.status(500).send(getStatusMessage(user.language, err.message))
-                }
+            // user is not found into database
+            if (!user) {
+                console.error('[user.resendLink] User not found:', req.params)
+                return res.status(400).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_RESEND_ERROR))
+            }
+            // user has been already verified
+            else if (user.verified) {
+                return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_ACCOUNT_VERIFIED))
+            }
+            // send verification link
+            else {
+                // generate token and save
+                const token = new Token({ user: user._id, token: crypto.randomBytes(16).toString('hex') })
+                token.save()
+                    .then(() => {
+                        // Send email
+                        const transporter = nodemailer.createTransport({
+                            host: SMTP_HOST,
+                            port: SMTP_PORT,
+                            auth: {
+                                user: SMTP_USER,
+                                pass: SMTP_PASS
+                            }
+                        })
 
-                // Send email
-                const transporter = nodemailer.createTransport({
-                    host: SMTP_HOST,
-                    port: SMTP_PORT,
-                    auth: {
-                        user: SMTP_USER,
-                        pass: SMTP_PASS
-                    }
-                })
-
-                strings.setLanguage(user.language)
-                const mailOptions = { from: SMTP_FROM, to: user.email, subject: strings.ACCOUNT_VALIDATION_SUBJECT, html: '<p ' + (user.language === 'ar' ? 'dir="rtl"' : ')') + '>' + strings.HELLO + user.fullName + ',<br> <br>' + strings.ACCOUNT_VALIDATION_LINK + '<br><br>http' + (HTTPS ? 's' : '') + ':\/\/' + req.headers.host + '\/api/confirm-email\/' + user.email + '\/' + token.token + '<br><br>' + strings.REGARDS + '<br>' + '</p>' }
-                transporter.sendMail(mailOptions, (err, info) => {
-                    if (err) {
-                        console.error('[user.resendLink] ' + strings.SMTP_ERROR, req.params)
-                        return res.status(500).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_TECHNICAL_ISSUE + ' ' + err.response))
-                    }
-                    return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_1 + user.email + strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_2))
-                })
-            })
-        }
-    })
+                        strings.setLanguage(user.language)
+                        const mailOptions = { from: SMTP_FROM, to: user.email, subject: strings.ACCOUNT_VALIDATION_SUBJECT, html: '<p ' + (user.language === 'ar' ? 'dir="rtl"' : ')') + '>' + strings.HELLO + user.fullName + ',<br> <br>' + strings.ACCOUNT_VALIDATION_LINK + '<br><br>http' + (HTTPS ? 's' : '') + ':\/\/' + req.headers.host + '\/api/confirm-email\/' + user.email + '\/' + token.token + '<br><br>' + strings.REGARDS + '<br>' + '</p>' }
+                        transporter.sendMail(mailOptions, (err, info) => {
+                            if (err) {
+                                console.error('[user.resendLink] ' + strings.SMTP_ERROR, req.params)
+                                return res.status(500).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_TECHNICAL_ISSUE + ' ' + err.response))
+                            }
+                            return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_1 + user.email + strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_2))
+                        })
+                    })
+                    .catch(err => {
+                        if (err) {
+                            console.error('[user.resendLink] ' + strings.DB_ERROR, req.params)
+                            return res.status(500).send(getStatusMessage(user.language, err.message))
+                        }
+                    })
+            }
+        })
+        .catch(err => {
+            console.error(strings.DB_ERROR, err)
+            res.status(400).send(strings.DB_ERROR + err)
+        })
 }
 
 export const getUser = (req, res) => {
