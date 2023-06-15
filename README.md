@@ -53,17 +53,12 @@ The user has the right to access, modify, rectify and delete his personal data.
 
 The user is expressly forbidden to publish any content, engage in any activity, stream any feed or create any account that is offensive, pornographic, violent, abusive, defamatory, threatening or obscene, illegal or intended to promote or commit an illegal act, including violations of intellectual property rights, privacy rights or proprietary rights, denigrating, slanderous, racist, xenophobic, contrary to morality and good morals, infringing content, undermining public order or rights, likely to infringe the rights, reputation and image of the platform and more generally, the content of which would violate the law and/or regulations, in particular of a criminal nature, includes his password, or purposely includes someone else's password, personal data, or is intended to solicit such data, misleads or deceives, or is likely to mislead or deceive, others as to his identity or affiliation with another person or organisation, breaches any of his obligations under the terms of use of the platform or any of its incorporated policies.
 
-# Installation
+# Links
 
-You can find installation instructions [here](https://github.com/aelassas/wexstream/wiki/Installation).
-
-# Run from Source Code
-
-You can find instructions [here](https://github.com/aelassas/wexstream/wiki/Run-from-Source-Code).
-
-# Terms of Service
-
-You can find the terms of service [here](https://github.com/aelassas/wexstream/wiki/Terms-of-Service).
+* [Installing](https://github.com/aelassas/wexcommerce/wiki/Installing)
+* [Run from Source](https://github.com/aelassas/wexcommerce/wiki/Run-from-Source)
+* [Documentation](https://github.com/aelassas/wexcommerce/wiki)
+* [Terms of Service](https://github.com/aelassas/wexstream/wiki/Terms-of-Service)
 
 # Quick Overview
 
