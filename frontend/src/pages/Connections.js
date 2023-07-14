@@ -507,7 +507,7 @@ const Connections = () => {
                                     (
                                         <Button
                                             variant="contained"
-                                            color={!connection.isPending ? "error" : (connection.isPending && connection.isApprover ? "default" : "primary")}
+                                            color={!connection.isPending ? "error" : (connection.isPending && connection.isApprover ? "inherit" : "primary")}
                                             size="small"
                                             data-id={connection.user._id}
                                             data-is-approver={!connection.isApprover}

@@ -4,7 +4,7 @@ import authJwt from '../middlewares/authJwt.js'
 import strings from '../config/app.config.js'
 import mongoose from 'mongoose'
 
-export const connect =  (req, res) => {
+export const connect = (req, res) => {
     User.findById(req.body._id)
         .then((user) => {
             if (user) {
@@ -56,7 +56,7 @@ export const get = (req, res) => {
         })
 }
 
-export const getConnectionIds=(req, res) => {
+export const getConnectionIds = (req, res) => {
     Connection.findOne({ user: req.params.userId, connection: req.params.connectionId })
         .then((senderConnection) => {
             if (!senderConnection) {
@@ -77,21 +77,19 @@ export const getConnectionIds=(req, res) => {
 }
 
 export const deleteConnection = (req, res) => {
-    Connection.deleteOne({ user: req.params.userId, connection: req.params.connectionId },
-        (err, senderRes) => {
-            if (err) {
-                console.error(strings.DB_DELETE_ERROR, err)
-                res.status(400).send(strings.DB_DELETE_ERROR + err)
-            } else {
-                Connection.deleteOne({ user: req.params.connectionId, connection: req.params.userId },
-                    (err, approverRes) => {
-                        if (err) {
-                            res.status(400).send(strings.DB_DELETE_ERROR + err)
-                        } else {
-                            res.sendStatus(200)
-                        }
-                    })
-            }
+    Connection.deleteOne({ user: req.params.userId, connection: req.params.connectionId })
+        .then(() => {
+            Connection.deleteOne({ user: req.params.connectionId, connection: req.params.userId })
+                .then(() => {
+                    res.sendStatus(200)
+                })
+                .catch((err) => {
+                    res.status(400).send(strings.DB_DELETE_ERROR + err)
+                })
+        })
+        .catch((err) => {
+            console.error(strings.DB_DELETE_ERROR, err)
+            res.status(400).send(strings.DB_DELETE_ERROR + err)
         })
 }
 
@@ -114,7 +112,7 @@ export const getConnections = async (req, res) => {
         const pageSize = parseInt(req.params.pageSize)
 
         const user = await User.findById(req.params.userId)
-        
+
         const connections = await Connection.aggregate([
             { $match: { connection: userId } },
             {

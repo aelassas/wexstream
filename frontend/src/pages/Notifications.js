@@ -493,7 +493,7 @@ const Notifications = () => {
                                                         <div style={{ display: 'inline-block' }}>
                                                             <Button
                                                                 variant="contained"
-                                                                color={notification.isConnected ? "error" : (notification.isConnectionPending && !notification.isApprover ? "default" : "primary")}
+                                                                color={notification.isConnected ? "error" : (notification.isConnectionPending && !notification.isApprover ? "inherit" : "primary")}
                                                                 size="small"
                                                                 data-id={notification._id}
                                                                 data-conn-id={notification.senderConnection._id}

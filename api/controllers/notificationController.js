@@ -64,7 +64,7 @@ export const notify = async (req, res) => {
                                         .then(ct => {
                                             res.sendStatus(200)
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
@@ -74,13 +74,13 @@ export const notify = async (req, res) => {
                                         .then(n => {
                                             res.sendStatus(200)
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
                                 }
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
@@ -89,12 +89,12 @@ export const notify = async (req, res) => {
                         res.status(400).send(strings.DB_ERROR + err)
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(strings.DB_ERROR + err)
                 })
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(400).send(strings.DB_ERROR + err)
         })
 }
@@ -133,7 +133,7 @@ export const approve = (req, res) => {
                                                                                     .then(ct => {
                                                                                         res.sendStatus(200)
                                                                                     })
-                                                                                    .catch(err => {
+                                                                                    .catch((err) => {
                                                                                         console.error(strings.DB_ERROR, err)
                                                                                         res.status(400).send(strings.DB_ERROR + err)
                                                                                     })
@@ -142,7 +142,7 @@ export const approve = (req, res) => {
                                                                                 res.sendStatus(204)
                                                                             }
                                                                         })
-                                                                        .catch(err => {
+                                                                        .catch((err) => {
                                                                             console.error(strings.DB_ERROR, err)
                                                                             res.status(400).send(strings.DB_ERROR + err)
                                                                         })
@@ -150,12 +150,12 @@ export const approve = (req, res) => {
                                                                     res.sendStatus(200)
                                                                 }
                                                             })
-                                                            .catch(err => {
+                                                            .catch((err) => {
                                                                 console.error(strings.DB_ERROR, err)
                                                                 res.status(400).send(strings.DB_ERROR + err)
                                                             })
                                                     })
-                                                    .catch(err => {
+                                                    .catch((err) => {
                                                         console.error(strings.DB_ERROR, err)
                                                         res.status(400).send(strings.DB_ERROR + err)
                                                     })
@@ -163,12 +163,12 @@ export const approve = (req, res) => {
                                                 res.sendStatus(204)
                                             }
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
@@ -176,7 +176,7 @@ export const approve = (req, res) => {
                             res.sendStatus(204)
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -185,7 +185,7 @@ export const approve = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(400).send(strings.DB_ERROR + err)
         })
 }
@@ -194,61 +194,57 @@ export const decline = (req, res) => {
     Notification.findById(req.params.notificationId)
         .then(notification => {
             if (notification) {
-                Connection.deleteOne({ _id: notification.senderConnection },
-                    (err) => {
-                        if (err) {
-                            res.status(400).send(strings.DB_DELETE_ERROR + err)
-                        } else {
-                            Connection.deleteOne({ _id: notification.approverConnection },
-                                (err) => {
-                                    if (err) {
-                                        res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                    } else {
-                                        const isRead = notification.isRead
-                                        notification.isRead = true
-                                        notification.isConnected = false
-                                        notification.isDeclined = true
-                                        notification.save()
-                                            .then(nn => {
-                                                if (!isRead) {
-                                                    NotificationCounter.findOne({ user: notification.user })
-                                                        .then(counter => {
-                                                            if (counter) {
-                                                                counter.count = counter.count - 1
-                                                                counter.save()
-                                                                    .then(ct => {
-                                                                        res.sendStatus(200)
-                                                                    })
-                                                                    .catch(err => {
-                                                                        console.error(strings.DB_ERROR, err)
-                                                                        res.status(400).send(strings.DB_ERROR + err)
-                                                                    })
-                                                            } else {
-                                                                console.error('[notification.decline] Counter not found:', notification.user)
-                                                                res.sendStatus(204)
-                                                            }
-                                                        })
-                                                        .catch(err => {
-                                                            console.error(strings.DB_ERROR, err)
-                                                            res.status(400).send(strings.DB_ERROR + err)
-                                                        })
-                                                } else {
-                                                    res.sendStatus(200)
-                                                }
-                                            })
-                                            .catch(err => {
-                                                res.status(400).send(strings.DB_ERROR + err)
-                                            })
-                                    }
-                                })
-                        }
+                Connection.deleteOne({ _id: notification.senderConnection })
+                    .then(() => {
+                        Connection.deleteOne({ _id: notification.approverConnection })
+                            .then(() => {
+                                const isRead = notification.isRead
+                                notification.isRead = true
+                                notification.isConnected = false
+                                notification.isDeclined = true
+                                notification.save()
+                                    .then(nn => {
+                                        if (!isRead) {
+                                            NotificationCounter.findOne({ user: notification.user })
+                                                .then(counter => {
+                                                    if (counter) {
+                                                        counter.count = counter.count - 1
+                                                        counter.save()
+                                                            .then(ct => {
+                                                                res.sendStatus(200)
+                                                            })
+                                                            .catch((err) => {
+                                                                console.error(strings.DB_ERROR, err)
+                                                                res.status(400).send(strings.DB_ERROR + err)
+                                                            })
+                                                    } else {
+                                                        console.error('[notification.decline] Counter not found:', notification.user)
+                                                        res.sendStatus(204)
+                                                    }
+                                                })
+                                                .catch((err) => {
+                                                    console.error(strings.DB_ERROR, err)
+                                                    res.status(400).send(strings.DB_ERROR + err)
+                                                })
+                                        } else {
+                                            res.sendStatus(200)
+                                        }
+                                    })
+                                    .catch((err) => {
+                                        res.status(400).send(strings.DB_ERROR + err)
+                                    })
+                            }).catch((err) => {
+                                res.status(400).send(strings.DB_DELETE_ERROR + err)
+                            })
+                    }).catch(() => {
+                        res.status(400).send(strings.DB_DELETE_ERROR + err)
                     })
             } else {
                 console.error('[notification.decline] Notification not found:', req.params)
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(400).send(strings.DB_ERROR + err)
         })
 }
@@ -318,7 +314,7 @@ export const getNotification = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             res.status(400).send(strings.DB_ERROR + err)
         })
 }
@@ -339,7 +335,7 @@ export const markAsRead = (req, res) => {
                                             .then(ct => {
                                                 res.sendStatus(200)
                                             })
-                                            .catch(err => {
+                                            .catch((err) => {
                                                 console.error(strings.DB_ERROR, err)
                                                 res.status(400).send(strings.DB_ERROR + err)
                                             })
@@ -348,12 +344,12 @@ export const markAsRead = (req, res) => {
                                         res.sendStatus(204)
                                     }
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(strings.DB_ERROR, err)
                             res.status(400).send(strings.DB_ERROR + err)
                         })
@@ -366,7 +362,7 @@ export const markAsRead = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -388,7 +384,7 @@ export const markAllAsRead = (req, res) => {
                             .then(ct => {
                                 res.sendStatus(200)
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
@@ -397,7 +393,7 @@ export const markAllAsRead = (req, res) => {
                         res.sendStatus(204)
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(strings.DB_ERROR + err)
                 })
@@ -421,7 +417,7 @@ export const markAsUnRead = (req, res) => {
                                             .then(ct => {
                                                 res.sendStatus(200)
                                             })
-                                            .catch(err => {
+                                            .catch((err) => {
                                                 console.error(strings.DB_ERROR, err)
                                                 res.status(400).send(strings.DB_ERROR + err)
                                             })
@@ -430,12 +426,12 @@ export const markAsUnRead = (req, res) => {
                                         res.sendStatus(204)
                                     }
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(strings.DB_ERROR, err)
                             res.status(400).send(strings.DB_ERROR + err)
                         })
@@ -447,7 +443,7 @@ export const markAsUnRead = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -465,7 +461,7 @@ export const deleteNotification = (req, res) => {
                                 .then(ct => {
                                     res.sendStatus(200)
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
@@ -474,7 +470,7 @@ export const deleteNotification = (req, res) => {
                             res.sendStatus(204)
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -483,7 +479,7 @@ export const deleteNotification = (req, res) => {
             }
 
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -500,7 +496,7 @@ export const deleteAll = (req, res) => {
                             .then(ct => {
                                 res.sendStatus(200)
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
@@ -509,12 +505,12 @@ export const deleteAll = (req, res) => {
                         res.sendStatus(204)
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(strings.DB_ERROR + err)
                 })
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -531,13 +527,13 @@ export const getNotificationCounter = (req, res) => {
                     .then(n => {
                         res.json(cnt)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })

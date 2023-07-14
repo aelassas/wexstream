@@ -107,7 +107,7 @@ export const googleAuth = (req, res) => {
                 blacklisted: user.blacklisted
             })
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR, err)
         })
@@ -180,7 +180,7 @@ export const facebookAuth = (req, res) => {
                 blacklisted: user.blacklisted
             })
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR, err)
         })
@@ -276,26 +276,26 @@ export const signup = (req, res) => {
                         if (err) {
                             console.error(strings.SMTP_ERROR, err)
 
-                            User.deleteOne({ _id: user._id }, (error, response) => {
-                                if (error) {
-                                    console.error(strings.DB_ERROR, error)
-                                    res.status(400).send(getStatusMessage(user.language, strings.DB_ERROR + error))
-                                } else {
+                            User.deleteOne({ _id: user._id })
+                                .then(() => {
                                     res.status(500).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_TECHNICAL_ISSUE + ' ' + err.response))
-                                }
-                            })
+                                })
+                                .catch((err) => {
+                                    console.error(strings.DB_ERROR, err)
+                                    res.status(400).send(getStatusMessage(user.language, strings.DB_ERROR + err))
+                                })
                         } else {
                             res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_1 + user.email + strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_2))
                         }
                     })
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(getStatusMessage(user.language, strings.DB_ERROR + err))
                 })
 
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -339,12 +339,12 @@ export const confirmEmail = (req, res) => {
                         }
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(strings.DB_ERROR + err)
                 })
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -389,7 +389,7 @@ export const resendLink = (req, res, next) => {
                             return res.status(200).send(getStatusMessage(user.language, strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_1 + user.email + strings.ACCOUNT_VALIDATION_EMAIL_SENT_PART_2))
                         })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         if (err) {
                             console.error('[user.resendLink] ' + strings.DB_ERROR, req.params)
                             return res.status(500).send(getStatusMessage(user.language, err.message))
@@ -397,7 +397,7 @@ export const resendLink = (req, res, next) => {
                     })
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -413,7 +413,7 @@ export const getUser = (req, res) => {
                 res.json(user)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -429,7 +429,7 @@ export const getUserById = (req, res) => {
                 res.json(user)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -452,7 +452,7 @@ export const update = (req, res) => {
                     .then(user => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -473,7 +473,7 @@ export const updateLanguage = (req, res) => {
                     .then(() => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -494,7 +494,7 @@ export const updateEmailNotifications = (req, res) => {
                     .then(user => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -515,7 +515,7 @@ export const updatePrivateMessages = (req, res) => {
                     .then(user => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -545,7 +545,7 @@ export const resetPassword = (req, res) => {
                                 .then(() => {
                                     res.sendStatus(200)
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
@@ -568,38 +568,38 @@ export const deleteUser = (req, res) => {
                 Connection.find({ connection: user._id }).then(connections => {
                     if (connections) {
                         connections.forEach(conn => {
-                            Notification.findOne({ approverConnection: conn._id }).then(notif => {
-                                if (notif) {
-                                    Notification.deleteOne({ _id: notif._id }, err => {
-                                        if (err) {
-                                            console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                                            res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                        } else {
-                                            NotificationCounter.findOne({ user: notif.user }).then(nc => {
-                                                if (nc && nc.count > 0) {
-                                                    nc.count = nc.count - 1
-                                                    nc.save()
-                                                        .catch(err => {
-                                                            console.error(strings.DB_ERROR, err)
-                                                            res.status(400).send(strings.DB_ERROR + err)
-                                                        })
-                                                }
-                                            })
+                            Notification.findOne({ approverConnection: conn._id })
+                                .then(notif => {
+                                    if (notif) {
+                                        Notification.deleteOne({ _id: notif._id })
+                                            .then(() => {
+                                                NotificationCounter.findOne({ user: notif.user })
+                                                    .then(nc => {
+                                                        if (nc && nc.count > 0) {
+                                                            nc.count = nc.count - 1
+                                                            nc.save()
+                                                                .catch((err) => {
+                                                                    console.error(strings.DB_ERROR, err)
+                                                                    res.status(400).send(strings.DB_ERROR + err)
+                                                                })
+                                                        }
+                                                    })
 
-                                            Connection.deleteOne({ _id: conn._id },
-                                                (err, response) => {
-                                                    if (err) {
+                                                Connection.deleteOne({ _id: conn._id })
+                                                    .catch((err) => {
                                                         console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                                                         res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                                    }
-                                                })
-                                        }
-                                    })
-                                }
-                            })
+                                                    })
+                                            })
+                                            .catch((err) => {
+                                                console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                                                res.status(400).send(strings.DB_DELETE_ERROR + err)
+                                            })
+                                    }
+                                })
 
                             Connection.deleteMany({ connection: user._id })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                                     res.status(400).send(strings.DB_DELETE_ERROR + err)
                                 })
@@ -609,14 +609,14 @@ export const deleteUser = (req, res) => {
 
                 // Delete timeline entries
                 Timeline.deleteMany({ $or: [{ speaker: user._id }, { subscriber: user._id }] })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
 
                 // Delete conferences
                 Conference.deleteMany({ speaker: user._id })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -625,37 +625,32 @@ export const deleteUser = (req, res) => {
                 Message.deleteMany({ to: user._id })
                     .then(() => {
                         MessageCounter.deleteOne({ user: user._id })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
                     })
-                    .catch(err => res.status(400).send(strings.DB_ERROR + err))
+                    .catch((err) => res.status(400).send(strings.DB_ERROR + err))
 
                 // Delete user, connections, notifications and notificationCounter
-                User.deleteOne({ _id: user._id }, err => {
-                    if (err) {
-                        console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                        res.status(400).send(strings.DB_DELETE_ERROR + err)
-                    } else {
+                User.deleteOne({ _id: user._id })
+                    .then(() => {
                         Connection.deleteMany({ user: user._id }) // { $or: [{ user: user._id }, { connection: user._id }] }
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                                 res.status(400).send(strings.DB_DELETE_ERROR + err)
                             })
 
                         Notification.deleteMany({ user: user._id })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                                 res.status(400).send(strings.DB_DELETE_ERROR + err)
                             })
 
-                        NotificationCounter.deleteOne({ user: user._id },
-                            (err) => {
-                                if (err) {
-                                    console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                                    res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                }
+                        NotificationCounter.deleteOne({ user: user._id })
+                            .catch((err) => {
+                                console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                                res.status(400).send(strings.DB_DELETE_ERROR + err)
                             })
 
                         if (user.avatar && !user.avatar.startsWith('http')) {
@@ -665,8 +660,11 @@ export const deleteUser = (req, res) => {
                             }
                         }
                         res.sendStatus(200)
-                    }
-                })
+                    })
+                    .catch((err) => {
+                        console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                        res.status(400).send(strings.DB_DELETE_ERROR + err)
+                    })
             }
         })
 }
@@ -674,7 +672,7 @@ export const deleteUser = (req, res) => {
 export const validateEmail = (req, res) => {
     User.findOne({ email: req.body.email })
         .then(user => user || !validator.isEmail(req.body.email) ? res.sendStatus(204) : res.sendStatus(200))
-        .catch(err => {
+        .catch((err) => {
             console.error('[user.validateEmail] ' + strings.DB_ERROR + ' ' + req.body.email, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -781,7 +779,7 @@ export const updateAvatar = (req, res) => {
                     .then(usr => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -790,7 +788,7 @@ export const updateAvatar = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -814,7 +812,7 @@ export const deleteAvatar = (req, res) => {
                     .then(usr => {
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -823,7 +821,7 @@ export const deleteAvatar = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -839,7 +837,7 @@ export const checkBlockedUser = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -872,13 +870,13 @@ export const block = (req, res) => {
 
                         res.sendStatus(200)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -905,7 +903,7 @@ export const unblock = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -921,12 +919,12 @@ export const report = (req, res) => {
                         ru.reports.push(report._id)
                         ru.save()
                             //.then(() => res.sendStatus(200))
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -941,12 +939,12 @@ export const report = (req, res) => {
                         })
                         reportedUser.save()
                             //.then(() => res.sendStatus(200))
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -989,17 +987,17 @@ export const report = (req, res) => {
                                 }
                             })
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             console.error(strings.DB_ERROR, err)
                             res.status(400).send(strings.DB_ERROR + err)
                         })
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error(strings.DB_ERROR, err)
                     res.status(400).send(strings.DB_ERROR + err)
                 })
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })

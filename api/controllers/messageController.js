@@ -40,14 +40,14 @@ export const send = (req, res) => {
                                             if (counter) {
                                                 counter.count = counter.count + 1
                                                 counter.save()
-                                                    .catch(err => {
+                                                    .catch((err) => {
                                                         console.error(strings.DB_ERROR, err)
                                                         res.status(400).send(strings.DB_ERROR + err)
                                                     })
                                             } else {
                                                 const cnt = new MessageCounter({ user: user._id, count: 1 })
                                                 cnt.save()
-                                                    .catch(err => {
+                                                    .catch((err) => {
                                                         console.error(strings.DB_ERROR, err)
                                                         res.status(400).send(strings.DB_ERROR + err)
                                                     })
@@ -89,18 +89,18 @@ export const send = (req, res) => {
                                                 })
                                             }
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -108,7 +108,7 @@ export const send = (req, res) => {
 
             res.sendStatus(200)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -153,7 +153,7 @@ export const getMessage = (req, res) => {
     Message.findById(req.params.messageId)
         .populate('from')
         .then(msg => res.json(msg))
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -174,7 +174,7 @@ export const markAsRead = (req, res) => {
                                         .then(cnt => {
                                             res.sendStatus(200)
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
@@ -183,12 +183,12 @@ export const markAsRead = (req, res) => {
                                     res.sendStatus(204)
                                 }
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -196,7 +196,7 @@ export const markAsRead = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -218,7 +218,7 @@ export const markAsUnread = (req, res) => {
                                         .then(cnt => {
                                             res.sendStatus(200)
                                         })
-                                        .catch(err => {
+                                        .catch((err) => {
                                             console.error(strings.DB_ERROR, err)
                                             res.status(400).send(strings.DB_ERROR + err)
                                         })
@@ -227,12 +227,12 @@ export const markAsUnread = (req, res) => {
                                     res.sendStatus(204)
                                 }
                             })
-                            .catch(err => {
+                            .catch((err) => {
                                 console.error(strings.DB_ERROR, err)
                                 res.status(400).send(strings.DB_ERROR + err)
                             })
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -240,7 +240,7 @@ export const markAsUnread = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -259,7 +259,7 @@ export const deleteMessage = (req, res) => {
                                 .then(cnt => {
                                     res.sendStatus(200)
                                 })
-                                .catch(err => {
+                                .catch((err) => {
                                     console.error(strings.DB_ERROR, err)
                                     res.status(400).send(strings.DB_ERROR + err)
                                 })
@@ -268,7 +268,7 @@ export const deleteMessage = (req, res) => {
                             res.sendStatus(204)
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -276,7 +276,7 @@ export const deleteMessage = (req, res) => {
                 res.sendStatus(200)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -294,13 +294,13 @@ export const getMessageCounter = (req, res) => {
                     .then(n => {
                         res.json(cnt)
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })

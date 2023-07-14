@@ -50,18 +50,18 @@ export const create = (req, res) => {
                                                                                     if (counter) {
                                                                                         counter.count = counter.count + 1
                                                                                         counter.save()
-                                                                                            .catch(err => {
+                                                                                            .catch((err) => {
                                                                                                 console.error(strings.DB_ERROR, err)
                                                                                             })
                                                                                     } else {
                                                                                         const cnt = new NotificationCounter({ user: notification.user, count: 1 })
                                                                                         cnt.save()
-                                                                                            .catch(err => {
+                                                                                            .catch((err) => {
                                                                                                 console.error(strings.DB_ERROR, err)
                                                                                             })
                                                                                     }
                                                                                 })
-                                                                                .catch(err => {
+                                                                                .catch((err) => {
                                                                                     console.error(strings.DB_ERROR, err)
                                                                                 })
                                                                         })
@@ -79,7 +79,7 @@ export const create = (req, res) => {
 
             res.sendStatus(200)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -88,7 +88,7 @@ export const create = (req, res) => {
 export const deleteSpeakerEntries = (req, res) => {
     Timeline.deleteMany({ speaker: req.params.speakerId, conference: req.params.conferenceId })
         .then(() => res.sendStatus(200))
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -97,7 +97,7 @@ export const deleteSpeakerEntries = (req, res) => {
 export const deleteSubscriberEntry = (req, res) => {
     Timeline.deleteOne({ _id: req.params.entryId })
         .then(() => res.sendStatus(200))
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })

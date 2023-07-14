@@ -15,7 +15,7 @@ export const create = (req, res) => {
         .then(conf => {
             res.status(200).json(conf)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -36,7 +36,7 @@ export const update = (req, res) => {
                 }
                 conf.save()
                     .then(() => res.sendStatus(200))
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -45,7 +45,7 @@ export const update = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -60,7 +60,7 @@ export const addMember = (req, res) => {
                 }
                 conf.save()
                     .then(() => res.sendStatus(200))
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -69,7 +69,7 @@ export const addMember = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -85,7 +85,7 @@ export const removeMember = (req, res) => {
                 }
                 conf.save()
                     .then(() => res.sendStatus(200))
-                    .catch(err => {
+                    .catch((err) => {
                         console.error(strings.DB_ERROR, err)
                         res.status(400).send(strings.DB_ERROR + err)
                     })
@@ -94,7 +94,7 @@ export const removeMember = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -105,7 +105,7 @@ export const deleteConference = (req, res) => {
         .then(() => {
             res.sendStatus(200)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -122,7 +122,7 @@ export const getConference = (req, res) => {
                 res.sendStatus(204)
             }
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -142,7 +142,7 @@ export const getConferences = (req, res) => {
         .then(confs => {
             res.json(confs)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -159,7 +159,7 @@ export const getMembers = async (req, res) => {
             console.log(conf.members)
             res.json(conf.members)
         })
-        .catch(err => {
+        .catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
@@ -200,18 +200,18 @@ export const close = (req, res) => {
                                                                 if (counter) {
                                                                     counter.count = counter.count + 1
                                                                     counter.save()
-                                                                        .catch(err => {
+                                                                        .catch((err) => {
                                                                             console.error(strings.DB_ERROR, err)
                                                                         })
                                                                 } else {
                                                                     const cnt = new NotificationCounter({ user: notification.user, count: 1 })
                                                                     cnt.save()
-                                                                        .catch(err => {
+                                                                        .catch((err) => {
                                                                             console.error(strings.DB_ERROR, err)
                                                                         })
                                                                 }
                                                             })
-                                                            .catch(err => {
+                                                            .catch((err) => {
                                                                 console.error(strings.DB_ERROR, err)
                                                             })
                                                     })
@@ -230,7 +230,7 @@ export const close = (req, res) => {
                 })
 
             res.sendStatus(200)
-        }).catch(err => {
+        }).catch((err) => {
             console.error(strings.DB_ERROR, err)
             res.status(400).send(strings.DB_ERROR + err)
         })
