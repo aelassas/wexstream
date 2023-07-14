@@ -304,6 +304,7 @@ const Notifications = () => {
         markAllAsRead(user._id)
             .then(status => {
                 if (status === 200) {
+
                     const _notifications = [...notifications]
 
                     for (let i = 0; i < _notifications.length; i++) {

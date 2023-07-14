@@ -368,37 +368,24 @@ export const markAsRead = (req, res) => {
         })
 }
 
-export const markAllAsRead = (req, res) => {
+export const markAllAsRead = async (req, res) => {
     const bulk = Notification.collection.initializeOrderedBulkOp()
     bulk.find({ user: new mongoose.Types.ObjectId(req.params.userId), isRead: false }).update({ $set: { isRead: true } })
-    bulk.execute((err) => {
-        if (err) {
-            console.error(strings.DB_ERROR, err)
-            res.status(400).send(strings.DB_ERROR + err)
+    try {
+        await bulk.execute()
+        const counter = await NotificationCounter.findOne({ user: req.params.userId })
+        if (counter) {
+            counter.count = 0
+            await counter.save()
+            return res.sendStatus(200)
         } else {
-            NotificationCounter.findOne({ user: req.params.userId })
-                .then(counter => {
-                    if (counter) {
-                        counter.count = 0
-                        counter.save()
-                            .then(ct => {
-                                res.sendStatus(200)
-                            })
-                            .catch((err) => {
-                                console.error(strings.DB_ERROR, err)
-                                res.status(400).send(strings.DB_ERROR + err)
-                            })
-                    } else {
-                        console.error('[notification.markAllAsRead] Counter not found:', notification.user)
-                        res.sendStatus(204)
-                    }
-                })
-                .catch((err) => {
-                    console.error(strings.DB_ERROR, err)
-                    res.status(400).send(strings.DB_ERROR + err)
-                })
+            console.error('[notification.markAllAsRead] Counter not found:', notification.user)
+            return res.sendStatus(204)
         }
-    })
+    } catch (err) {
+        console.error(strings.DB_ERROR, err)
+        return res.status(400).send(strings.DB_ERROR + err)
+    }
 }
 
 export const markAsUnRead = (req, res) => {
