@@ -21,6 +21,7 @@
         "compression": "^1.7.4",
         "cors": "^2.8.5",
         "crypto": "^1.0.1",
+        "dotenv": "^16.3.1",
         "escape-string-regexp": "^5.0.0",
         "express": "^4.18.2",
         "helmet": "^6.1.5",
@@ -34,6 +35,6 @@
         "validator": "^13.9.0"
     },
     "devDependencies": {
-        "dotenv": "^16.0.3"
+        "nodemon": "^3.0.1"
     }
 }
