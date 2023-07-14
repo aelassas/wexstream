@@ -598,12 +598,10 @@ export const deleteUser = (req, res) => {
                                 }
                             })
 
-                            Connection.deleteMany({ connection: user._id },
-                                (err, response) => {
-                                    if (err) {
-                                        console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                                        res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                    }
+                            Connection.deleteMany({ connection: user._id })
+                                .catch(err => {
+                                    console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                                    res.status(400).send(strings.DB_DELETE_ERROR + err)
                                 })
                         })
                     }
@@ -640,20 +638,18 @@ export const deleteUser = (req, res) => {
                         console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
                         res.status(400).send(strings.DB_DELETE_ERROR + err)
                     } else {
-                        Connection.deleteMany({ user: user._id }, // { $or: [{ user: user._id }, { connection: user._id }] }
-                            (err, approverRes) => {
-                                if (err) {
-                                    console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                                    res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                }
+                        Connection.deleteMany({ user: user._id }) // { $or: [{ user: user._id }, { connection: user._id }] }
+                            .catch(err => {
+                                console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                                res.status(400).send(strings.DB_DELETE_ERROR + err)
                             })
-                        Notification.deleteMany({ user: user._id },
-                            (err) => {
-                                if (err) {
-                                    console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
-                                    res.status(400).send(strings.DB_DELETE_ERROR + err)
-                                }
+
+                        Notification.deleteMany({ user: user._id })
+                            .catch(err => {
+                                console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
+                                res.status(400).send(strings.DB_DELETE_ERROR + err)
                             })
+
                         NotificationCounter.deleteOne({ user: user._id },
                             (err) => {
                                 if (err) {
