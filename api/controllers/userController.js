@@ -235,14 +235,14 @@ export const validateAccessToken = (req, res) => {
     res.sendStatus(200)
 }
 
-export const signup = (req, res) => {
+export const signup = async (req, res) => {
     const { body } = req
     body.verified = false
     body.blacklisted = false
 
-    const salt = bcrypt.genSaltSync(10)
+    const salt = await bcrypt.genSalt(10)
     const password = body.password
-    const passwordHash = bcrypt.hashSync(password, salt)
+    const passwordHash = await bcrypt.hash(password, salt)
     body.password = passwordHash
 
     const user = new User(body)
@@ -529,17 +529,17 @@ export const resetPassword = (req, res) => {
     const { userId, password, newPassword } = req.body
 
     User.findById(userId)
-        .then((user) => {
+        .then( (user) => {
             if (!user) {
                 console.error('[user.resetPassword] User not found:', userId)
                 res.sendStatus(204)
             } else {
                 bcrypt.compare(password, user.password)
-                    .then(passwordMatch => {
+                    .then(async (passwordMatch) => {
                         if (passwordMatch) {
-                            const salt = bcrypt.genSaltSync(10)
+                            const salt = await bcrypt.genSalt(10)
                             const password = newPassword
-                            const passwordHash = bcrypt.hashSync(password, salt)
+                            const passwordHash = await bcrypt.hash(password, salt)
                             user.password = passwordHash
 
                             user.save()
@@ -776,7 +776,7 @@ export const updateAvatar = (req, res) => {
                 const filename = `${user._id}_${Date.now()}${path.extname(req.file.originalname)}`
                 const filepath = path.join(CDN, filename)
 
-                fs.writeFileSync(filepath, req.file.buffer)
+                await fs.promises.writeFile(filepath, req.file.buffer)
                 user.avatar = filename
                 user.save()
                     .then(usr => {
