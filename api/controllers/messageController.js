@@ -19,7 +19,7 @@ export const send = (req, res) => {
         .then(async from => {
             req.body.to.forEach(async to => {
                 User.findById(to)
-                    .then(async user => {
+                    .then(async (user) => {
                         if (!user) {
                             console.err('[message.send] User not found:', to)
                             res.sendStatus(204)

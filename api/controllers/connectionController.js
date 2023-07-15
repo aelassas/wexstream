@@ -9,7 +9,7 @@ export const connect = (req, res) => {
         .then((user) => {
             if (user) {
                 User.findById(req.body.connectionId)
-                    .then(connectionUser => {
+                    .then((connectionUser) => {
                         if (!connectionUser) {
                             console.log('[connection.connect] Connection user not found:', req.body.connectionId)
                             res.sendStatus(204)

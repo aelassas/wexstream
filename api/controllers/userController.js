@@ -21,6 +21,7 @@ import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
 import util from 'util'
+import * as Helper from '../common/Helper.js'
 
 const DEFAULT_LANGUAGE = process.env.WS_DEFAULT_LANGUAGE
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true'
@@ -42,7 +43,7 @@ const getStatusMessage = (lang, msg) => (
 
 export const googleAuth = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(async user => {
+        .then(async (user) => {
             const { body } = req
 
             if (!user) {
@@ -115,7 +116,7 @@ export const googleAuth = (req, res) => {
 
 export const facebookAuth = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(async user => {
+        .then(async (user) => {
             const { body } = req
 
             if (!user) {
@@ -188,7 +189,7 @@ export const facebookAuth = (req, res) => {
 
 export const signin = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(user => {
+        .then((user) => {
             if (!user || (user && !user.password)) {
                 res.sendStatus(204)
             } else {
@@ -247,7 +248,7 @@ export const signup = (req, res) => {
     const user = new User(body)
 
     user.save()
-        .then(user => {
+        .then((user) => {
             // generate token and save
             const token = new Token({ user: user._id, token: crypto.randomBytes(16).toString('hex') })
 
@@ -305,7 +306,7 @@ export const confirmEmail = (req, res) => {
     Token.findOne({ token: req.params.token })
         .then(token => {
             User.findOne({ email: req.params.email })
-                .then(user => {
+                .then((user) => {
                     strings.setLanguage(user.language)
                     // token is not found into database i.e. token may have expired 
                     if (!token) {
@@ -352,7 +353,7 @@ export const confirmEmail = (req, res) => {
 
 export const resendLink = (req, res, next) => {
     User.findOne({ email: req.body.email })
-        .then(user => {
+        .then((user) => {
 
             // user is not found into database
             if (!user) {
@@ -405,7 +406,7 @@ export const resendLink = (req, res, next) => {
 
 export const getUser = (req, res) => {
     User.findById(req.params.id)
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.get] User not found:', req.params)
                 res.sendStatus(204)
@@ -421,7 +422,7 @@ export const getUser = (req, res) => {
 
 export const getUserById = (req, res) => {
     User.findById(req.params.userId)
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.getUserById] User not found:', req.params)
                 res.sendStatus(204)
@@ -437,7 +438,7 @@ export const getUserById = (req, res) => {
 
 export const update = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.update] User not found:', req.body.email)
                 res.sendStatus(204)
@@ -449,7 +450,7 @@ export const update = (req, res) => {
                 user.website = website || ''
 
                 user.save()
-                    .then(user => {
+                    .then((user) => {
                         res.sendStatus(200)
                     })
                     .catch((err) => {
@@ -463,7 +464,7 @@ export const update = (req, res) => {
 
 export const updateLanguage = (req, res) => {
     User.findById(req.body.id)
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.updateLanguage] User not found:', req.body.id)
                 res.sendStatus(204)
@@ -484,14 +485,14 @@ export const updateLanguage = (req, res) => {
 
 export const updateEmailNotifications = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.updateEmailNotifications] User not found:', req.body.email)
                 res.sendStatus(204)
             } else {
                 user.enableEmailNotifications = req.body.enableEmailNotifications
                 user.save()
-                    .then(user => {
+                    .then((user) => {
                         res.sendStatus(200)
                     })
                     .catch((err) => {
@@ -505,14 +506,14 @@ export const updateEmailNotifications = (req, res) => {
 
 export const updatePrivateMessages = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.updatePrivateMessages] User not found:', req.body.email)
                 res.sendStatus(204)
             } else {
                 user.enablePrivateMessages = req.body.enablePrivateMessages
                 user.save()
-                    .then(user => {
+                    .then((user) => {
                         res.sendStatus(200)
                     })
                     .catch((err) => {
@@ -528,7 +529,7 @@ export const resetPassword = (req, res) => {
     const { userId, password, newPassword } = req.body
 
     User.findById(userId)
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.resetPassword] User not found:', userId)
                 res.sendStatus(204)
@@ -559,7 +560,7 @@ export const resetPassword = (req, res) => {
 
 export const deleteUser = (req, res) => {
     User.findById(req.params.id)
-        .then(user => {
+        .then((user) => {
             if (!user) {
                 console.error('[user.delete] User not found:', req.body.email)
                 res.sendStatus(204)
@@ -634,7 +635,7 @@ export const deleteUser = (req, res) => {
 
                 // Delete user, connections, notifications and notificationCounter
                 User.deleteOne({ _id: user._id })
-                    .then(() => {
+                    .then(async () => {
                         Connection.deleteMany({ user: user._id }) // { $or: [{ user: user._id }, { connection: user._id }] }
                             .catch((err) => {
                                 console.error('[user.delete] ' + strings.DB_DELETE_ERROR + ' ' + req.body.email, err)
@@ -655,8 +656,9 @@ export const deleteUser = (req, res) => {
 
                         if (user.avatar && !user.avatar.startsWith('http')) {
                             const avatar = path.join(CDN, user.avatar)
-                            if (fs.existsSync(avatar)) {
-                                fs.unlinkSync(avatar)
+
+                            if (await Helper.fileExists(avatar)) {
+                                await fs.promises.unlink(avatar)
                             }
                         }
                         res.sendStatus(200)
@@ -671,7 +673,7 @@ export const deleteUser = (req, res) => {
 
 export const validateEmail = (req, res) => {
     User.findOne({ email: req.body.email })
-        .then(user => user || !validator.isEmail(req.body.email) ? res.sendStatus(204) : res.sendStatus(200))
+        .then((user) => user || !validator.isEmail(req.body.email) ? res.sendStatus(204) : res.sendStatus(200))
         .catch((err) => {
             console.error('[user.validateEmail] ' + strings.DB_ERROR + ' ' + req.body.email, err)
             res.status(400).send(strings.DB_ERROR + err)
@@ -760,13 +762,14 @@ export const updateAvatar = (req, res) => {
     const userId = req.params.userId
 
     User.findById(userId)
-        .then(user => {
+        .then(async (user) => {
             if (user) {
 
                 if (user.avatar && !user.avatar.startsWith('http')) {
                     const avatar = path.join(CDN, user.avatar)
-                    if (fs.existsSync(avatar)) {
-                        fs.unlinkSync(avatar)
+
+                    if (await Helper.fileExists(avatar)) {
+                        await fs.promises.unlink(avatar)
                     }
                 }
 
@@ -798,12 +801,13 @@ export const deleteAvatar = (req, res) => {
     const userId = req.params.userId
 
     User.findById(userId)
-        .then(user => {
+        .then(async (user) => {
             if (user) {
                 if (user.avatar && !user.avatar.startsWith('http')) {
                     const avatar = path.join(CDN, user.avatar)
-                    if (fs.existsSync(avatar)) {
-                        fs.unlinkSync(avatar)
+
+                    if (await Helper.fileExists(avatar)) {
+                        await fs.promises.unlink(avatar)
                     }
                 }
                 user.avatar = null
@@ -829,7 +833,7 @@ export const deleteAvatar = (req, res) => {
 
 export const checkBlockedUser = (req, res) => {
     BlockedUser.findOne({ user: req.params.userId, blockedUser: req.params.blockedUserId })
-        .then(blockedUser => {
+        .then((blockedUser) => {
             if (blockedUser) {
                 res.sendStatus(200)
             } else {
@@ -951,9 +955,9 @@ export const report = (req, res) => {
             }
 
             User.findById(req.body.user)
-                .then(user => {
+                .then((user) => {
                     User.findById(req.body.reportedUser)
-                        .then(async reportedUser => {
+                        .then(async (reportedUser) => {
                             strings.setLanguage(DEFAULT_LANGUAGE)
 
                             const transporter = nodemailer.createTransport({

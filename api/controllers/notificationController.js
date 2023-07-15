@@ -19,7 +19,7 @@ export const notify = async (req, res) => {
     notification.save()
         .then(notification => {
             User.findById(notification.user)
-                .then(user => {
+                .then((user) => {
                     if (user) {
                         NotificationCounter.findOne({ user: notification.user })
                             .then(async counter => {
