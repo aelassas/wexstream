@@ -6,7 +6,7 @@ import NotificationCounter from '../models/NotificationCounter.js'
 import Connection from '../models/Connection.js'
 import strings from '../config/app.config.js'
 import mongoose from 'mongoose'
-import { escapeRegex } from '../common/helper.js'
+import * as Helper from '../common/Helper.js'
 
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true'
 const APP_HOST = process.env.WS_APP_HOST
@@ -21,7 +21,7 @@ export const create = (req, res) => {
                         Conference.findById(req.params.conferenceId)
                             .then(conference => {
                                 const conferenceUrl = `${'http' + (HTTPS ? 's' : '') + ':\/\/' + APP_HOST}/conference?c=${conference._id}`
-                                const regex = escapeRegex(conference._id.toString())
+                                const regex = Helper.escapeRegex(conference._id.toString())
 
                                 if (conference) {
                                     connections.forEach(connection => {

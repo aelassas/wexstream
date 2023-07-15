@@ -4,7 +4,7 @@ import Connection from '../models/Connection.js'
 import Notification from '../models/Notification.js'
 import NotificationCounter from '../models/NotificationCounter.js'
 import strings from '../config/app.config.js'
-import { escapeRegex } from '../common/helper.js'
+import * as Helper from '../common/Helper.js'
 
 const HTTPS = process.env.WS_HTTPS.toLowerCase() === 'true'
 const APP_HOST = process.env.WS_APP_HOST
@@ -180,8 +180,8 @@ export const close = (req, res) => {
                                         strings.setLanguage(connection.user.language)
 
                                         const conferenceUrl = `${'http' + (HTTPS ? 's' : '') + ':\/\/' + APP_HOST}/conference?c=${conference._id}`
-                                        const linkRegex = escapeRegex(conference._id.toString())
-                                        const messageRegex = escapeRegex(strings.CONFERENCE_NOTIFICATION_CLOSED)
+                                        const linkRegex = Helper.escapeRegex(conference._id.toString())
+                                        const messageRegex = Helper.escapeRegex(strings.CONFERENCE_NOTIFICATION_CLOSED)
 
                                         Notification.findOne({ $and: [{ user: connection.user._id }, { $and: [{ message: { $regex: messageRegex, $options: 'i' } }, { link: { $regex: linkRegex, $options: 'i' } }] }] })
                                             .then(notification => {
