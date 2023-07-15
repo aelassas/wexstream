@@ -1,5 +1,9 @@
 [![Frontend CI](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml/badge.svg)](https://github.com/aelassas/wexstream/actions/workflows/frontend.yml) [![open in vscode](https://img.shields.io/badge/open%20in-vscode-1f425f.svg)](https://vscode.dev/github/aelassas/wexstream)
 
+<p align="center">
+  <img src="https://wexstream.github.io/content/wexstream.png" width="900" />
+</p>
+
 # Wexstream
 
 Wexstream is an open source video conferencing platform built with [Node.js](https://nodejs.org/), [React](https://reactjs.org/) and [Jitsi](https://jitsi.org/).
