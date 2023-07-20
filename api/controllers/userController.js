@@ -16,7 +16,7 @@ import Message from '../models/Message.js'
 import MessageCounter from '../models/MessageCounter.js'
 import mongoose from 'mongoose'
 import path from 'path'
-import fs from 'fs'
+import fs from 'fs/promises'
 import bcrypt from 'bcrypt'
 import nodemailer from 'nodemailer'
 import crypto from 'crypto'
@@ -658,7 +658,7 @@ export const deleteUser = (req, res) => {
                             const avatar = path.join(CDN, user.avatar)
 
                             if (await Helper.fileExists(avatar)) {
-                                await fs.promises.unlink(avatar)
+                                await fs.unlink(avatar)
                             }
                         }
                         res.sendStatus(200)
@@ -769,14 +769,14 @@ export const updateAvatar = (req, res) => {
                     const avatar = path.join(CDN, user.avatar)
 
                     if (await Helper.fileExists(avatar)) {
-                        await fs.promises.unlink(avatar)
+                        await fs.unlink(avatar)
                     }
                 }
 
                 const filename = `${user._id}_${Date.now()}${path.extname(req.file.originalname)}`
                 const filepath = path.join(CDN, filename)
 
-                await fs.promises.writeFile(filepath, req.file.buffer)
+                await fs.writeFile(filepath, req.file.buffer)
                 user.avatar = filename
                 user.save()
                     .then(usr => {
@@ -807,7 +807,7 @@ export const deleteAvatar = (req, res) => {
                     const avatar = path.join(CDN, user.avatar)
 
                     if (await Helper.fileExists(avatar)) {
-                        await fs.promises.unlink(avatar)
+                        await fs.unlink(avatar)
                     }
                 }
                 user.avatar = null
