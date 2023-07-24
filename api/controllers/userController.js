@@ -657,7 +657,7 @@ export const deleteUser = (req, res) => {
                         if (user.avatar && !user.avatar.startsWith('http')) {
                             const avatar = path.join(CDN, user.avatar)
 
-                            if (await Helper.fileExists(avatar)) {
+                            if (await Helper.exists(avatar)) {
                                 await fs.unlink(avatar)
                             }
                         }
@@ -768,7 +768,7 @@ export const updateAvatar = (req, res) => {
                 if (user.avatar && !user.avatar.startsWith('http')) {
                     const avatar = path.join(CDN, user.avatar)
 
-                    if (await Helper.fileExists(avatar)) {
+                    if (await Helper.exists(avatar)) {
                         await fs.unlink(avatar)
                     }
                 }
@@ -806,7 +806,7 @@ export const deleteAvatar = (req, res) => {
                 if (user.avatar && !user.avatar.startsWith('http')) {
                     const avatar = path.join(CDN, user.avatar)
 
-                    if (await Helper.fileExists(avatar)) {
+                    if (await Helper.exists(avatar)) {
                         await fs.unlink(avatar)
                     }
                 }

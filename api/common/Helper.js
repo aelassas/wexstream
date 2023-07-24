@@ -1,5 +1,12 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 
 export const escapeRegex = (string) => string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 
-export const fileExists = (path) => new Promise((resolve) => fs.access(path, fs.constants.F_OK, (err) => resolve(!err)))
+export const exists = async (path) => {
+    try {
+        await fs.access(path)
+        return true
+    } catch {
+        return false
+    }
+}
