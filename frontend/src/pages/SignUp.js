@@ -15,8 +15,10 @@ import {
     Link
 } from '@mui/material'
 import Header from '../components/Header'
+import { useNavigate } from 'react-router-dom'
 
 const SignUp = () => {
+    const navigate = useNavigate()
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -155,7 +157,7 @@ const SignUp = () => {
             UserService.validateAccessToken().then(status => {
                 UserService.getUser(currentUser.id).then(user => {
                     if (user) {
-                        window.location.href = '/home'
+                        navigate('/home')
                     } else {
                         UserService.signout()
                     }
@@ -168,7 +170,7 @@ const SignUp = () => {
         } else {
             setVisible(true)
         }
-    }, [])
+    }, [navigate])
 
     return (
         <div>

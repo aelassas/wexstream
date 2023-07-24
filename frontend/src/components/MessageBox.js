@@ -10,6 +10,7 @@ import Slide from '@mui/material/Slide'
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
+import { useNavigate } from 'react-router-dom'
 
 const classes = {
     appBar: {
@@ -26,6 +27,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 })
 
 const MessageBox = (props) => {
+    const navigate = useNavigate()
     const [isSignedIn, setIsSignedIn] = useState(false)
 
     const handleClose = (e) => {
@@ -36,7 +38,7 @@ const MessageBox = (props) => {
 
     const handleFromClick = (event) => {
         const id = event.currentTarget.getAttribute('data-id')
-        window.location.href = `/profile?u=${id}`
+        navigate(`/profile?u=${id}`)
     }
 
     const handleFromMouseDown = (event) => {

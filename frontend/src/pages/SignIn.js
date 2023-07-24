@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { LANGUAGES, DEFAULT_LANGUAGE } from '../config/env'
 import { strings } from '../config/lang'
 import {
@@ -28,8 +28,10 @@ import * as MessageService from '../services/MessageService'
 import * as ConferenceService from '../services/ConferenceService'
 import { loadFacebookSdk, facebookLogin } from '../auth/facebook'
 import { loadGoogleSdk, googleLogin } from '../auth/google'
+import { useNavigate } from 'react-router-dom'
 
 const SignIn = () => {
+  const navigate = useNavigate()
   const [language, setLanguage] = useState(DEFAULT_LANGUAGE)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -41,7 +43,7 @@ const SignIn = () => {
   const [isGoogleSdkLoaded, setIsGoogleSdkLoaded] = useState(false)
   const [isFacebookSdkLoaded, setIsFacebookSdkLoaded] = useState(false)
 
-  const handleGoogleAuth = (event, _data) => {
+  const handleGoogleAuth = useCallback((event, _data) => {
     const auth = (data) => {
       UserService.googleAuth(data)
         .then(res => {
@@ -58,13 +60,13 @@ const SignIn = () => {
               setError(false)
 
               if (conferenceId !== '') {
-                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
+                navigate(`/conference?c=${encodeURIComponent(conferenceId)}`)
               } else if (messageId !== '') {
-                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
+                navigate(`/messages?m=${encodeURIComponent(messageId)}`)
               } else if (userId !== '') {
-                window.location.href = `/profile?u=${encodeURIComponent(userId)}`
+                navigate(`/profile?u=${encodeURIComponent(userId)}`)
               } else {
-                window.location = '/home' + window.location.search
+                navigate(`/home${window.location.search}`)
               }
             }
           } else {
@@ -95,14 +97,14 @@ const SignIn = () => {
       data.language = UserService.getLanguage()
       auth(data)
     }
-  }
+  }, [navigate])
 
   const handleGoogleAuthFailure = () => {
     setError(true)
     setBlacklisted(false)
   }
 
-  const handleFacebookAuth = (event, _data) => {
+  const handleFacebookAuth = useCallback((event, _data) => {
     const auth = (data) => {
       UserService.facebookAuth(data)
         .then(res => {
@@ -119,13 +121,13 @@ const SignIn = () => {
               setError(false)
 
               if (conferenceId !== '') {
-                window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
+                navigate(`/conference?c=${encodeURIComponent(conferenceId)}`)
               } else if (messageId !== '') {
-                window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
+                navigate(`/messages?m=${encodeURIComponent(messageId)}`)
               } else if (userId !== '') {
-                window.location.href = `/profile?u=${encodeURIComponent(userId)}`
+                navigate(`/profile?u=${encodeURIComponent(userId)}`)
               } else {
-                window.location = '/home' + window.location.search
+                navigate(`/home${window.location.search}`)
               }
             }
           } else {
@@ -149,7 +151,7 @@ const SignIn = () => {
       data.language = UserService.getLanguage()
       auth(data)
     }
-  }
+  }, [navigate])
 
   const handleFacebookAuthFailure = () => {
     setError(true)
@@ -202,13 +204,13 @@ const SignIn = () => {
             setEmailAuthError(false)
 
             if (conferenceId !== '') {
-              window.location.href = `/conference?c=${encodeURIComponent(conferenceId)}`
+              navigate(`/conference?c=${encodeURIComponent(conferenceId)}`)
             } else if (messageId !== '') {
-              window.location.href = `/messages?m=${encodeURIComponent(messageId)}`
+              navigate(`/messages?m=${encodeURIComponent(messageId)}`)
             } else if (userId !== '') {
-              window.location.href = `/profile?u=${encodeURIComponent(userId)}`
+              navigate(`/profile?u=${encodeURIComponent(userId)}`)
             } else {
-              window.location = '/home' + window.location.search
+              navigate(`/home${window.location.search}`)
             }
           }
         } else {
@@ -268,7 +270,7 @@ const SignIn = () => {
             UserService.getUser(currentUser.id)
               .then(user => {
                 if (user) {
-                  window.location.href = '/home' + window.location.search
+                  navigate(`/home${window.location.search}`)
                 } else {
                   UserService.signout()
                 }
@@ -284,7 +286,7 @@ const SignIn = () => {
     } else {
       setVisible(true)
     }
-  }, [])
+  }, [navigate, handleGoogleAuth,handleFacebookAuth])
 
   const authBtnStyle = { width: language === 'fr' ? 240 : 190 }
 

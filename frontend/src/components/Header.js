@@ -50,12 +50,14 @@ import {
     Typography,
     Box
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 const ListItemLink = (props) => (
     <ListItemButton component="a" {...props} />
 )
 
 const Header = (props) => {
+    const navigate = useNavigate()
     const [currentLanguage, setCurrentLanguage] = useState(null)
     const [lang, setLang] = useState(DEFAULT_LANGUAGE)
     const [anchorEl, setAnchorEl] = useState(null)
@@ -182,7 +184,7 @@ const Header = (props) => {
 
         if (params.has('l')) {
             params.delete('l')
-            window.location.href = window.location.href.split('?')[0] + ([...params].length > 0 ? ('?' + params) : '')
+            navigate(window.location.href.split('?')[0] + ([...params].length > 0 ? ('?' + params) : ''))
         } else {
             window.location.reload()
         }
@@ -241,11 +243,11 @@ const Header = (props) => {
     }
 
     const handleOnProfileClick = () => {
-        window.location.href = '/profile'
+        navigate('/profile')
     }
 
     const handleOnSettingsClick = () => {
-        window.location.href = '/settings'
+        navigate('/settings')
     }
 
     const handleSignout = () => {
@@ -266,7 +268,7 @@ const Header = (props) => {
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            window.location.href = '/search?s=' + encodeURIComponent(e.currentTarget.value)
+            navigate(`/search?s=${encodeURIComponent(e.currentTarget.value)}`)
         } else {
             setSearchKeyword(e.target.value)
         }
@@ -277,11 +279,11 @@ const Header = (props) => {
     }
 
     const handleMessagesClick = (e) => {
-        window.location.href = '/messages'
+        navigate('/messages')
     }
 
     const handleNotificationsClick = (e) => {
-        window.location.href = '/notifications'
+        navigate('/notifications')
     }
 
     const handleClickLive = (e) => {
