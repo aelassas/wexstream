@@ -286,7 +286,7 @@ const SignIn = () => {
     } else {
       setVisible(true)
     }
-  }, [navigate, handleGoogleAuth,handleFacebookAuth])
+  }, [navigate, handleGoogleAuth, handleFacebookAuth])
 
   const authBtnStyle = { width: language === 'fr' ? 240 : 190 }
 
