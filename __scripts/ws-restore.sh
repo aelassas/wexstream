@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HOST="bookcars.ddns.net"
+HOST="wexstream.ddns.net"
 PORT=27017
 AUTH_DB="admin"
 USERNAME="admin"
